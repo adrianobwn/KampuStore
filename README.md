@@ -36,7 +36,7 @@
 - [ ] **[Angel]** 🔐 Autentikasi: register & login udh dibuat code nya
 - [ ] **[Amel]** 🎨 Desain halaman product katalog pake Figma
 
-> 💡 **Note**: Gunakan Shopee/yang lain sebagai referensi desain halaman "product detail"
+> 💡 **Note**: Gunakan Tokopedia sebagai referensi desain halaman "product detail"
 
 ---
 
@@ -73,10 +73,10 @@ const techStack = {
 
 | Nama | Role | Task |
 |------|------|------|
-| 👨‍💻 Alan | Frontend Dev | Wireframe & Template |
-| 👨‍💻 Alif | Frontend Dev | Wireframe & Template |
-| 👨‍💻 Akmal | Backend Dev | Authentication System |
-| 👨‍💻 Bagus | UI/UX Designer | Product Catalog Design |
+| 👨‍💻 Rian | Frontend Dev | Wireframe & Template |
+| 👨‍💻 Ape | Frontend Dev | Wireframe & Template |
+| 👨‍💻 Angel | Backend Dev | Authentication System |
+| 👨‍💻 Amel | UI/UX Designer | Product Catalog Design |
 
 ---
 
@@ -128,7 +128,7 @@ Contributions, issues, and feature requests are welcome! 🎉
 
 ## 📞 Kontak
 
-📧 Email: [Your Email]
+📧 Email: adrianobawan5@gmail.com
 🔗 Project Link: [https://s.id/fulltugasppl](https://s.id/fulltugasppl)
 
 ---
