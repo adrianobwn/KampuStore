@@ -32,11 +32,11 @@
 
 ### 📋 Checklist Pengerjaan
 
-- [ ] **[Alan & Alif]** 🎨 Template page: wireframe semua page & penghubungnya (pake Figma)
-- [ ] **[Akmal]** 🔐 Autentikasi: register & login udh dibuat code nya
-- [ ] **[Bagus]** 🎨 Desain halaman product katalog pake Figma
+- [ ] **[Rian & Ape]** 🎨 Template page: wireframe semua page & penghubungnya (pake Figma)
+- [ ] **[Angel]** 🔐 Autentikasi: register & login udh dibuat code nya
+- [ ] **[Amel]** 🎨 Desain halaman product katalog pake Figma
 
-> 💡 **Note**: Gunakan Tokopedia sebagai referensi desain halaman "product detail"
+> 💡 **Note**: Gunakan Shopee/yang lain sebagai referensi desain halaman "product detail"
 
 ---
 
