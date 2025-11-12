@@ -57,3 +57,22 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+## KampuStore: Katalog + Ulasan (Tanpa Beli)
+
+Tambahan pada project ini menyediakan:
+- Autentikasi sederhana (register, login, logout)
+- Katalog produk + halaman detail mirip Tokopedia (ringkas)
+- Ulasan dengan rating 1-5; 1 ulasan per user per produk (update jika kirim lagi)
+
+### Menjalankan
+
+1. Atur `.env` database Anda, lalu jalankan:
+   - `php artisan key:generate`
+   - `php artisan migrate`
+   - (opsional) `php artisan db:seed`
+2. Jalankan server pengembangan:
+   - `php artisan serve`
+3. Buka `http://127.0.0.1:8000` untuk melihat katalog.
+
+Seeder membuat user contoh: `test@example.com` (password default dari factory Laravel).
