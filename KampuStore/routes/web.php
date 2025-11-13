@@ -5,8 +5,6 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ReviewController;
 
-Route::get('/', fn() => redirect()->route('products.index'));
-
 // Auth
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login.perform');
@@ -22,3 +20,21 @@ Route::get('/products/{product:slug}', [ProductController::class, 'show'])->name
 Route::middleware('auth')->group(function () {
     Route::post('/products/{product:slug}/reviews', [ReviewController::class, 'store'])->name('reviews.store');
 });
+
+Route::get('/products', [ProductController::class, 'index'])->name('products.index');
+Route::get('/products/{product}', [ProductController::class, 'show'])->name('products.show');
+
+// Landing page
+Route::get('/', function () {
+    return view('home');   // resources/views/home.blade.php
+})->name('home');
+
+// (opsional) kalau mau url /home juga bisa
+Route::get('/home', function () {
+    return redirect()->route('home');
+});
+
+// Market: langsung ke katalog produk
+Route::get('/market', function () {
+    return redirect()->route('products.index');
+})->name('market');

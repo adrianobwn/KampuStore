@@ -37,30 +37,41 @@ class AuthController extends Controller
 
     public function register(Request $request): RedirectResponse
     {
-        $data = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', 'max:255', 'unique:users,email'],
-            'password' => ['required', 'confirmed', Password::defaults()],
-        ]);
+        $data = $request->validate(
+            [
+                'name' => ['required', 'string', 'max:255'],
+                'email' => [
+                    'required',
+                    'string',
+                    'email',
+                    'max:255',
+                    // WAJIB email UNDIP
+                    'regex:/@(students\.)?undip\.ac\.id$/i',
+                    'unique:users,email',
+                ],
+                'password' => ['required', 'confirmed', Password::defaults()],
+            ],
+            [
+                // pesan khusus kalau regex UNDIP gagal
+                'email.regex' => 'Registrasi hanya boleh menggunakan email kampus UNDIP (…@students.undip.ac.id).',
+            ]
+        );
 
         $user = User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'password' => $data['password'],
+            'name'     => $data['name'],
+            'email'    => $data['email'],
+            // jangan lupa di-hash
+            'password' => bcrypt($data['password']),
         ]);
 
-        Auth::login($user);
-        $request->session()->regenerate();
+        // ❌ JANGAN auto login
+        // Auth::login($user);
+        // $request->session()->regenerate();
 
-        return redirect()->route('products.index');
-    }
-
-    public function logout(Request $request): RedirectResponse
-    {
-        Auth::logout();
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-        return redirect()->route('login');
+        // ✅ Paksa balik ke halaman login
+        return redirect()
+            ->route('login')
+            ->with('status', 'Akun berhasil dibuat. Silakan login dengan email UNDIP kamu.');
     }
 }
 

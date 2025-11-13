@@ -11,12 +11,18 @@ class Product extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name',
-        'slug',
-        'price',
-        'stock',
+        'name', 
+        'slug', 
+        'category_slug', 
+        'condition', 
+        'size',
+        'price', 
+        'stock', 
+        'seller_name', 
+        'seller_province',
+        'seller_city', 
+        'image_url', 
         'description',
-        'image_url',
     ];
 
     protected $casts = [
@@ -43,6 +49,15 @@ class Product extends Model
     public function reviewsCount(): int
     {
         return (int) $this->reviews()->count();
+    }
+    public function user()
+    {
+        return $this->belongsTo(\App\Models\User::class);
+    }
+
+    public function product()
+    {
+        return $this->belongsTo(\App\Models\Product::class);
     }
 }
 
