@@ -1,3 +1,4 @@
+
 @php($title='kampuStore - Market')
 <!DOCTYPE html>
 <html lang="id">
@@ -10,17 +11,101 @@
 /* RESET */
 *{margin:0;padding:0;box-sizing:border-box}
 
+/* THEME VARIABLES (default = dark) */
+:root{
+  --bg-body:#050816;
+  --text-main:#e5e7eb;
+
+  --nav-bg:linear-gradient(90deg,#111827,#1f2937);
+  --nav-border-bottom:transparent;
+  --nav-shadow:none;
+  --nav-link-color:#e5e7eb;
+
+  --market-bg:radial-gradient(circle at top left,#312e81 0,#020617 55%);
+
+  --sidebar-bg:rgba(15,23,42,0.9);
+  --sidebar-border:rgba(30,64,175,0.8);
+  --sidebar-scroll-thumb:#4b5563;
+  --sidebar-divider:#374151;
+  --sidebar-select-bg:#020617;
+  --sidebar-select-border:#4b5563;
+  --sidebar-text:#d1d5db;
+
+  --search-bg:#020617;
+  --search-border:#4b5563;
+  --search-text:#e5e7eb;
+  --search-placeholder:#6b7280;
+
+  --icon-border:#4b5563;
+  --icon-bg:#020617;
+  --icon-color:#e5e7eb;
+
+  --page-title-color:#f9fafb;
+  --breadcrumb-color:#9ca3af;
+
+  --product-card-bg:#020617;
+  --product-card-border:rgba(30,64,175,0.8);
+  --product-image-bg:#111827;
+
+  --reset-btn-bg:#111827;
+  --reset-btn-border:#374151;
+
+  --toast-bg:#111827;
+}
+
+/* LIGHT MODE OVERRIDE */
+body.theme-light{
+  --bg-body:#f9fafb;
+  --text-main:#111827;
+
+  --nav-bg:#ffffff;
+  --nav-border-bottom:#e5e7eb;
+  --nav-shadow:0 2px 8px rgba(15,23,42,0.08);
+  --nav-link-color:#111827;
+
+  --market-bg:#f3f4f6;
+
+  --sidebar-bg:#ffffff;
+  --sidebar-border:#e5e7eb;
+  --sidebar-scroll-thumb:#9ca3af;
+  --sidebar-divider:#e5e7eb;
+  --sidebar-select-bg:#ffffff;
+  --sidebar-select-border:#d1d5db;
+  --sidebar-text:#4b5563;
+
+  --search-bg:#ffffff;
+  --search-border:#d1d5db;
+  --search-text:#111827;
+  --search-placeholder:#9ca3af;
+
+  --icon-border:#d1d5db;
+  --icon-bg:#ffffff;
+  --icon-color:#111827;
+
+  --page-title-color:#111827;
+  --breadcrumb-color:#6b7280;
+
+  --product-card-bg:#ffffff;
+  --product-card-border:#e5e7eb;
+  --product-image-bg:#e5e7eb;
+
+  --reset-btn-bg:#e5e7eb;
+  --reset-btn-border:#d1d5db;
+
+  --toast-bg:#111827;
+}
+
 /* BODY */
 body{
   font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;
-  background:#050816;
-  color:#e5e7eb;
+  background:var(--bg-body);
+  color:var(--text-main);
 }
 
 /* LINK */
 a{text-decoration:none;color:inherit;}
 
-/* ==== NAVBAR (sama seperti home/login/register) ==== */
+/* ==== NAVBAR ==== */
 .nav{
     position:fixed;
     top:0;left:0;right:0;
@@ -29,7 +114,9 @@ a{text-decoration:none;color:inherit;}
     align-items:center;
     justify-content:space-between;
     padding:18px 40px;
-    background:linear-gradient(90deg,#111827,#1f2937);
+    background:var(--nav-bg);
+    border-bottom:1px solid var(--nav-border-bottom);
+    box-shadow:var(--nav-shadow);
 }
 .nav-left{
     display:flex;
@@ -37,12 +124,22 @@ a{text-decoration:none;color:inherit;}
     gap:26px;
 }
 .nav-logo{
-    font-weight:700;
-    font-size:22px;
-    letter-spacing:0.04em;
-    color:#f9fafb;
+  display:flex;
+  align-items:center;
+  font-weight:700;
+  font-size:22px;
+  letter-spacing:0.04em;
+  color:#f9fafb;
+  cursor:pointer;
 }
-.nav-logo:hover{opacity:.85;}
+
+.nav-logo img{
+  height:40px;        /* sesuaikan tinggi logo */
+  display:block;
+}
+body.theme-light .nav-logo{
+ color:#111827;
+}
 
 .nav-menu{
     display:flex;
@@ -51,7 +148,7 @@ a{text-decoration:none;color:inherit;}
     font-size:14px;
 }
 .nav-menu a{
-    color:#e5e7eb;
+    color:var(--nav-link-color);
     position:relative;
 }
 
@@ -96,14 +193,14 @@ a{text-decoration:none;color:inherit;}
     width:100%;
     padding:9px 40px 9px 16px;
     border-radius:999px;
-    border:1px solid #4b5563;
-    background:#020617;
-    color:#e5e7eb;
+    border:1px solid var(--search-border);
+    background:var(--search-bg);
+    color:var(--search-text);
     font-size:13px;
     outline:none;
 }
 .nav-search input::placeholder{
-    color:#6b7280;
+    color:var(--search-placeholder);
 }
 .nav-search input:focus{
     border-color:#f97316;
@@ -128,7 +225,7 @@ a{text-decoration:none;color:inherit;}
     background:none;
     border:none;
     cursor:pointer;
-    color:#e5e7eb;
+    color:var(--icon-color);
     position:relative;
     padding:0;
 }
@@ -136,16 +233,16 @@ a{text-decoration:none;color:inherit;}
     width:32px;
     height:32px;
     border-radius:999px;
-    border:1px solid #4b5563;
+    border:1px solid var(--icon-border);
     display:flex;
     align-items:center;
     justify-content:center;
-    background:#020617;
+    background:var(--icon-bg);
     font-size:18px;
 }
 .icon-heart{ color:#fda4af; }
-.icon-cart{ color:#e5e7eb; }
-.icon-user{ color:#e5e7eb; }
+.icon-cart{ /* ikut warna icon-color */ }
+.icon-user{ /* ikut warna icon-color */ }
 
 /* DROPDOWN AKUN */
 .account-wrapper{ position:relative; }
@@ -153,14 +250,14 @@ a{text-decoration:none;color:inherit;}
   position:absolute;
   right:0;
   top:110%;
-  background:#020617;
+  background:var(--sidebar-bg);
   border-radius:10px;
   box-shadow:0 12px 30px rgba(0,0,0,.6);
   padding:8px 0;
-  min-width:170px;
+  min-width:190px;
   display:none;
   z-index:120;
-  border:1px solid #374151;
+  border:1px solid var(--sidebar-border);
 }
 .account-menu a,
 .account-menu button{
@@ -171,18 +268,21 @@ a{text-decoration:none;color:inherit;}
   background:none;
   text-align:left;
   font-size:13px;
-  color:#e5e7eb;
+  color:var(--sidebar-text);
   cursor:pointer;
 }
 .account-menu a:hover,
-.account-menu button:hover{ background:#111827; }
+.account-menu button:hover{ background:rgba(15,23,42,0.25); }
+body.theme-light .account-menu a:hover,
+body.theme-light .account-menu button:hover{ background:#f3f4f6; }
+
 .account-wrapper.open .account-menu{ display:block; }
 
 /* ==== BACKGROUND MARKET (radial + blob) ==== */
 .market-bg{
   min-height:100vh;
   padding:110px 30px 40px; /* 110 karena nav fixed */
-  background:radial-gradient(circle at top left,#312e81 0,#020617 55%);
+  background:var(--market-bg);
   position:relative;
   overflow:hidden;
 }
@@ -204,6 +304,10 @@ a{text-decoration:none;color:inherit;}
   background:linear-gradient(135deg,#0ea5e9,#22c55e);
   bottom:-140px;right:-60px;
 }
+body.theme-light .market-bg::before,
+body.theme-light .market-bg::after{
+  opacity:0.12;
+}
 
 /* LAYOUT WRAPPER */
 .container{
@@ -218,19 +322,22 @@ a{text-decoration:none;color:inherit;}
 /* SIDEBAR FILTER */
 .sidebar{
   width:260px;
-  background:rgba(15,23,42,0.9);
+  background:var(--sidebar-bg);
   padding:20px 18px;
   height:calc(100vh - 150px);
   overflow-y:auto;
   border-radius:16px;
-  border:1px solid rgba(30,64,175,0.8);
+  border:1px solid var(--sidebar-border);
   box-shadow:0 10px 30px rgba(0,0,0,.55);
+}
+body.theme-light .sidebar{
+  box-shadow:0 8px 20px rgba(148,163,184,0.35);
 }
 .sidebar::-webkit-scrollbar{
   width:6px;
 }
 .sidebar::-webkit-scrollbar-thumb{
-  background:#4b5563;
+  background:var(--sidebar-scroll-thumb);
   border-radius:999px;
 }
 .main-content{
@@ -248,7 +355,7 @@ a{text-decoration:none;color:inherit;}
   cursor:pointer;
   user-select:none;
   font-weight:600;
-  color:#e5e7eb;
+  color:var(--sidebar-text);
 }
 .filter-toggle{
   appearance:none;
@@ -279,7 +386,7 @@ a{text-decoration:none;color:inherit;}
   margin:6px 0;
   cursor:pointer;
   font-size:13px;
-  color:#d1d5db;
+  color:var(--sidebar-text);
 }
 .filter-option input[type="checkbox"]{
   margin-right:8px;
@@ -313,7 +420,7 @@ a{text-decoration:none;color:inherit;}
   font-size:26px;
   font-weight:800;
   margin-bottom:18px;
-  color:#f9fafb;
+  color:var(--page-title-color);
 }
 .breadcrumb{
   display:flex;
@@ -321,7 +428,7 @@ a{text-decoration:none;color:inherit;}
   gap:8px;
   margin-bottom:10px;
   font-size:13px;
-  color:#9ca3af;
+  color:var(--breadcrumb-color);
 }
 
 /* PRODUCT GRID */
@@ -331,21 +438,27 @@ a{text-decoration:none;color:inherit;}
   gap:22px;
 }
 .product-card{
-  background:#020617;
+  background:var(--product-card-bg);
   border-radius:14px;
   overflow:hidden;
   box-shadow:0 10px 30px rgba(0,0,0,.6);
   transition:.2s;
   cursor:pointer;
-  border:1px solid rgba(30,64,175,0.8);
+  border:1px solid var(--product-card-border);
+}
+body.theme-light .product-card{
+  box-shadow:0 10px 25px rgba(148,163,184,0.45);
 }
 .product-card:hover{
   transform:translateY(-5px);
   box-shadow:0 18px 40px rgba(0,0,0,.8);
 }
+body.theme-light .product-card:hover{
+  box-shadow:0 18px 40px rgba(148,163,184,0.7);
+}
 .product-image{
   position:relative;
-  background:#111827;
+  background:var(--product-image-bg);
   height:200px;
   display:flex;
   align-items:center;
@@ -373,7 +486,7 @@ a{text-decoration:none;color:inherit;}
   position:absolute;
   top:12px;
   right:12px;
-  background:#020617;
+  background:var(--icon-bg);
   border:none;
   width:35px;
   height:35px;
@@ -389,17 +502,20 @@ a{text-decoration:none;color:inherit;}
   transform:scale(1.1);
   background:#111827;
 }
+body.theme-light .favorite-btn.active{
+  background:#e5e7eb;
+}
 
 .product-info{ padding:14px 14px 13px; }
 .product-name{
   font-weight:600;
   font-size:15px;
   margin-bottom:6px;
-  color:#f9fafb;
+  color:var(--page-title-color);
 }
 .product-meta{
   font-size:12px;
-  color:#9ca3af;
+  color:var(--breadcrumb-color);
   margin-bottom:10px;
 }
 .product-footer{
@@ -417,7 +533,7 @@ a{text-decoration:none;color:inherit;}
   border:none;
   cursor:pointer;
   font-size:20px;
-  color:#e5e7eb;
+  color:var(--icon-color);
 }
 .add-to-cart:hover{ color:#f97316; }
 
@@ -429,15 +545,18 @@ a{text-decoration:none;color:inherit;}
   width:35px;
   height:35px;
   border-radius:8px;
-  background:#111827;
+  background:var(--reset-btn-bg);
   font-size:18px;
   text-decoration:none;
-  color:#e5e7eb;
-  border:1px solid #374151;
+  color:var(--text-main);
+  border:1px solid var(--reset-btn-border);
   transition:.2s;
 }
 .reset-btn:hover{
   background:#020617;
+}
+body.theme-light .reset-btn:hover{
+  background:#d1d5db;
 }
 
 /* form elemen lain di sidebar */
@@ -450,9 +569,9 @@ a{text-decoration:none;color:inherit;}
 .sidebar select{
   padding:6px 8px;
   border-radius:8px;
-  border:1px solid #4b5563;
-  background:#020617;
-  color:#e5e7eb;
+  border:1px solid var(--sidebar-select-border);
+  background:var(--sidebar-select-bg);
+  color:var(--sidebar-text);
   font-size:13px;
 }
 
@@ -473,7 +592,7 @@ a{text-decoration:none;color:inherit;}
   right:20px;
   padding:10px 14px;
   border-radius:8px;
-  background:#111827;
+  background:var(--toast-bg);
   color:#f9fafb;
   font-size:13px;
   box-shadow:0 10px 25px rgba(0,0,0,.7);
@@ -482,12 +601,15 @@ a{text-decoration:none;color:inherit;}
 </style>
 </head>
 
-<body>
+<body class="theme-dark"><!-- default night mode -->
 
 {{-- NAVBAR --}}
 <nav class="nav">
     <div class="nav-left">
-        <a href="{{ route('home') }}" class="nav-logo">kampuStore</a>
+        <a href="{{ route('home') }}" class="nav-logo">
+                <img src="{{ asset('images/logo.png') }}" alt="kampuStore logo">
+                <span>kampuStore</span>
+            </a>
 
         <div class="nav-menu">
             <a href="{{ route('home') }}">Home</a>
@@ -515,26 +637,31 @@ a{text-decoration:none;color:inherit;}
           <span class="icon-round icon-cart">🛒</span>
         </button>
 
-        {{-- akun: klik => dropdown login/register + home --}}
+        {{-- akun: klik => dropdown login/register + theme --}}
         <div class="account-wrapper" id="accountWrapper">
           <button class="icon-btn js-account-toggle" type="button" title="Akun">
             <span class="icon-round icon-user">👤</span>
           </button>
           <div class="account-menu" id="accountMenu">
             @auth
-              <div style="padding:6px 14px;font-size:12px;color:#9ca3af;">
+              <div style="padding:6px 14px;font-size:12px;color:var(--breadcrumb-color);">
                 Halo, {{ auth()->user()->name }}
               </div>
-              <a href="{{ route('home') }}">🏠 Back to Home</a>
               <form method="POST" action="{{ route('logout') }}">
                 @csrf
                 <button type="submit">Logout</button>
               </form>
             @else
-              <a href="{{ route('home') }}">🏠 Back to Home</a>
               <a href="{{ route('login') }}">Login</a>
               <a href="{{ route('register') }}">Register</a>
             @endauth
+
+            <div style="border-top:1px solid rgba(55,65,81,0.9);margin:6px 0;"></div>
+            <div style="padding:4px 14px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--breadcrumb-color);">
+              Appearance
+            </div>
+            <button type="button" class="js-theme-mode" data-mode="dark">🌙 Night mode</button>
+            <button type="button" class="js-theme-mode" data-mode="light">☀ Light mode</button>
           </div>
         </div>
     </div>
@@ -564,7 +691,7 @@ a{text-decoration:none;color:inherit;}
       </div>
     </div>
 
-    <hr style="border:none;border-top:1px solid #374151;margin:6px 0 10px;">
+    <hr style="border:none;border-top:1px solid var(--sidebar-divider);margin:6px 0 10px;">
 
     {{-- JUDUL BESAR FILTER --}}
     <div class="filter-title" style="cursor:default;">
@@ -615,7 +742,7 @@ a{text-decoration:none;color:inherit;}
         <button type="button" class="filter-toggle"><span class="chev">⌄</span></button>
       </div>
       <div class="filter-content">
-        <div style="font-size:12px;color:#d1d5db;margin-bottom:8px;">
+        <div style="font-size:12px;color:var(--sidebar-text);margin-bottom:8px;">
           <span id="lblMin">Rp {{ number_format($priceMin ?: 0,0,',','.') }}</span> –
           <span id="lblMax">Rp {{ number_format($priceMax ?: 200000,0,',','.') }}</span>
         </div>
@@ -698,7 +825,7 @@ a{text-decoration:none;color:inherit;}
     </h1>
 
     @if($products->isEmpty())
-      <p style="color:#e5e7eb;">Tidak ada produk.</p>
+      <p style="color:var(--sidebar-text);">Tidak ada produk.</p>
     @else
       <div class="product-grid">
         @foreach($products as $p)
@@ -719,7 +846,7 @@ a{text-decoration:none;color:inherit;}
                         alt="{{ $p->name }}"
                     >
                 @else
-                    <span style="font-size:13px;color:#9ca3af;padding:0 10px;text-align:center;">
+                    <span style="font-size:13px;color:var(--breadcrumb-color);padding:0 10px;text-align:center;">
                         {{ $p->name }}
                     </span>
                 @endif
@@ -750,6 +877,40 @@ a{text-decoration:none;color:inherit;}
 <div id="toast" class="toast"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+/* THEME TOGGLE */
+(function(){
+  const THEME_KEY = 'kampuStoreTheme';
+  const body = document.body;
+
+  function applyTheme(mode){
+    if(mode !== 'light' && mode !== 'dark') mode = 'dark';
+    body.classList.remove('theme-light','theme-dark');
+    body.classList.add('theme-' + mode);
+  }
+
+  // initial load
+  const saved = localStorage.getItem(THEME_KEY);
+  applyTheme(saved || 'dark');
+
+  // handle click di menu akun
+  document.querySelectorAll('.js-theme-mode').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const mode = btn.getAttribute('data-mode');
+      applyTheme(mode);
+      localStorage.setItem(THEME_KEY, mode);
+
+      Swal.fire({
+        icon: 'success',
+        title: mode === 'light' ? 'Light mode aktif' : 'Night mode aktif',
+        timer: 1000,
+        showConfirmButton: false
+      });
+    });
+  });
+})();
+</script>
 
 <script>
 (function(){

@@ -1,4 +1,4 @@
-@php($title = 'Login | kampuStore')
+@php($title = 'Forgot Password | kampuStore')
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -22,7 +22,7 @@
 
         a{text-decoration:none;color:inherit;}
 
-        /* NAVBAR */
+        /* NAVBAR (SAMA LOGIN) */
         .nav{
             position:fixed;
             top:0;left:0;right:0;
@@ -54,11 +54,11 @@
         .nav-logo img{
             height:40px;
             display:block;
+            margin-right:8px;
         }
-        body.theme-light .nav-logo{
-            color:#111827;
-        }
+        body.theme-light .nav-logo{color:#111827;}
         .nav-logo:hover{opacity:.85;}
+
         .nav-menu{
             display:flex;
             align-items:center;
@@ -98,7 +98,7 @@
             gap:12px;
         }
 
-        /* THEME TOGGLE */
+        /* THEME TOGGLE (AWAN) */
         .theme-toggle-wrapper{
             display:flex;
             justify-content:center;
@@ -262,14 +262,6 @@
             transform:translate3d(0,0,0);
             opacity:1;
         }
-        .auth-shell.exit .auth-panel{
-            transform:translate3d(60px,0,0);
-            opacity:0;
-        }
-        .auth-shell.exit .auth-visual{
-            transform:translate3d(-60px,0,0);
-            opacity:0;
-        }
 
         /* FOTO (KIRI) */
         .auth-visual{
@@ -285,13 +277,13 @@
             background:radial-gradient(circle at top,#dbeafe 0,#1e293b 70%);
         }
         .auth-visual img{
-            max-width: 100%;
-            max-height: 260px;
-            width: auto;
-            height: auto;
-            object-fit: contain;
-            border-radius: 24px;
-            box-shadow: 0 18px 40px rgba(0,0,0,.8);
+            max-width:100%;
+            max-height:260px;
+            width:auto;
+            height:auto;
+            object-fit:contain;
+            border-radius:24px;
+            box-shadow:0 18px 40px rgba(0,0,0,.8);
         }
 
         /* FORM (KANAN) */
@@ -327,14 +319,12 @@
         .auth-subtitle{
             font-size:13px;
             color:#9ca3af;
-            margin-bottom:20px;
+            margin-bottom:22px;
         }
         body.theme-light .auth-subtitle{color:#6b7280;}
 
-        .field-group{margin-bottom:18px;width:100%;}
-
         /* FLOATING INPUT */
-        .group{position:relative;}
+        .group{position:relative;margin-bottom:20px;}
         .group .auth-input{
             font-size:14px;
             padding:10px 10px 10px 5px;
@@ -393,138 +383,6 @@
         .group .auth-input:focus ~ .bar:after{
             width:50%;
         }
-        .group .highlight{
-            position:absolute;
-            height:60%;
-            width:100px;
-            top:25%;
-            left:0;
-            pointer-events:none;
-            opacity:.5;
-        }
-        .group .auth-input:focus ~ .highlight{
-            animation:inputHighlighter .3s ease;
-        }
-        @keyframes inputHighlighter{
-            from{background:#f97316;}
-            to{width:0;background:transparent;}
-        }
-
-        /* REMEMBER + FORGOT */
-        .auth-checkbox-row{
-            display:flex;
-            align-items:center;
-            justify-content:space-between;
-            gap:12px;
-            margin:4px 0 18px;
-            font-size:13px;
-            color:#e5e7eb;
-        }
-        body.theme-light .auth-checkbox-row{color:#111827;}
-
-        .auth-checkbox-row-left{
-            display:flex;
-            align-items:center;
-            gap:8px;
-        }
-
-        .remember-label-text{
-            font-size:13px;
-        }
-
-        /* animated checkbox remember me – ORANGE */
-        .check{
-            cursor:pointer;
-            position:relative;
-            width:18px;
-            height:18px;
-            -webkit-tap-highlight-color:transparent;
-            transform:translate3d(0,0,0);
-        }
-        .check:before{
-            content:"";
-            position:absolute;
-            top:-15px;
-            left:-15px;
-            width:48px;
-            height:48px;
-            border-radius:50%;
-            background:rgba(34,50,84,0.03);
-            opacity:0;
-            transition:opacity .2s ease;
-        }
-        .check svg{
-            position:relative;
-            z-index:1;
-            fill:none;
-            stroke-linecap:round;
-            stroke-linejoin:round;
-            stroke:#c8ccd4;
-            stroke-width:1.5;
-            transform:translate3d(0,0,0);
-            transition:all .2s ease;
-        }
-        .check svg path{
-            stroke-dasharray:60;
-            stroke-dashoffset:0;
-        }
-        .check svg polyline{
-            stroke-dasharray:22;
-            stroke-dashoffset:66;
-        }
-        .check:hover:before{opacity:1;}
-        .check:hover svg{stroke:#f97316;}       /* ORANGE hover */
-
-        #remember_cbx:checked + .check svg{
-            stroke:#f97316;                     /* ORANGE checked */
-        }
-        #remember_cbx:checked + .check svg path{
-            stroke-dashoffset:60;
-            transition:all .3s linear;
-        }
-        #remember_cbx:checked + .check svg polyline{
-            stroke-dashoffset:42;
-            transition:all .2s linear;
-            transition-delay:.15s;
-        }
-
-        /* FORGOT PASSWORD – ANIMASI ORANGE */
-        .auth-forgot{
-            position:relative;
-            font-size:12px;
-            font-weight:500;
-            color:#9ca3af;
-            text-decoration:none;
-            cursor:pointer;
-            display:inline-flex;
-            align-items:center;
-            padding:4px 0;
-            transition:color .2s ease, transform .2s ease;
-        }
-        body.theme-light .auth-forgot{color:#4b5563;}
-
-        .auth-forgot::after{
-            content:'';
-            position:absolute;
-            left:0;
-            bottom:0;
-            width:100%;
-            height:2px;
-            background:#f97316;
-            transform:scaleX(0);
-            transform-origin:right;
-            opacity:.95;
-            transition:transform .25s ease-out;
-        }
-
-        .auth-forgot:hover{
-            color:#f97316;
-            transform:translateX(2px);
-        }
-        .auth-forgot:hover::after{
-            transform:scaleX(1);
-            transform-origin:left;
-        }
 
         /* BUTTON */
         .auth-btn-primary{
@@ -551,7 +409,7 @@
         }
 
         .auth-bottom-text{
-            margin-top:14px;
+            margin-top:18px;
             font-size:13px;
             text-align:center;
             color:#e5e7eb;
@@ -560,12 +418,6 @@
         .auth-bottom-text a{
             color:#f97316;
             font-weight:600;
-        }
-
-        .auth-error{
-            font-size:12px;
-            color:#fecaca;
-            margin-top:4px;
         }
 
         @media(max-width:900px){
@@ -588,185 +440,139 @@
 </head>
 <body class="theme-dark">
 
-<nav class="nav">
-    <div class="nav-left">
-        <a href="{{ route('home') }}" class="nav-logo">
-            <img src="{{ asset('images/logo.png') }}" alt="kampuStore logo">
-            <span>kampuStore</span>
-        </a>
-        <div class="nav-menu">
-            <a href="{{ route('home') }}">Home</a>
-            <a href="{{ route('home') }}#about">About</a>
-            <a href="{{ route('products.index') }}">Market</a>
-            <a href="{{ route('home') }}#contact">Contact</a>
-        </div>
-    </div>
-    <div class="nav-actions">
-        <div class="theme-toggle-wrapper">
-            <label class="toggle-switch">
-                <input type="checkbox" class="js-theme-toggle" />
-                <span class="slider">
-                    <div class="clouds">
-                        <svg viewBox="0 0 100 100" class="cloud cloud1">
-                            <path d="M30,45 Q35,25 50,25 Q65,25 70,45 Q80,45 85,50 Q90,55 85,60 Q80,65 75,60 Q65,60 60,65 Q55,70 50,65 Q45,70 40,65 Q35,60 25,60 Q20,65 15,60 Q10,55 15,50 Q20,45 30,45"></path>
-                        </svg>
-                        <svg viewBox="0 0 100 100" class="cloud cloud2">
-                            <path d="M30,45 Q35,25 50,25 Q65,25 70,45 Q80,45 85,50 Q90,55 85,60 Q80,65 75,60 Q65,60 60,65 Q55,70 50,65 Q45,70 40,65 Q35,60 25,60 Q20,65 15,60 Q10,55 15,50 Q20,45 30,45"></path>
-                        </svg>
-                    </div>
-                </span>
-            </label>
-        </div>
-    </div>
-</nav>
-
-<main class="auth-bg">
-    <div class="auth-shell pre-enter">
-
-        <div class="auth-visual">
-            <img src="{{ asset('images/pc.png') }}" alt="kampuStore hero">
-        </div>
-
-        <div class="auth-panel">
-            <div class="auth-panel-inner">
-                <div class="auth-eyebrow">WELCOME BACK</div>
-                <h1 class="auth-title">Login</h1>
-                <p class="auth-subtitle">
-                    Masuk dengan email kampus UNDIP untuk melanjutkan transaksi di kampuStore.
-                </p>
-
-                <form method="POST" action="{{ route('login') }}">
-                    @csrf
-
-                    <div class="field-group group">
-                        <input
-                            id="email"
-                            type="email"
-                            name="email"
-                            class="auth-input"
-                            value="{{ old('email') }}"
-                            required
-                            autofocus
-                            placeholder=" "
-                        >
-                        <span class="highlight"></span>
-                        <span class="bar"></span>
-                        <label for="email">Email Address</label>
-                        @error('email')
-                            <div class="auth-error">{{ $message }}</div>
-                        @enderror
-                    </div>
-
-                    <div class="field-group group">
-                        <input
-                            id="password"
-                            type="password"
-                            name="password"
-                            class="auth-input"
-                            required
-                            autocomplete="current-password"
-                            placeholder=" "
-                        >
-                        <span class="highlight"></span>
-                        <span class="bar"></span>
-                        <label for="password">Password</label>
-                        @error('password')
-                            <div class="auth-error">{{ $message }}</div>
-                        @enderror
-                    </div>
-
-                    <div class="auth-checkbox-row">
-                        <div class="auth-checkbox-row-left">
-                            {{-- hidden checkbox untuk Laravel --}}
-                            <input
-                                id="remember_cbx"
-                                type="checkbox"
-                                name="remember"
-                                style="display:none"
-                            >
-                            {{-- animasi checkbox --}}
-                            <label for="remember_cbx" class="check">
-                                <svg width="18px" height="18px" viewBox="0 0 18 18">
-                                    <path d="M1,9 L1,3.5 C1,2 2,1 3.5,1 L14.5,1 C16,1 17,2 17,3.5 L17,14.5 C17,16 16,17 14.5,17 L3.5,17 C2,17 1,16 1,14.5 L1,9 Z"></path>
-                                    <polyline points="1 9 7 14 15 4"></polyline>
-                                </svg>
-                            </label>
-                            <span class="remember-label-text">Remember me</span>
-                        </div>
-
-                        @if (Route::has('password.request'))
-                            <a href="{{ route('password.request') }}" class="auth-forgot">
-                                Forgot password?
-                            </a>
-                        @endif
-                    </div>
-
-                    <button type="submit" class="auth-btn-primary">
-                        Log In
-                    </button>
-                </form>
-
-                <div class="auth-bottom-text">
-                    Don't have an account yet?
-                    <a href="{{ route('register') }}" id="goRegister">Create account</a>
-                </div>
+    {{-- NAVBAR --}}
+    <nav class="nav">
+        <div class="nav-left">
+            <a href="{{ route('home') }}" class="nav-logo">
+                <img src="{{ asset('images/logo.png') }}" alt="kampuStore logo">
+                <span>kampuStore</span>
+            </a>
+            <div class="nav-menu">
+                <a href="{{ route('home') }}">Home</a>
+                <a href="{{ route('home') }}#about">About</a>
+                <a href="{{ route('products.index') }}">Market</a>
+                <a href="{{ route('home') }}#contact">Contact</a>
             </div>
         </div>
-    </div>
-</main>
+        <div class="nav-actions">
+            <div class="theme-toggle-wrapper">
+                <label class="toggle-switch">
+                    <input type="checkbox" class="js-theme-toggle" />
+                    <span class="slider">
+                        <div class="clouds">
+                            <svg viewBox="0 0 100 100" class="cloud cloud1">
+                                <path d="M30,45 Q35,25 50,25 Q65,25 70,45 Q80,45 85,50 Q90,55 85,60 Q80,65 75,60 Q65,60 60,65 Q55,70 50,65 Q45,70 40,65 Q35,60 25,60 Q20,65 15,60 Q10,55 15,50 Q20,45 30,45"></path>
+                            </svg>
+                            <svg viewBox="0 0 100 100" class="cloud cloud2">
+                                <path d="M30,45 Q35,25 50,25 Q65,25 70,45 Q80,45 85,50 Q90,55 85,60 Q80,65 75,60 Q65,60 60,65 Q55,70 50,65 Q45,70 40,65 Q35,60 25,60 Q20,65 15,60 Q10,55 15,50 Q20,45 30,45"></path>
+                            </svg>
+                        </div>
+                    </span>
+                </label>
+            </div>
+        </div>
+    </nav>
 
-<script>
-    // THEME TOGGLE (sinkron dengan home/register)
-    (function(){
-        const KEY = 'kampuStoreTheme';
-        const body = document.body;
-        const toggle = document.querySelector('.js-theme-toggle');
+    <main class="auth-bg">
+        <div class="auth-shell pre-enter">
 
-        function apply(mode){
-            if(mode === 'light'){
-                body.classList.add('theme-light');
-            }else{
-                body.classList.remove('theme-light');
+            {{-- GAMBAR KIRI --}}
+            <div class="auth-visual">
+                <img src="{{ asset('images/pc.png') }}" alt="Forgot Password">
+            </div>
+
+            {{-- FORM KANAN --}}
+            <div class="auth-panel">
+                <div class="auth-panel-inner">
+                    <div class="auth-eyebrow">RESET PASSWORD</div>
+                    <h1 class="auth-title">Forgot Password</h1>
+                    <p class="auth-subtitle">
+                        Masukkan email kampus UNDIP dan kami akan mengirim tautan untuk reset password.
+                    </p>
+
+                    <form method="POST" action="{{ route('password.email') }}">
+                        @csrf
+
+                        <div class="group">
+                            <input
+                                type="email"
+                                name="email"
+                                class="auth-input"
+                                placeholder=" "
+                                required
+                            >
+                            <span class="highlight"></span>
+                            <span class="bar"></span>
+                            <label>Email Address</label>
+                            @error('email')
+                                <div class="auth-error">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <button type="submit" class="auth-btn-primary">
+                            Send Reset Link
+                        </button>
+                    </form>
+
+                    <div class="auth-bottom-text">
+                        <a href="{{ route('login') }}" id="goLogin">← Back to Login</a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        // THEME TOGGLE – sama dengan login/register
+        (function(){
+            const KEY = 'kampuStoreTheme';
+            const body = document.body;
+            const toggle = document.querySelector('.js-theme-toggle');
+
+            function apply(mode){
+                if(mode === 'light'){
+                    body.classList.add('theme-light');
+                }else{
+                    body.classList.remove('theme-light');
+                }
             }
-        }
 
-        const saved = localStorage.getItem(KEY) || 'dark';
-        apply(saved);
+            const saved = localStorage.getItem(KEY) || 'dark';
+            apply(saved);
 
-        if(toggle){
-            toggle.checked = (saved !== 'light');
-            toggle.addEventListener('change', () => {
-                const mode = toggle.checked ? 'dark' : 'light';
-                apply(mode);
-                localStorage.setItem(KEY, mode);
-            });
-        }
-    })();
+            if(toggle){
+                toggle.checked = (saved !== 'light');
+                toggle.addEventListener('change', () => {
+                    const mode = toggle.checked ? 'dark' : 'light';
+                    apply(mode);
+                    localStorage.setItem(KEY, mode);
+                });
+            }
+        })();
 
-    // animasi card masuk + keluar ke register
-    document.addEventListener('DOMContentLoaded', function () {
-        const shell = document.querySelector('.auth-shell');
-        const goRegister = document.getElementById('goRegister');
+        // animasi card masuk
+        document.addEventListener('DOMContentLoaded', function () {
+            const shell = document.querySelector('.auth-shell');
+            if(shell){
+                requestAnimationFrame(() => {
+                    shell.classList.remove('pre-enter');
+                    shell.classList.add('is-visible');
+                });
+            }
 
-        if(shell){
-            requestAnimationFrame(() => {
-                shell.classList.remove('pre-enter');
-                shell.classList.add('is-visible');
-            });
-        }
-
-        if(shell && goRegister){
-            goRegister.addEventListener('click', function(e){
-                e.preventDefault();
-                shell.classList.remove('is-visible');
-                shell.classList.add('exit');
-                setTimeout(() => {
-                    window.location.href = goRegister.href;
-                }, 600);
-            });
-        }
-    });
-</script>
+            const goLogin = document.getElementById('goLogin');
+            if(shell && goLogin){
+                goLogin.addEventListener('click', function(e){
+                    // kalau mau kasih efek slide keluar tinggal aktifkan:
+                    // e.preventDefault();
+                    // shell.classList.remove('is-visible');
+                    // shell.classList.add('exit');
+                    // setTimeout(()=>{ window.location.href = goLogin.href; }, 600);
+                });
+            }
+        });
+    </script>
 
 </body>
 </html>
