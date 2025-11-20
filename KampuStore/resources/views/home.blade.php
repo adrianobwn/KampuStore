@@ -9,64 +9,115 @@
     <style>
         *{margin:0;padding:0;box-sizing:border-box}
 
-        /* === THEME VARIABLES (default: dark) === */
+        /* ===================== THEME VARIABLES (SAMA DENGAN LOGIN/REGISTER) ===================== */
         :root{
-            --bg-body:#070b1f;
-            --text-main:#e5e7eb;
+          --bg-body:#050b1f;
+          --text-main:#e5e7eb;
 
-            --nav-bg:linear-gradient(90deg,#111827,#111827);
-            --nav-border-bottom:transparent;
-            --nav-link:#e5e7eb;
+          --nav-bg:linear-gradient(90deg,#020617,#020617);
+          --nav-border-bottom:rgba(30,64,175,0.5);
+          --nav-shadow:0 14px 40px rgba(15,23,42,0.9);
+          --nav-link-color:#e5e7eb;
 
-            --hero-bg:radial-gradient(circle at top left,#3b4ad4 0,#030616 55%);
-            --hero-title:#f9fafb;
-            --hero-text:#cbd5f5;
-            --hero-tag-bg:rgba(15,23,42,0.7);
-            --hero-tag-border:rgba(148,163,184,0.7);
+          --market-bg:radial-gradient(circle at top left,#1f3b8a 0,#020617 52%,#020617 100%);
 
-            --btn-main-bg:#f97316;
-            --btn-main-text:#111827;
+          --sidebar-bg:rgba(15,23,42,0.96);
+          --sidebar-border:rgba(59,130,246,0.65);
+          --sidebar-scroll-thumb:#4b5563;
+          --sidebar-divider:rgba(55,65,81,0.85);
+          --sidebar-select-bg:#020617;
+          --sidebar-select-border:#3b82f6;
+          --sidebar-text:#e5e7eb;
 
-            --ghost-border:#e5e7eb;
-            --ghost-text:#e5e7eb;
+          --search-bg:#020617;
+          --search-border:#1d4ed8;
+          --search-text:#e5e7eb;
+          --search-placeholder:#9ca3af;
 
-            --section-bg:#020617;
-            --section-title:#f9fafb;
-            --section-text:#cbd5f5;
+          --icon-border:rgba(59,130,246,0.7);
+          --icon-bg:rgba(15,23,42,0.9);
+          --icon-color:#e5e7eb;
 
-            --footer-bg:#020617;
-            --footer-border:#111827;
-            --footer-text:#6b7280;
+          --page-title-color:#f9fafb;
+          --breadcrumb-color:#9ca3af;
+
+          --reset-btn-bg:#020617;
+          --reset-btn-border:#1f2937;
+
+          --toast-bg:#020617;
+
+          /* tambahan khusus HOME */
+          --hero-bg:var(--market-bg);
+          --hero-tag-bg:rgba(15,23,42,0.9);
+          --hero-tag-border:rgba(129,140,248,0.8);
+          --hero-title:#f9fafb;
+          --hero-text:#c7d2fe;
+
+          --section-bg:#020617;
+          --section-title:#e5e7eb;
+          --section-text:#cbd5f5;
+
+          --footer-bg:#020617;
+          --footer-text:#9ca3af;
+          --footer-border:#1f2937;
         }
 
-        /* === LIGHT MODE OVERRIDE === */
         body.theme-light{
-            --bg-body:#f3f4ff;
-            --text-main:#111827;
+          --bg-body:#eef2ff;
+          --text-main:#1a2550;
 
-            --nav-bg:#ffffff;
-            --nav-border-bottom:#e5e7eb;
-            --nav-link:#111827;
+          --nav-bg:#ffffff;
+          --nav-border-bottom:#d9ddf0;
+          --nav-shadow:0 4px 12px rgba(20,30,60,0.08);
+          --nav-link-color:#1a2450;
 
-            --hero-bg:linear-gradient(135deg,#e5e7ff 0,#f9fafb 65%);
-            --hero-title:#111827;
-            --hero-text:#4b5563;
-            --hero-tag-bg:#e5e7ff;
-            --hero-tag-border:#c7d2fe;
+          --market-bg:linear-gradient(
+              135deg,
+              #ffffff 0%,
+              #e3e8ff 40%,
+              #d5ddff 100%
+          );
 
-            --btn-main-bg:#f97316;
-            --btn-main-text:#111827;
+          --sidebar-bg:#ffffff;
+          --sidebar-border:#cfd6f5;
+          --sidebar-scroll-thumb:#97a3d5;
+          --sidebar-divider:#d6dcfa;
 
-            --ghost-border:#111827;
-            --ghost-text:#111827;
+          --sidebar-select-bg:#f2f4ff;
+          --sidebar-select-border:#b9c4ef;
+          --sidebar-text:#1f2b60;
 
-            --section-bg:#ffffff;
-            --section-title:#111827;
-            --section-text:#4b5563;
+          --search-bg:#ffffff;
+          --search-border:#c4ccf2;
+          --search-text:#1a1f3f;
+          --search-placeholder:#9aa6d6;
 
-            --footer-bg:#ffffff;
-            --footer-border:#e5e7eb;
-            --footer-text:#6b7280;
+          --icon-border:#c4ccf2;
+          --icon-bg:#ffffff;
+          --icon-color:#1b234a;
+
+          --page-title-color:#1a2450;
+          --breadcrumb-color:#6b76a5;
+
+          --reset-btn-bg:#e3e6ff;
+          --reset-btn-border:#c5cdf5;
+
+          --toast-bg:#1b2652;
+
+          /* HOME light mode */
+          --hero-bg:var(--market-bg);
+          --hero-tag-bg:#eef2ff;
+          --hero-tag-border:#cbd5f5;
+          --hero-title:#1f2937;
+          --hero-text:#4b5563;
+
+          --section-bg:#f9fafb;
+          --section-title:#111827;
+          --section-text:#4b5563;
+
+          --footer-bg:#ffffff;
+          --footer-text:#6b7280;
+          --footer-border:#e5e7eb;
         }
 
         body{
@@ -88,6 +139,7 @@
             padding:18px 60px;
             background:var(--nav-bg);
             border-bottom:1px solid var(--nav-border-bottom);
+            box-shadow:var(--nav-shadow);
         }
         .nav-left{
             display:flex;
@@ -97,14 +149,12 @@
         .nav-logo{
             display:flex;
             align-items:center;
-            /* kalau tidak mau ada teks, font-size dsb boleh dihapus */
             font-weight:700;
             font-size:22px;
             letter-spacing:0.04em;
             color:#f9fafb;
             cursor:pointer;
         }
-
         .nav-logo img{
             height:40px;
             display:block;
@@ -120,7 +170,7 @@
             font-size:14px;
         }
         .nav-menu a{
-            color:var(--nav-link);
+            color:var(--nav-link-color);
             position:relative;
         }
         .nav-menu a::after{
@@ -145,114 +195,84 @@
             opacity:1;
         }
 
-        /* === NAV ACTIONS & THEME TOGGLE CLOUD === */
         .nav-actions{
             display:flex;
             align-items:center;
-            gap:8px;
+            gap:12px;
         }
 
+        /* ===================== THEME TOGGLE (SAMA DENGAN LOGIN) ===================== */
         .theme-toggle-wrapper{
             display:flex;
-            align-items:center;
             justify-content:center;
+            align-items:center;
         }
-
-        .theme-toggle-wrapper .toggle-switch{
+        .toggle-switch{
             position:relative;
             display:inline-block;
-            width:72px;
-            height:34px;
-            transform:scale(0.9);
+            width:74px;
+            height:36px;
+            transform:scale(.95);
             transition:transform .2s;
         }
-        .theme-toggle-wrapper .toggle-switch:hover{
-            transform:scale(1.0);
-        }
-
-        .theme-toggle-wrapper .toggle-switch input{
+        .toggle-switch:hover{transform:scale(1);}
+        .toggle-switch input{
             opacity:0;
             width:0;
             height:0;
         }
-
-        .theme-toggle-wrapper .slider{
+        .slider{
             position:absolute;
-            inset:0;
             cursor:pointer;
-            background:linear-gradient(145deg,#020617,#0f172a); /* dark default */
+            inset:0;
+            background:linear-gradient(145deg,#fbbf24,#f97316);
             transition:.4s;
             border-radius:34px;
-            box-shadow:0 0 14px rgba(15,23,42,0.6);
+            box-shadow:0 0 12px rgba(249,115,22,0.5);
             overflow:hidden;
         }
-
-        .theme-toggle-wrapper .slider:before{
+        .slider:before{
             position:absolute;
-            content:"🌙";              /* default: dark mode */
-            height:26px;
-            width:26px;
+            content:"☀️";
+            height:28px;
+            width:28px;
             left:4px;
             bottom:4px;
-            background:#0b1120;
-            color:#facc15;
+            background:white;
             transition:.4s;
             border-radius:50%;
             display:flex;
             align-items:center;
             justify-content:center;
             font-size:16px;
-            box-shadow:0 0 10px rgba(0,0,0,0.4);
+            box-shadow:0 0 10px rgba(0,0,0,.15);
             z-index:2;
         }
-
-        /* ketika switch ke LIGHT */
-        .theme-toggle-wrapper input:checked + .slider{
-            background:linear-gradient(145deg,#f97316,#fde68a);
-            box-shadow:0 0 16px rgba(248,181,85,0.7);
-        }
-        .theme-toggle-wrapper input:checked + .slider:before{
-            transform:translateX(36px);
-            content:"☀️";
-            background:#fefce8;
-            color:#ea580c;
-        }
-
-        .theme-toggle-wrapper .clouds{
+        .clouds{
             position:absolute;
             width:100%;
             height:100%;
             overflow:hidden;
             pointer-events:none;
         }
-        .theme-toggle-wrapper .cloud{
+        .cloud{
             position:absolute;
-            width:22px;
-            height:22px;
-            fill:rgba(255,255,255,0.85);
-            transition:all .4s ease;
-            filter:drop-shadow(0 2px 3px rgba(0,0,0,0.25));
+            width:24px;
+            height:24px;
+            fill:rgba(255,255,255,0.9);
+            filter:drop-shadow(0 2px 3px rgba(0,0,0,0.08));
         }
-        .theme-toggle-wrapper .cloud1{
-            top:8px;
-            left:8px;
+        .cloud1{
+            top:6px;
+            left:10px;
             animation:floatCloud1 8s infinite linear;
         }
-        .theme-toggle-wrapper .cloud2{
-            top:12px;
-            left:34px;
-            transform:scale(0.8);
+        .cloud2{
+            top:10px;
+            left:38px;
+            transform:scale(.85);
             animation:floatCloud2 12s infinite linear;
         }
-
-        body.theme-dark .theme-toggle-wrapper .cloud{
-            opacity:.4;
-        }
-        .theme-toggle-wrapper input:checked + .slider .cloud{
-            opacity:0;
-            transform:translateY(-20px);
-        }
-
         @keyframes floatCloud1{
             0%{transform:translateX(-20px);opacity:0;}
             20%{opacity:1;}
@@ -260,16 +280,22 @@
             100%{transform:translateX(80px);opacity:0;}
         }
         @keyframes floatCloud2{
-            0%{transform:translateX(-20px) scale(0.8);opacity:0;}
-            20%{opacity:.8;}
-            80%{opacity:.8;}
-            100%{transform:translateX(80px) scale(0.8);opacity:0;}
+            0%{transform:translateX(-20px) scale(.85);opacity:0;}
+            20%{opacity:.7;}
+            80%{opacity:.7;}
+            100%{transform:translateX(80px) scale(.85);opacity:0;}
         }
-
-        @media (prefers-reduced-motion: reduce){
-            .theme-toggle-wrapper .cloud{
-                animation:none;
-            }
+        input.js-theme-toggle:checked + .slider{
+            background:linear-gradient(145deg,#1f2937,#020617);
+            box-shadow:0 0 14px rgba(15,23,42,0.8);
+        }
+        input.js-theme-toggle:checked + .slider:before{
+            transform:translateX(38px);
+            content:"🌙";
+        }
+        input.js-theme-toggle:checked + .slider .cloud{
+            opacity:0;
+            transform:translateY(-18px);
         }
 
         /* ==== HERO ==== */
@@ -306,7 +332,6 @@
         body.theme-light .hero::before,
         body.theme-light .hero::after{opacity:0.16;}
 
-        /* PARALLAX BLOBS */
         .hero-orb{
             position:absolute;
             border-radius:999px;
@@ -354,6 +379,7 @@
             max-width:420px;
             margin-bottom:22px;
         }
+
         .hero-buttons{
             display:flex;
             gap:14px;
@@ -380,7 +406,6 @@
             overflow: hidden;
             transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
         }
-
         .animated-button svg {
             position: absolute;
             width: 20px;
@@ -388,14 +413,8 @@
             z-index: 9;
             transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
         }
-
-        .animated-button .arr-1 {
-            right: 16px;
-        }
-
-        .animated-button .arr-2 {
-            left: -25%;
-        }
+        .animated-button .arr-1 { right: 16px; }
+        .animated-button .arr-2 { left: -25%; }
 
         .animated-button .circle {
             position: absolute;
@@ -422,28 +441,15 @@
             color: #111827;
             border-radius: 16px;
         }
-
-        .animated-button:hover .arr-1 {
-            right: -25%;
-        }
-
-        .animated-button:hover .arr-2 {
-            left: 16px;
-        }
-
-        .animated-button:hover .text {
-            transform: translateX(12px);
-        }
-
-        .animated-button:hover svg {
-            fill: #111827;
-        }
+        .animated-button:hover .arr-1 { right: -25%; }
+        .animated-button:hover .arr-2 { left: 16px; }
+        .animated-button:hover .text { transform: translateX(12px); }
+        .animated-button:hover svg { fill: #111827; }
 
         .animated-button:active {
             scale: 0.95;
             box-shadow: 0 0 0 4px #f97316;
         }
-
         .animated-button:hover .circle {
             width: 220px;
             height: 220px;
@@ -500,6 +506,11 @@
             inset 0 0 25px #f97316;
         }
 
+        .hero-bottom-text{
+            font-size:12px;
+            color:var(--hero-text);
+        }
+
         /* ==== HERO RIGHT (PHONE) ==== */
         .hero-right{
             position:relative;
@@ -548,7 +559,6 @@
             background:radial-gradient(circle at top,#dbeafe,#020617 70%);
         }
 
-        /* KOTAK HOT DEAL (CARD ATAS) */
         .phone-store{
             width:100%;
             height:150px;
@@ -564,7 +574,6 @@
             background:rgba(15,23,42,0.96);
         }
 
-        /* PILL HOT DEAL */
         .phone-ribbon{
             position:absolute;
             left:18px;
@@ -584,7 +593,6 @@
             box-shadow:0 0 12px rgba(34,197,94,0.9);
         }
 
-        /* PRODUK DI HOT DEAL */
         .store-product-title{
             font-size:12px;
             font-weight:600;
@@ -617,7 +625,6 @@
         }
         .store-btn:hover{background:#fb923c;}
 
-        /* WRAPPER SLIDE DI BAWAH HOT DEAL */
         .phone-slide-wrapper{
             position:relative;
             flex:1;
@@ -688,7 +695,6 @@
             color:#64748b;
         }
 
-        /* tombol prev/next */
         .phone-nav-btn{
             position:absolute;
             bottom:46px;
@@ -712,7 +718,6 @@
         .phone-nav-prev{left:22px;}
         .phone-nav-next{right:22px;}
 
-        /* dots kontrol slide */
         .phone-dots{
             position:absolute;
             bottom:18px;
@@ -777,7 +782,6 @@
             }
         }
 
-        /* === ANIMATIONS === */
         @keyframes phoneFloat{
             0%{ transform:translateY(0) translateX(0); }
             100%{ transform:translateY(-12px) translateX(4px); }
@@ -845,7 +849,6 @@
                 yang aman dan terkurasi.
             </p>
             <div class="hero-buttons">
-                {{-- SHOP NOW animated --}}
                 <a href="{{ route('products.index') }}">
                     <button class="animated-button" type="button">
                         <svg viewBox="0 0 24 24" class="arr-2" xmlns="http://www.w3.org/2000/svg">
@@ -874,7 +877,6 @@
         <div class="hero-right">
             <div class="phone">
                 <div class="phone-inner">
-                    {{-- KOTAK HOT DEAL + PRODUK --}}
                     <div class="phone-store">
                         <div class="phone-ribbon">
                             <div class="phone-ribbon-pill">HOT DEAL</div>
@@ -890,7 +892,6 @@
                         </div>
                     </div>
 
-                    {{-- SLIDER DI BAWAH HOT DEAL --}}
                     <div class="phone-slide-wrapper">
                         <div class="phone-slide active" data-index="0">
                             <div class="slide-heading">Kategori Lengkap</div>
@@ -977,28 +978,27 @@
     </footer>
 
     <script>
-        // THEME TOGGLE (checkbox + body.theme-light / theme-dark)
+        // THEME TOGGLE – sama seperti login/register
         (function(){
             const THEME_KEY = 'kampuStoreTheme';
             const body   = document.body;
             const toggle = document.querySelector('.js-theme-toggle');
 
             function applyTheme(mode){
-                if(mode !== 'light' && mode !== 'dark') mode = 'dark';
-                body.classList.remove('theme-light','theme-dark');
-                body.classList.add('theme-' + mode);
-
-                if(toggle){
-                    toggle.checked = (mode === 'light');
+                if(mode === 'light'){
+                    body.classList.add('theme-light');
+                }else{
+                    body.classList.remove('theme-light');
                 }
             }
 
-            const saved = localStorage.getItem(THEME_KEY);
-            applyTheme(saved || 'dark');
+            const saved = localStorage.getItem(THEME_KEY) || 'dark';
+            applyTheme(saved);
 
             if(toggle){
+                toggle.checked = (saved !== 'light');
                 toggle.addEventListener('change', () => {
-                    const mode = toggle.checked ? 'light' : 'dark';
+                    const mode = toggle.checked ? 'dark' : 'light';
                     applyTheme(mode);
                     localStorage.setItem(THEME_KEY, mode);
                 });

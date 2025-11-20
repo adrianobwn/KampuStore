@@ -9,20 +9,98 @@
     <style>
         *{margin:0;padding:0;box-sizing:border-box}
 
+        /* ===================== THEME VARIABLES (SINKRON DENGAN MARKET) ===================== */
+        :root{
+          --bg-body:#050b1f;
+          --text-main:#e5e7eb;
+
+          --nav-bg:linear-gradient(90deg,#020617,#020617);
+          --nav-border-bottom:rgba(30,64,175,0.5);
+          --nav-shadow:0 14px 40px rgba(15,23,42,0.9);
+          --nav-link-color:#e5e7eb;
+
+          --market-bg:radial-gradient(circle at top left,#1f3b8a 0,#020617 52%,#020617 100%);
+
+          --sidebar-bg:rgba(15,23,42,0.96);
+          --sidebar-border:rgba(59,130,246,0.65);
+          --sidebar-scroll-thumb:#4b5563;
+          --sidebar-divider:rgba(55,65,81,0.85);
+          --sidebar-select-bg:#020617;
+          --sidebar-select-border:#3b82f6;
+          --sidebar-text:#e5e7eb;
+
+          --search-bg:#020617;
+          --search-border:#1d4ed8;
+          --search-text:#e5e7eb;
+          --search-placeholder:#9ca3af;
+
+          --icon-border:rgba(59,130,246,0.7);
+          --icon-bg:rgba(15,23,42,0.9);
+          --icon-color:#e5e7eb;
+
+          --page-title-color:#f9fafb;
+          --breadcrumb-color:#9ca3af;
+
+          --reset-btn-bg:#020617;
+          --reset-btn-border:#1f2937;
+
+          --toast-bg:#020617;
+        }
+
+        body.theme-light{
+          --bg-body:#eef2ff;
+          --text-main:#1a2550;
+
+          --nav-bg:#ffffff;
+          --nav-border-bottom:#d9ddf0;
+          --nav-shadow:0 4px 12px rgba(20,30,60,0.08);
+          --nav-link-color:#1a2450;
+
+          --market-bg:linear-gradient(
+              135deg,
+              #ffffff 0%,
+              #e3e8ff 40%,
+              #d5ddff 100%
+          );
+
+          --sidebar-bg:#ffffff;
+          --sidebar-border:#cfd6f5;
+          --sidebar-scroll-thumb:#97a3d5;
+          --sidebar-divider:#d6dcfa;
+
+          --sidebar-select-bg:#f2f4ff;
+          --sidebar-select-border:#b9c4ef;
+          --sidebar-text:#1f2b60;
+
+          --search-bg:#ffffff;
+          --search-border:#c4ccf2;
+          --search-text:#1a1f3f;
+          --search-placeholder:#9aa6d6;
+
+          --icon-border:#c4ccf2;
+          --icon-bg:#ffffff;
+          --icon-color:#1b234a;
+
+          --page-title-color:#1a2450;
+          --breadcrumb-color:#6b76a5;
+
+          --reset-btn-bg:#e3e6ff;
+          --reset-btn-border:#c5cdf5;
+
+          --toast-bg:#1b2652;
+        }
+
+        /* ===================== GLOBAL BODY ===================== */
         body{
             font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;
-            background:#070b1f;
-            color:#e5e7eb;
+            background:var(--bg-body);
+            color:var(--text-main);
             min-height:100vh;
-        }
-        body.theme-light{
-            background:#f3f4ff;
-            color:#111827;
         }
 
         a{text-decoration:none;color:inherit;}
 
-        /* NAVBAR */
+        /* ===================== NAVBAR ===================== */
         .nav{
             position:fixed;
             top:0;left:0;right:0;
@@ -31,11 +109,9 @@
             align-items:center;
             justify-content:space-between;
             padding:18px 60px;
-            background:linear-gradient(90deg,#111827,#111827);
-        }
-        body.theme-light .nav{
-            background:#ffffff;
-            border-bottom:1px solid #e5e7eb;
+            background:var(--nav-bg);
+            border-bottom:1px solid var(--nav-border-bottom);
+            box-shadow:var(--nav-shadow);
         }
         .nav-left{
             display:flex;
@@ -59,6 +135,7 @@
             color:#111827;
         }
         .nav-logo:hover{opacity:.85;}
+
         .nav-menu{
             display:flex;
             align-items:center;
@@ -66,10 +143,9 @@
             font-size:14px;
         }
         .nav-menu a{
-            color:#e5e7eb;
+            color:var(--nav-link-color);
             position:relative;
         }
-        body.theme-light .nav-menu a{color:#111827;}
         .nav-menu a::after{
             content:'';
             position:absolute;
@@ -98,7 +174,7 @@
             gap:12px;
         }
 
-        /* THEME TOGGLE */
+        /* ===================== THEME TOGGLE ===================== */
         .theme-toggle-wrapper{
             display:flex;
             justify-content:center;
@@ -195,19 +271,16 @@
             transform:translateY(-18px);
         }
 
-        /* BACKGROUND */
+        /* ===================== AUTH BACKGROUND ===================== */
         .auth-bg{
             min-height:100vh;
             padding:120px 40px 60px;
             display:flex;
             align-items:center;
             justify-content:center;
-            background:radial-gradient(circle at top left,#3b4ad4 0,#030616 55%);
+            background:var(--market-bg);
             position:relative;
             overflow:hidden;
-        }
-        body.theme-light .auth-bg{
-            background:radial-gradient(circle at top left,#e5e7ff 0,#f9fafb 65%);
         }
         .auth-bg::before,
         .auth-bg::after{
@@ -215,7 +288,7 @@
             position:absolute;
             border-radius:999px;
             filter:blur(26px);
-            opacity:.5;
+            opacity:.55;
         }
         .auth-bg::before{
             width:360px;height:360px;
@@ -227,21 +300,39 @@
             background:linear-gradient(135deg,#0ea5e9,#22c55e);
             bottom:-150px;right:-70px;
         }
+        body.theme-light .auth-bg::before,
+        body.theme-light .auth-bg::after{
+            opacity:.2;
+        }
 
-        /* CARD WRAPPER */
+        /* ===================== SHELL (FRAME LUAR) ===================== */
         .auth-shell{
             width:100%;
             max-width:1100px;
             min-height:520px;
-            background:#020617;
             border-radius:28px;
             overflow:hidden;
-            box-shadow:0 22px 50px rgba(0,0,0,.75);
+            background:linear-gradient(
+                135deg,
+                rgba(15,23,42,0.74),
+                rgba(15,23,42,0.94)
+            );
+            border:1px solid rgba(59,130,246,0.45);
+            box-shadow:0 22px 60px rgba(0,0,0,.9);
             display:flex;
             position:relative;
             z-index:1;
+            backdrop-filter:blur(18px);
         }
-        body.theme-light .auth-shell{background:#ffffff;}
+        body.theme-light .auth-shell{
+            background:linear-gradient(
+                135deg,
+                rgba(255,255,255,0.88),
+                rgba(239,246,255,0.98)
+            );
+            border:1px solid rgba(148,163,184,0.6);
+            box-shadow:0 20px 50px rgba(148,163,184,0.65);
+        }
 
         .auth-panel,
         .auth-visual{
@@ -271,41 +362,109 @@
             opacity:0;
         }
 
-        /* FOTO (KIRI) */
+        /* FOTO (KIRI) + KARTU LOGO ==================================== */
         .auth-visual{
-            flex: 1.1;
-            background: radial-gradient(circle at top,#0f172a 0,#020617 55%,#000 100%);
+            flex: 1.15;
+            background:
+                radial-gradient(circle at top,#1f3f90 0,#020617 55%,#020617 100%);
             display:flex;
             justify-content:center;
             align-items:center;
             padding:32px 28px;
             position:relative;
+            overflow:hidden;
         }
         body.theme-light .auth-visual{
-            background:radial-gradient(circle at top,#dbeafe 0,#1e293b 70%);
+            background:radial-gradient(circle at top,#dbeafe 0,#93c5fd 45%,#60a5fa 100%);
         }
-        .auth-visual img{
-            max-width: 100%;
-            max-height: 260px;
-            width: auto;
-            height: auto;
-            object-fit: contain;
-            border-radius: 24px;
-            box-shadow: 0 18px 40px rgba(0,0,0,.8);
+        .auth-visual::before{
+            content:'';
+            position:absolute;
+            inset:0;
+            background:
+                radial-gradient(circle at 10% 10%,rgba(96,165,250,0.18),transparent 55%),
+                radial-gradient(circle at 90% 90%,rgba(248,113,22,0.18),transparent 55%);
+            opacity:.8;
+            pointer-events:none;
         }
 
-        /* FORM (KANAN) */
+        /* KARTU LOGO GLASS */
+        .visual-card{
+            position:relative;
+            width:100%;
+            max-width:480px;
+            padding:28px 34px;
+            border-radius:26px;
+            background:radial-gradient(
+                circle at 40% 40%,
+                rgba(255,255,255,0.97) 0,
+                rgba(248,250,252,0.92) 45%,
+                rgba(59,130,246,0.45) 100%
+            );
+            backdrop-filter:blur(26px);
+            border:1px solid rgba(191,219,254,0.95);
+            box-shadow:
+                0 20px 50px rgba(15,23,42,0.65),
+                0 0 40px rgba(96,165,250,0.4);
+            display:flex;
+            align-items:center;
+            justify-content:center;
+        }
+        body.theme-light .visual-card{
+            background:radial-gradient(
+                circle at 40% 40%,
+                rgba(255,255,255,1) 0,
+                rgba(239,246,255,0.98) 55%,
+                rgba(191,219,254,0.85) 100%
+            );
+            border:1px solid rgba(148,163,184,0.8);
+            box-shadow:
+                0 18px 40px rgba(148,163,184,0.65),
+                0 0 30px rgba(129,140,248,0.35);
+        }
+        .visual-card img{
+            position:relative;
+            max-width:100%;
+            height:auto;
+            display:block;
+            border-radius:20px;
+            filter:
+                drop-shadow(0 12px 24px rgba(15,23,42,0.35))
+                brightness(1.25)
+                contrast(1.12);
+        }
+
+        /* ===================== FORM (KANAN) – GLASS BLUE ===================== */
         .auth-panel{
             flex:1.05;
             padding:34px 46px 34px;
-            background:linear-gradient(135deg,rgba(15,23,42,0.96),rgba(15,23,42,0.98));
             display:flex;
             flex-direction:column;
             color:#f9fafb;
+            background:linear-gradient(
+                145deg,
+                rgba(23,37,84,0.78),
+                rgba(15,23,42,0.94),
+                rgba(30,64,175,0.86)
+            );
+            border-left:1px solid rgba(148,163,184,0.6);
+            backdrop-filter:blur(26px);
+            box-shadow:
+                inset 0 0 0 1px rgba(30,64,175,0.45),
+                0 18px 45px rgba(0,0,0,0.9),
+                0 0 35px rgba(37,99,235,0.35);
         }
         body.theme-light .auth-panel{
-            background:linear-gradient(135deg,#f9fafb,#e5e7eb);
+            background:linear-gradient(
+                145deg,
+                rgba(255,255,255,0.9),
+                rgba(239,246,255,0.99)
+            );
             color:#111827;
+            border-left:1px solid rgba(191,219,254,0.9);
+            box-shadow:
+                inset 0 0 0 1px rgba(255,255,255,0.7),
+                0 18px 40px rgba(148,163,184,0.7);
         }
         .auth-panel-inner{
             max-width:380px;
@@ -323,6 +482,7 @@
             font-size:28px;
             font-weight:800;
             margin-bottom:6px;
+            color:var(--page-title-color);
         }
         .auth-subtitle{
             font-size:13px;
@@ -341,7 +501,7 @@
             display:block;
             width:100%;
             border:none;
-            border-bottom:1px solid #515151;
+            border-bottom:1px solid rgba(148,163,184,0.7);
             border-radius:0;
             background:transparent;
             color:#f9fafb;
@@ -353,7 +513,7 @@
         .group .auth-input:focus{outline:none;}
 
         .group label{
-            color:#999;
+            color:#9ca3af;
             font-size:13px;
             font-weight:500;
             position:absolute;
@@ -418,9 +578,8 @@
             gap:12px;
             margin:4px 0 18px;
             font-size:13px;
-            color:#e5e7eb;
+            color:var(--text-main);
         }
-        body.theme-light .auth-checkbox-row{color:#111827;}
 
         .auth-checkbox-row-left{
             display:flex;
@@ -473,10 +632,10 @@
             stroke-dashoffset:66;
         }
         .check:hover:before{opacity:1;}
-        .check:hover svg{stroke:#f97316;}       /* ORANGE hover */
+        .check:hover svg{stroke:#f97316;}
 
         #remember_cbx:checked + .check svg{
-            stroke:#f97316;                     /* ORANGE checked */
+            stroke:#f97316;
         }
         #remember_cbx:checked + .check svg path{
             stroke-dashoffset:60;
@@ -488,7 +647,7 @@
             transition-delay:.15s;
         }
 
-        /* FORGOT PASSWORD – ANIMASI ORANGE */
+        /* FORGOT PASSWORD */
         .auth-forgot{
             position:relative;
             font-size:12px;
@@ -554,9 +713,8 @@
             margin-top:14px;
             font-size:13px;
             text-align:center;
-            color:#e5e7eb;
+            color:var(--text-main);
         }
-        body.theme-light .auth-bottom-text{color:#111827;}
         .auth-bottom-text a{
             color:#f97316;
             font-weight:600;
@@ -578,9 +736,9 @@
             }
             .auth-panel{padding:26px 22px 24px;}
             .auth-panel-inner{max-width:100%;}
-            .auth-visual{padding:12px 16px 4px;}
-            .auth-visual img{
-                max-height:220px;
+            .auth-visual{padding:12px 16px 18px;}
+            .visual-card{max-width:100%;}
+            .visual-card img{
                 border-radius:20px;
             }
         }
@@ -623,10 +781,14 @@
 <main class="auth-bg">
     <div class="auth-shell pre-enter">
 
+        {{-- KARTU LOGO DI KIRI --}}
         <div class="auth-visual">
-            <img src="{{ asset('images/pc.png') }}" alt="kampuStore hero">
+            <div class="visual-card">
+                <img src="{{ asset('images/pc.png') }}" alt="kampuStore hero">
+            </div>
         </div>
 
+        {{-- FORM LOGIN --}}
         <div class="auth-panel">
             <div class="auth-panel-inner">
                 <div class="auth-eyebrow">WELCOME BACK</div>
@@ -635,7 +797,7 @@
                     Masuk dengan email kampus UNDIP untuk melanjutkan transaksi di kampuStore.
                 </p>
 
-                <form method="POST" action="{{ route('login') }}">
+                <form method="POST" action="{{ route('login.perform') }}">
                     @csrf
 
                     <div class="field-group group">
@@ -716,7 +878,7 @@
 </main>
 
 <script>
-    // THEME TOGGLE (sinkron dengan home/register)
+    // THEME TOGGLE (sinkron dengan halaman lain: key 'kampuStoreTheme')
     (function(){
         const KEY = 'kampuStoreTheme';
         const body = document.body;
@@ -734,6 +896,7 @@
         apply(saved);
 
         if(toggle){
+            // checked = dark, unchecked = light
             toggle.checked = (saved !== 'light');
             toggle.addEventListener('change', () => {
                 const mode = toggle.checked ? 'dark' : 'light';

@@ -64,14 +64,18 @@ class AuthController extends Controller
             'password' => bcrypt($data['password']),
         ]);
 
-        // ❌ JANGAN auto login
-        // Auth::login($user);
-        // $request->session()->regenerate();
-
-        // ✅ Paksa balik ke halaman login
         return redirect()
             ->route('login')
             ->with('status', 'Akun berhasil dibuat. Silakan login dengan email UNDIP kamu.');
+    }
+
+    public function logout(Request $request)
+    {
+        Auth::logout();     
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect()->route('home')->with('status', 'You have been logged out.');
     }
 }
 
