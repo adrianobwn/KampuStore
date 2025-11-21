@@ -18,16 +18,23 @@ class AuthController extends Controller
     public function login(Request $request): RedirectResponse
     {
         $credentials = $request->validate([
-            'email' => ['required', 'email'],
+            'email'    => ['required', 'email'],
             'password' => ['required'],
         ]);
 
         if (Auth::attempt($credentials, $request->boolean('remember'))) {
             $request->session()->regenerate();
+
+            if (Auth::user()->is_admin) {
+                return redirect()->route('admin.dashboard');
+            }
+
             return redirect()->intended(route('products.index'));
         }
 
-        return back()->withErrors(['email' => 'Kredensial tidak valid'])->onlyInput('email');
+        return back()
+            ->withErrors(['email' => 'Kredensial tidak valid'])
+            ->onlyInput('email');
     }
 
     public function showRegister()

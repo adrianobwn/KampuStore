@@ -330,41 +330,186 @@ input.js-theme-toggle:checked + .slider .cloud{
   transform:translateY(-18px);
 }
 
-/* ICON HEADER DI KANAN */
+/* ICON HEADER DI KANAN – semua bulat & animasi sama */
 .icon-btn{
   background:none;
   border:none;
   cursor:pointer;
-  color:var(--icon-color);
   position:relative;
   padding:0;
 }
+
+/* bentuk bulat dasar */
 .icon-round{
   width:32px;
   height:32px;
   border-radius:999px;
-  border:1px solid var(--icon-border);
+  border:1px solid #3b82f6;          /* biru neon */
   display:flex;
   align-items:center;
   justify-content:center;
   background:var(--icon-bg);
   font-size:18px;
+  color:var(--icon-color);
+  box-shadow:0 0 0 1px rgba(15,23,42,0.6);
+  transition:
+    transform .18s ease,
+    background .18s ease,
+    border-color .18s ease,
+    box-shadow .18s ease;
 }
-.icon-heart{ color:#fda4af; }
-.icon-cart{ /* ikut warna icon-color */ }
-.icon-user{ /* ikut warna icon-color */ }
+
+/* hover semua icon kanan */
+.header-right .icon-btn:hover .icon-round{
+  transform:translateY(-2px);
+  background:#ffffff;
+  border-color:#d1d5db;
+  box-shadow:
+    0 0 0 1px rgba(148,163,184,0.5),
+    0 8px 18px rgba(0,0,0,.45);
+}
+
+/* warna isi icon khusus */
+.icon-round.icon-heart{ color:#fda4af; }      /* hati tetap pink */
+.icon-round.icon-cart{ /* ikut warna default */ }
+.icon-round.icon-user{ /* ikut warna default */ }
+
+/* ====== STORE DROPDOWN (TOMBOL TOKO) ====== */
+
+.store-wrapper{
+  position:relative;
+}
+
+/* box dropdown toko */
+.store-menu{
+  position:absolute;
+  right:0;
+  top:110%;
+  min-width:260px;
+  padding:14px 16px 12px;
+  border-radius:16px;
+
+  background:rgba(15,23,42,0.9);
+  border:1px solid rgba(148,163,184,0.55);
+  box-shadow:0 18px 40px rgba(0,0,0,.85);
+  backdrop-filter:blur(18px);
+  -webkit-backdrop-filter:blur(18px);
+
+  opacity:0;
+  visibility:hidden;
+  transform:translateY(-6px) scale(.97);
+  transform-origin:top right;
+  pointer-events:none;
+  transition:
+    opacity .18s ease-out,
+    transform .18s ease-out,
+    visibility .18s ease-out;
+  z-index:120;
+  text-align:center;
+}
+
+/* hover & pinned (class is-open) => tampil */
+.store-wrapper:hover .store-menu,
+.store-wrapper.is-open .store-menu{
+  opacity:1;
+  visibility:visible;
+  transform:translateY(0) scale(1);
+  pointer-events:auto;
+}
+
+/* isi text */
+.store-empty-text{
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+  font-size:12px;
+  color:var(--sidebar-text);
+  margin-bottom:10px;
+}
+.store-empty-title{
+  font-weight:600;
+  font-size:13px;
+}
+.store-empty-sub{
+  font-size:11px;
+  opacity:.9;
+}
+
+/* tombol hijau "Buka Toko Gratis" */
+.store-cta{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:9px 18px;
+  border-radius:999px;
+
+  background:#f97316; /* oranye */
+  color:#111827;
+
+  font-size:13px;
+  font-weight:700;
+  margin-bottom:6px;
+
+  box-shadow:0 10px 22px rgba(248,113,22,.55); /* oranye glow */
+
+  transition:
+    background .18s ease,
+    transform .18s ease,
+    box-shadow .18s ease;
+}
+
+.store-cta:hover{
+  background:#fb923c; /* oranye terang (hover) */
+  transform:translateY(-2px);
+  box-shadow:0 14px 26px rgba(248,113,22,.65);
+}
+
+/* Light mode */
+body.theme-light .store-cta{
+  background:#f97316;
+  color:#111827;
+  box-shadow:0 10px 22px rgba(248,113,22,.45);
+}
+
+/* link kecil di bawah */
+.store-help-link{
+  display:inline-block;
+  font-size:11px;
+  color:#38bdf8;
+  text-decoration:underline;
+  text-underline-offset:3px;
+}
+.store-help-link:hover{
+  color:#111827;
+}
+
+/* light mode */
+body.theme-light .store-menu{
+  background:#ffffff;
+  border-color:#d1d5f0;
+  box-shadow:0 18px 40px rgba(148,163,184,.6);
+}
+body.theme-light .store-empty-text{
+  color:#111827;
+}
+body.theme-light .store-cta{
+  color:#f9fafb;
+}
+body.theme-light .store-help-link{
+  color:#0f766e;
+}
 
 /* WRAPPER AKUN */
 .account-wrapper{
   position:relative;
 }
 
-/* DROPDOWN AKUN */
+/* DROPDOWN AKUN (default: sembunyi, dipakai hover / klik di mobile) */
 .account-menu{
   position:absolute;
   right:0;
   top:110%;
-  min-width:220px;
+  min-width:260px;
   padding:12px 12px 14px;
   border-radius:16px;
 
@@ -374,15 +519,116 @@ input.js-theme-toggle:checked + .slider .cloud{
   backdrop-filter:blur(18px);
   -webkit-backdrop-filter:blur(18px);
 
-  display:none;
+  opacity:0;
+  visibility:hidden;
+  transform:translateY(-6px) scale(.97);
+  transform-origin:top right;
+  pointer-events:none;
+  transition:
+    opacity .18s ease-out,
+    transform .18s ease-out,
+    visibility .18s ease-out;
   z-index:120;
 }
 
-.account-wrapper.open .account-menu{
-  display:block;
-  animation:dropdownFade .18s ease-out;
-  transform-origin:top right;
+/* saat icon akun di-hover (desktop) atau wrapper dikasih class is-open (mobile) */
+.account-wrapper:hover .account-menu,
+.account-wrapper.is-open .account-menu{
+  opacity:1;
+  visibility:visible;
+  transform:translateY(0) scale(1);
+  pointer-events:auto;
 }
+
+/* animasi lama masih bisa dipakai kalau mau, tapi tidak wajib
+@keyframes dropdownFade{...}
+*/
+
+/* ====== styling isi dropdown biar mirip Tokopedia ======= */
+
+.profile-info{
+  padding:10px 14px;
+  border-radius:12px;
+  background:rgba(15,23,42,0.96);
+  border:1px solid rgba(148,163,184,0.4);
+  margin:4px 4px 8px;
+  display:flex;
+  flex-direction:column;
+  gap:3px;
+  transition:
+    background .18s ease,
+    border-color .18s ease,
+    box-shadow .18s ease,
+    transform .18s ease;
+  cursor:pointer;
+}
+
+.profile-info:hover{
+  background:linear-gradient(
+    135deg,
+    rgba(30,64,175,0.95),
+    rgba(15,23,42,0.98)
+  );
+  border-color:#60a5fa;
+  box-shadow:0 0 0 1px rgba(37,99,235,0.5);
+  transform:translateY(-1px);
+}
+
+body.theme-light .profile-info{
+  background:#f9fafb;
+  border-color:#e5e7f5;
+}
+body.theme-light .profile-info:hover{
+  background:#e5e9ff;
+  border-color:#4f46e5;
+  box-shadow:0 0 0 1px rgba(79,70,229,0.4);
+}
+
+
+.profile-list{
+  margin:0 4px 6px;
+  padding:6px 0;
+  border-top:1px solid var(--sidebar-divider);
+  border-bottom:1px solid var(--sidebar-divider);
+  display:flex;
+  flex-direction:column;
+}
+
+.profile-item{
+  padding:6px 10px;
+  font-size:13px;
+  color:var(--sidebar-text);
+  border-radius:8px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  cursor:pointer;
+  transition:background .16s ease,color .16s ease,transform .16s ease;
+}
+
+.profile-item:hover{
+  background:rgba(15,23,42,0.95);
+  color:#f97316;
+  transform:translateX(2px);
+}
+
+body.theme-light .account-menu{
+  background:#ffffff;
+  border-color:#d1d5f0;
+  box-shadow:0 18px 40px rgba(148,163,184,.6);
+}
+body.theme-light .profile-info{
+  background:#f9fafb;
+  border-color:#e5e7f5;
+}
+body.theme-light .profile-name{
+  color:#111827;
+}
+body.theme-light .profile-item:hover{
+  background:#f3f4ff;
+  color:#ea580c;
+}
+
 
 /* animasi muncul */
 @keyframes dropdownFade{
@@ -1408,6 +1654,44 @@ body.theme-light .container_chat_bot .tags span{
       <span class="icon-round icon-cart">🛒</span>
     </button>
 
+    {{-- Toko + Dropdown --}}
+    <div class="store-wrapper" id="storeWrapper">
+      <button type="button" class="icon-btn store-btn js-store-toggle" title="Toko">
+        <span class="icon-round">
+          <i class="uil uil-store"></i>
+        </span>
+      </button>
+
+      <div class="store-menu" id="storeMenu">
+        <div class="store-empty-text">
+          <span class="store-empty-title">Kamu belum memiliki toko.</span>
+          <span class="store-empty-sub">
+            Buka toko gratis dan mulai jualan di kampuStore.
+          </span>
+        </div>
+
+        @auth
+          {{-- TOMBOL 1: BUKA TOKO --}}
+          <a href="{{ route('seller.register') }}" class="store-cta">
+            Buka Toko Gratis
+          </a>
+
+          {{-- TOMBOL 2: SUDAH PERNAH DAFTAR --}}
+          <a href="{{ route('seller.dashboard') }}" class="store-cta" style="margin-top:6px;">
+            Cek Dashboard Tokomu
+          </a>
+        @else
+          <a href="{{ route('login') }}" class="store-cta">
+            Login dulu untuk buka toko
+          </a>
+        @endauth
+
+        <a href="#" class="store-help-link">
+          Tokomu bermasalah? Pelajari selengkapnya
+        </a>
+      </div>
+    </div>
+
     {{-- akun: klik => dropdown login/register --}}
     <div class="account-wrapper" id="accountWrapper">
       <button class="icon-btn js-account-toggle" type="button" title="Akun">
@@ -1416,8 +1700,17 @@ body.theme-light .container_chat_bot .tags span{
 
       <div class="account-menu" id="accountMenu">
         @auth
-          <div class="account-greet">
-            Halo, {{ auth()->user()->name }}
+          <div class="profile-info">
+            <div class="profile-name">{{ auth()->user()->name }}</div>
+            <div class="profile-role">Akun kampuStore</div>
+          </div>
+
+          {{-- MENU LIST --}}
+          <div class="profile-list">
+              <a href="#" class="profile-item">Pembelian</a>
+              <a href="#" class="profile-item">Wishlist</a>
+              <a href="#" class="profile-item">Toko Favorit</a>
+              <a href="#" class="profile-item">Pengaturan</a>
           </div>
 
           <form method="POST" action="{{ route('logout') }}">
@@ -1833,6 +2126,34 @@ body.theme-light .container_chat_bot .tags span{
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+{{-- SweetAlert untuk flash message global --}}
+@if(session('success') || session('error'))
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            @if(session('success'))
+                Swal.fire({
+                    title: 'Berhasil!',
+                    text: '{{ session('success') }}',
+                    icon: 'success',
+                    confirmButtonColor: '#f97316',
+                    confirmButtonText: 'OK'
+                });
+            @endif
+
+            @if(session('error'))
+                Swal.fire({
+                    title: 'Gagal!',
+                    text: '{{ session('error') }}',
+                    icon: 'error',
+                    confirmButtonColor: '#ef4444',
+                    confirmButtonText: 'OK'
+                });
+            @endif
+        });
+    </script>
+@endif
+
+
 <script>
   // THEME TOGGLE – sinkron dengan login/register/forgot/home
   (function(){
@@ -1866,20 +2187,89 @@ body.theme-light .container_chat_bot .tags span{
 
 <script>
 (function(){
-  const accWrapper = document.getElementById('accountWrapper');
-  const accToggle  = document.querySelector('.js-account-toggle');
+  const storeWrapper = document.getElementById('storeWrapper');
+  const storeToggle  = document.querySelector('.js-store-toggle');
+  const storeMenu    = document.getElementById('storeMenu');
 
-  if (!accWrapper || !accToggle) return;
+  const accWrapper   = document.getElementById('accountWrapper');
+  const accToggle    = document.querySelector('.js-account-toggle');
+  const accMenu      = document.getElementById('accountMenu');
 
-  // klik icon akun => toggle menu
-  accToggle.addEventListener('click', (e)=>{
-    e.stopPropagation();
-    accWrapper.classList.toggle('open');
-  });
+  let storePinned = false;
+  let accPinned   = false;
 
-  // klik di luar => tutup menu
-  document.addEventListener('click', ()=>{
-    accWrapper.classList.remove('open');
+  function openStorePin(){
+    if (!storeWrapper) return;
+    storePinned = true;
+    storeWrapper.classList.add('is-open');
+  }
+  function closeStore(){
+    if (!storeWrapper) return;
+    storePinned = false;
+    storeWrapper.classList.remove('is-open');
+  }
+
+  function openAccPin(){
+    if (!accWrapper) return;
+    accPinned = true;
+    accWrapper.classList.add('is-open');
+  }
+  function closeAcc(){
+    if (!accWrapper) return;
+    accPinned = false;
+    accWrapper.classList.remove('is-open');
+  }
+
+  // === TOMBOL TOKO ===
+  if (storeToggle && storeWrapper && storeMenu) {
+    storeToggle.addEventListener('click', function(e){
+      e.stopPropagation();
+
+      // kalau akun lagi kebuka, tutup dulu
+      closeAcc();
+
+      if (storePinned) {
+        closeStore();
+      } else {
+        openStorePin();
+      }
+    });
+
+    // klik di dalam menu toko jangan tembus ke document
+    storeMenu.addEventListener('click', function(e){
+      e.stopPropagation();
+    });
+  }
+
+  // === TOMBOL AKUN ===
+  if (accToggle && accWrapper && accMenu) {
+    accToggle.addEventListener('click', function(e){
+      e.stopPropagation();
+
+      // kalau toko lagi kebuka, tutup dulu
+      closeStore();
+
+      if (accPinned) {
+        closeAcc();
+      } else {
+        openAccPin();
+      }
+    });
+
+    // klik di dalam menu akun jangan tembus ke document
+    accMenu.addEventListener('click', function(e){
+      e.stopPropagation();
+    });
+  }
+
+  // === KLIK DI LUAR: tutup dua-duanya ===
+  document.addEventListener('click', function(e){
+    if (storeWrapper && !storeWrapper.contains(e.target)) {
+      closeStore();
+    }
+    if (accWrapper && !accWrapper.contains(e.target)) {
+      closeAcc();
+    }
   });
 })();
 </script>
