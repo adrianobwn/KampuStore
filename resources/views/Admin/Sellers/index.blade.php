@@ -23,7 +23,7 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16">
                 <div class="flex items-center">
-                    <a href="{{ route('home') }}" class="flex items-center space-x-3">
+                    <a href="{{ route('admin.dashboard') }}" class="flex items-center space-x-3">
                         <img src="{{ asset('images/logo.png') }}" alt="kampuStore" class="h-10 w-10">
                         <span class="text-2xl font-bold gradient-text">kampuStore</span>
                     </a>
@@ -55,15 +55,6 @@
                                     </a>
                                     <a href="{{ route('admin.reports.product-ranking') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-50">
                                         <i class="uil uil-trophy mr-2"></i>Peringkat Produk
-                                    </a>
-                                    <a href="{{ route('admin.reports.stock') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-50">
-                                        <i class="uil uil-box mr-2"></i>Stok Produk
-                                    </a>
-                                    <a href="{{ route('admin.reports.stock-rating') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-50">
-                                        <i class="uil uil-star mr-2"></i>Stok by Rating
-                                    </a>
-                                    <a href="{{ route('admin.reports.restock') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-50">
-                                        <i class="uil uil-exclamation-triangle mr-2"></i>Restock Alert
                                     </a>
                                 </div>
                             </div>

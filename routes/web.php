@@ -96,20 +96,22 @@ Route::middleware(['auth', 'can:verify-sellers'])
                 ->name('reject');
         });
 
-        // 🔹 Laporan (SRS-09 to SRS-14)
+        // 🔹 Laporan Admin (SRS-09, 10, 11) - Platform Level Reports
         Route::prefix('laporan')->name('reports.')->group(function () {
             Route::get('/sellers', [ReportController::class, 'sellers'])
                 ->name('sellers'); // SRS-09
+            Route::get('/sellers/export', [ReportController::class, 'exportSellers'])
+                ->name('sellers.export'); // SRS-09 Export
+            
             Route::get('/sellers-by-location', [ReportController::class, 'sellersByLocation'])
                 ->name('sellers-location'); // SRS-10
+            Route::get('/sellers-by-location/export', [ReportController::class, 'exportSellersByLocation'])
+                ->name('sellers-location.export'); // SRS-10 Export
+            
             Route::get('/product-ranking', [ReportController::class, 'productRanking'])
                 ->name('product-ranking'); // SRS-11
-            Route::get('/stock', [ReportController::class, 'stock'])
-                ->name('stock'); // SRS-12
-            Route::get('/stock-by-rating', [ReportController::class, 'stockByRating'])
-                ->name('stock-rating'); // SRS-13
-            Route::get('/restock', [ReportController::class, 'restock'])
-                ->name('restock'); // SRS-14
+            Route::get('/product-ranking/export', [ReportController::class, 'exportProductRanking'])
+                ->name('product-ranking.export'); // SRS-11 Export
         });
     });
 
@@ -136,5 +138,23 @@ Route::middleware('auth')->group(function () {
 Route::middleware('auth')->prefix('seller')->name('seller.')->group(function () {
     Route::resource('products', \App\Http\Controllers\Seller\ProductManagementController::class)
         ->except(['show']);
+    
+    // 🔹 Seller Reports (SRS-MartPlace-12, 13, 14)
+    Route::prefix('laporan')->name('reports.')->group(function () {
+        Route::get('/stock', [\App\Http\Controllers\Seller\ReportController::class, 'stock'])
+            ->name('stock'); // SRS-12
+        Route::get('/stock/export', [\App\Http\Controllers\Seller\ReportController::class, 'exportStock'])
+            ->name('stock.export'); // SRS-12 Export
+        
+        Route::get('/rating', [\App\Http\Controllers\Seller\ReportController::class, 'rating'])
+            ->name('rating'); // SRS-13
+        Route::get('/rating/export', [\App\Http\Controllers\Seller\ReportController::class, 'exportRating'])
+            ->name('rating.export'); // SRS-13 Export
+        
+        Route::get('/restock', [\App\Http\Controllers\Seller\ReportController::class, 'restock'])
+            ->name('restock'); // SRS-14
+        Route::get('/restock/export', [\App\Http\Controllers\Seller\ReportController::class, 'exportRestock'])
+            ->name('restock.export'); // SRS-14 Export
+    });
 });
 

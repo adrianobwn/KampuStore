@@ -7,6 +7,10 @@ use App\Models\Seller;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\SellersExport;
+use App\Exports\SellersByLocationExport;
+use App\Exports\ProductRankingExport;
 
 class ReportController extends Controller
 {
@@ -86,84 +90,23 @@ class ReportController extends Controller
     }
 
     /**
-     * SRS-12: Laporan Stok Produk
+     * Export Methods (SRS-09, 10, 11)
      */
-    public function stock(Request $request)
+    public function exportSellers(Request $request)
     {
-        $query = Product::with('seller')
-            ->select('products.*', 'sellers.nama_toko')
-            ->join('sellers', 'products.seller_id', '=', 'sellers.id');
-
-        // Filter by category
-        if ($request->has('category') && $request->category != '') {
-            $query->where('category_slug', $request->category);
-        }
-
-        // Filter by seller
-        if ($request->has('seller_id') && $request->seller_id != '') {
-            $query->where('seller_id', $request->seller_id);
-        }
-
-        // Sort
-        $sortBy = $request->get('sort_by', 'name');
-        $sortOrder = $request->get('sort_order', 'asc');
-        
-        if ($sortBy == 'stock') {
-            $query->orderBy('products.stock', $sortOrder);
-        } else {
-            $query->orderBy('products.name', 'asc');
-        }
-
-        $products = $query->get();
-
-        $categories = Product::select('category_slug')->distinct()->pluck('category_slug');
-        $sellers = Seller::where('status', 'approved')->orderBy('nama_toko')->get();
-
-        return view('admin.reports.stock', compact('products', 'categories', 'sellers'));
+        return Excel::download(new SellersExport($request), 'Laporan_Daftar_Penjual_' . date('Y-m-d') . '.xlsx');
     }
 
-    /**
-     * SRS-13: Laporan Stok Produk berdasarkan Rating
-     */
-    public function stockByRating(Request $request)
+    public function exportSellersByLocation(Request $request)
     {
-        $minRating = $request->get('min_rating', 0);
-        $maxRating = $request->get('max_rating', 5);
-
-        $products = Product::select(
-                'products.*',
-                'sellers.nama_toko',
-                DB::raw('COALESCE(AVG(reviews.rating), 0) as avg_rating'),
-                DB::raw('COUNT(reviews.id) as review_count')
-            )
-            ->join('sellers', 'products.seller_id', '=', 'sellers.id')
-            ->leftJoin('reviews', 'products.id', '=', 'reviews.product_id')
-            ->groupBy('products.id', 'sellers.nama_toko')
-            ->havingRaw('COALESCE(AVG(reviews.rating), 0) >= ?', [$minRating])
-            ->havingRaw('COALESCE(AVG(reviews.rating), 0) <= ?', [$maxRating])
-            ->orderBy('avg_rating', 'desc')
-            ->get();
-
-        return view('admin.reports.stock-by-rating', compact('products', 'minRating', 'maxRating'));
+        $groupBy = $request->get('group_by', 'kota');
+        return Excel::download(new SellersByLocationExport($groupBy), 'Laporan_Penjual_per_' . ucfirst($groupBy) . '_' . date('Y-m-d') . '.xlsx');
     }
 
-    /**
-     * SRS-14: Laporan Restock Barang
-     */
-    public function restock(Request $request)
+    public function exportProductRanking(Request $request)
     {
-        $threshold = $request->get('threshold', 10);
-
-        $products = Product::with('seller')
-            ->select('products.*', 'sellers.nama_toko', 'sellers.email_pic', 'sellers.no_hp_pic')
-            ->join('sellers', 'products.seller_id', '=', 'sellers.id')
-            ->where('products.stock', '<', $threshold)
-            ->orderBy('products.stock', 'asc')
-            ->get();
-
-        $totalLowStock = $products->count();
-        $urgentCount = $products->where('stock', '<', 5)->count();
-
-        return view('admin.reports.restock', compact('products', 'threshold', 'totalLowStock', 'urgentCount'));
+        $limit = $request->get('limit', 50);
+        $category = $request->get('category', null);
+        return Excel::download(new ProductRankingExport($limit, $category), 'Laporan_Peringkat_Produk_' . date('Y-m-d') . '.xlsx');
     }
 }

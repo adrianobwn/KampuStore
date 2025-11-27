@@ -56,6 +56,31 @@
                     <i class="uil uil-box text-base"></i>
                     <span>Produk Saya</span>
                 </a>
+                <div class="relative" x-data="{ openReports: false }">
+                    <button @click="openReports = !openReports" class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-gray-300 hover:text-white hover:bg-slate-800/50 transition-all">
+                        <i class="uil uil-chart-line text-base"></i>
+                        <span>Laporan</span>
+                        <i class="uil uil-angle-down ml-1"></i>
+                    </button>
+                    <div x-show="openReports" @click.away="openReports = false" 
+                         x-transition:enter="transition ease-out duration-200"
+                         x-transition:enter-start="opacity-0 scale-95"
+                         x-transition:enter-end="opacity-100 scale-100"
+                         class="absolute left-0 mt-2 w-56 rounded-lg shadow-lg bg-slate-800 border border-blue-500/30"
+                         style="display: none;">
+                        <div class="py-2">
+                            <a href="{{ route('seller.reports.stock') }}" class="block px-4 py-2 text-sm text-gray-300 hover:bg-slate-700">
+                                <i class="uil uil-box mr-2"></i>Laporan Stok
+                            </a>
+                            <a href="{{ route('seller.reports.rating') }}" class="block px-4 py-2 text-sm text-gray-300 hover:bg-slate-700">
+                                <i class="uil uil-star mr-2"></i>Laporan Rating
+                            </a>
+                            <a href="{{ route('seller.reports.restock') }}" class="block px-4 py-2 text-sm text-gray-300 hover:bg-slate-700">
+                                <i class="uil uil-exclamation-triangle mr-2"></i>Restock Alert
+                            </a>
+                        </div>
+                    </div>
+                </div>
                 <a href="{{ route('products.index') }}" class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-gray-300 hover:text-white hover:bg-slate-800/50 transition-all">
                     <i class="uil uil-store text-base"></i>
                     <span>Market</span>
@@ -406,5 +431,6 @@
 </script>
 @endif
 
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </body>
 </html>

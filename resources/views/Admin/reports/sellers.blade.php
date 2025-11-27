@@ -39,9 +39,30 @@
                         <a href="{{ route('admin.sellers.index') }}" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
                             <i class="uil uil-store mr-2"></i>Pengajuan Toko
                         </a>
-                        <a href="{{ route('admin.reports.sellers') }}" class="border-purple-600 text-gray-900 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
-                            <i class="uil uil-chart-line mr-2"></i>Laporan
-                        </a>
+                        <div class="relative" x-data="{ openReports: false }">
+                            <button @click="openReports = !openReports" class="border-purple-600 text-gray-900 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                                <i class="uil uil-chart-line mr-2"></i>Laporan
+                                <i class="uil uil-angle-down ml-1"></i>
+                            </button>
+                            <div x-show="openReports" @click.away="openReports = false" 
+                                 x-transition:enter="transition ease-out duration-200"
+                                 x-transition:enter-start="opacity-0 scale-95"
+                                 x-transition:enter-end="opacity-100 scale-100"
+                                 class="absolute left-0 mt-2 w-64 rounded-lg shadow-lg bg-white ring-1 ring-black ring-opacity-5"
+                                 style="display: none;">
+                                <div class="py-2">
+                                    <a href="{{ route('admin.reports.sellers') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-50">
+                                        <i class="uil uil-users-alt mr-2"></i>Daftar Akun Penjual
+                                    </a>
+                                    <a href="{{ route('admin.reports.sellers-location') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-50">
+                                        <i class="uil uil-map-marker mr-2"></i>Penjual per Lokasi
+                                    </a>
+                                    <a href="{{ route('admin.reports.product-ranking') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-50">
+                                        <i class="uil uil-trophy mr-2"></i>Peringkat Produk
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 
@@ -89,7 +110,7 @@
                 <div class="flex items-center justify-between mb-6">
                     <div>
                         <h1 class="text-4xl font-bold text-gray-900 mb-2">Laporan Daftar Akun Penjual</h1>
-                        <p class="text-gray-600">SRS-MartPlace-09: Laporan seluruh akun penjual terdaftar</p>
+                        <p class="text-gray-600">Laporan seluruh akun penjual terdaftar</p>
                     </div>
                     <div class="text-right no-print">
                         <p class="text-sm text-gray-500">{{ now()->format('d F Y') }}</p>
@@ -126,7 +147,11 @@
                         <button type="submit" class="flex-1 bg-purple-600 text-white px-4 py-2.5 rounded-lg hover:bg-purple-700 transition">
                             <i class="uil uil-filter mr-2"></i>Filter
                         </button>
-                        <button type="button" onclick="window.print()" class="bg-green-600 text-white px-4 py-2.5 rounded-lg hover:bg-green-700 transition">
+                        <a href="{{ route('admin.reports.sellers.export', request()->all()) }}" class="bg-green-600 text-white px-4 py-2.5 rounded-lg hover:bg-green-700 transition inline-flex items-center">
+                            <i class="uil uil-file-download-alt mr-1"></i>
+                            Excel
+                        </a>
+                        <button type="button" onclick="window.print()" class="bg-blue-600 text-white px-4 py-2.5 rounded-lg hover:bg-blue-700 transition">
                             <i class="uil uil-print"></i>
                         </button>
                     </div>
