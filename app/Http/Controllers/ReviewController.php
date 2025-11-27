@@ -15,6 +15,13 @@ class ReviewController extends Controller
     public function store(Request $request, Product $product): RedirectResponse
     {
         if (Auth::check()) {
+            // Cek apakah user adalah penjual dari produk ini
+            $user = Auth::user();
+            if ($user->seller && $product->seller_id === $user->seller->id) {
+                return redirect()->route('products.show', $product)
+                    ->with('error', 'Anda tidak dapat memberikan ulasan pada produk Anda sendiri.');
+            }
+
             $data = $request->validate([
                 'rating' => ['required','integer','min:1','max:5'],
                 'body' => ['required','string','max:2000'],

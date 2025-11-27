@@ -29,25 +29,52 @@
         }
     </style>
 </head>
-<body class="bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 min-h-screen">
+<body class="bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 min-h-screen flex flex-col">
 <!-- DASHBOARD PENJUAL BARU -->
 
 {{-- NAVBAR --}}
-<nav class="fixed top-0 left-0 right-0 z-50 bg-slate-900/90 backdrop-blur-xl border-b border-blue-500/30 shadow-lg">
-    <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-4">
-        <div class="flex items-center justify-between">
-            <a href="{{ route('home') }}" class="text-xl sm:text-2xl font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
-                KampuStore
+<nav class="fixed top-0 left-0 right-0 z-50 bg-slate-900/95 backdrop-blur-xl border-b border-blue-500/30 shadow-lg">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-16">
+            {{-- Logo --}}
+            <a href="{{ route('seller.dashboard') }}" class="flex items-center gap-2">
+                <div class="w-8 h-8 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-lg flex items-center justify-center">
+                    <i class="uil uil-shop text-white text-lg"></i>
+                </div>
+                <span class="text-xl sm:text-2xl font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
+                    kampuStore
+                </span>
             </a>
-            <div class="flex items-center gap-3 sm:gap-6">
-                <a href="{{ route('products.index') }}" class="text-xs sm:text-sm text-gray-300 hover:text-white transition-colors duration-200 flex items-center gap-1">
-                    <i class="uil uil-store"></i>
-                    <span class="hidden sm:inline">Lihat Market</span>
+            
+            {{-- Center Menu --}}
+            <div class="hidden md:flex items-center gap-6">
+                <a href="{{ route('seller.dashboard') }}" class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-white bg-blue-500/20 border border-blue-500/40">
+                    <i class="uil uil-dashboard text-base"></i>
+                    <span>Dashboard</span>
                 </a>
+                <a href="{{ route('seller.products.index') }}" class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-gray-300 hover:text-white hover:bg-slate-800/50 transition-all">
+                    <i class="uil uil-box text-base"></i>
+                    <span>Produk Saya</span>
+                </a>
+                <a href="{{ route('products.index') }}" class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-gray-300 hover:text-white hover:bg-slate-800/50 transition-all">
+                    <i class="uil uil-store text-base"></i>
+                    <span>Market</span>
+                </a>
+            </div>
+
+            {{-- Right Menu --}}
+            <div class="flex items-center gap-3">
+                {{-- User Info --}}
+                <div class="hidden sm:flex items-center gap-2 px-3 py-2 bg-slate-800/50 rounded-lg border border-slate-700/50">
+                    <i class="uil uil-shop text-blue-400"></i>
+                    <span class="text-sm text-gray-300">{{ $seller->nama_toko }}</span>
+                </div>
+                
+                {{-- Logout --}}
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
-                    <button type="submit" class="text-xs sm:text-sm text-red-400 hover:text-red-300 transition-colors duration-200 flex items-center gap-1">
-                        <i class="uil uil-sign-out-alt"></i>
+                    <button type="submit" class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-all">
+                        <i class="uil uil-sign-out-alt text-base"></i>
                         <span class="hidden sm:inline">Logout</span>
                     </button>
                 </form>
@@ -56,7 +83,7 @@
     </div>
 </nav>
 
-<main class="pt-24 pb-12 px-4">
+<main class="flex-1 pt-24 pb-12 px-4">
     <div class="container mx-auto max-w-7xl">
         
         {{-- HEADER DENGAN STATUS TOKO --}}
@@ -324,7 +351,7 @@
 </main>
 
 {{-- FOOTER --}}
-<footer class="bg-slate-900/80 border-t border-slate-800 py-6 mt-12">
+<footer class="bg-slate-900/80 border-t border-slate-800 py-6 mt-auto">
     <div class="container mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
             <p class="text-gray-400 text-sm text-center sm:text-left">

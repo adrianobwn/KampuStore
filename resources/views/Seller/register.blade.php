@@ -844,6 +844,21 @@
                     Isi data toko dan data diri Anda sebagai pemilik/penanggung jawab toko. Pengajuan akan diperiksa oleh admin sebelum toko aktif.
                 </p>
 
+                @if(session('info'))
+                    <div style="background:rgba(59,130,246,0.15);border:1px solid rgba(96,165,250,0.5);border-radius:10px;padding:14px 18px;margin-bottom:18px;">
+                        <div style="display:flex;align-items:start;gap:10px;">
+                            <i class="uil uil-info-circle" style="font-size:22px;color:#60a5fa;margin-top:2px;"></i>
+                            <div style="flex:1;">
+                                <div style="font-weight:700;color:#93c5fd;margin-bottom:4px;font-size:14px;">Informasi</div>
+                                <div style="color:#e5e7eb;font-size:13px;line-height:1.5;">{{ session('info') }}</div>
+                                <div style="color:#9ca3af;font-size:12px;margin-top:6px;">
+                                    Akun Anda: <strong style="color:#60a5fa;">{{ Auth::user()->email }}</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endif
+
                 @if($errors->any())
                     <div class="auth-global-error">
                         Ada beberapa data yang belum tepat. Silakan dicek lagi di formulir di bawah.

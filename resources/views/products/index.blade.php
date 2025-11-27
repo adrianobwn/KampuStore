@@ -328,7 +328,7 @@
 <body>
     {{-- Navbar dari layouts/app.blade.php --}}
     <nav style="position: fixed; top: 0; left: 0; right: 0; z-index: 1000; display: flex; align-items: center; justify-content: space-between; padding: 16px 40px; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(102, 126, 234, 0.2); box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);">
-        <a href="{{ route('home') }}" style="font-weight: 800; font-size: 24px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; text-decoration: none;">
+        <a href="{{ route('home') }}" style="font-weight: 800; font-size: 24px; color: #667eea; text-decoration: none;">
             KampuStore
         </a>
 
@@ -495,8 +495,10 @@
                         </a>
                     </div>
                 @else
-                    <div style="margin-bottom: 20px; color: #6b7280; font-size: 14px;">
-                        Menampilkan <strong style="color: #111827;">{{ $products->count() }}</strong> dari <strong style="color: #111827;">{{ $products->total() }}</strong> produk
+                    <div style="margin-bottom: 20px; padding: 12px 20px; background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+                        <span style="color: #6b7280; font-size: 14px;">
+                            Menampilkan <strong style="color: #667eea;">{{ $products->count() }}</strong> dari <strong style="color: #667eea;">{{ $products->total() }}</strong> produk
+                        </span>
                     </div>
                     
                     <div class="product-grid">
@@ -542,7 +544,7 @@
     </div>
 
     <footer style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-top: 1px solid rgba(102, 126, 234, 0.2); padding: 24px 0; text-align: center; font-size: 14px; color: #6b7280; margin-top: 80px;">
-        &copy; {{ date('Y') }} <strong style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 700;">KampuStore</strong> - Marketplace Mahasiswa UNDIP
+        &copy; {{ date('Y') }} <strong style="color: #667eea; font-weight: 700;">KampuStore</strong> - Marketplace Mahasiswa UNDIP
     </footer>
 </body>
 </html>

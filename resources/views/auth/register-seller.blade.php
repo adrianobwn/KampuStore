@@ -73,14 +73,37 @@
                     <i class="uil uil-store-alt text-4xl text-purple-600"></i>
                 </div>
                 <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-3">Daftar Sebagai Penjual</h1>
-                <p class="text-gray-600 mb-5 text-lg">Lengkapi data toko dan informasi PIC untuk verifikasi</p>
+                <p class="text-gray-600 mb-3 text-lg">Lengkapi data toko dan informasi pemilik untuk verifikasi</p>
+                
+                @if(session('error'))
+                <div class="bg-gradient-to-r from-red-50 to-pink-50 border-2 border-red-200 rounded-2xl p-5 text-sm text-red-700 max-w-2xl mx-auto mb-4">
+                    <div class="flex items-start gap-3">
+                        <i class="uil uil-exclamation-triangle text-2xl text-red-600 mt-0.5"></i>
+                        <div class="text-left">
+                            <strong class="text-red-700 block mb-1">{{ session('error') }}</strong>
+                        </div>
+                    </div>
+                </div>
+                @endif
+                
+                @if(session('info'))
+                <div class="bg-gradient-to-r from-blue-50 to-cyan-50 border-2 border-blue-200 rounded-2xl p-5 text-sm text-blue-700 max-w-2xl mx-auto mb-4">
+                    <div class="flex items-start gap-3">
+                        <i class="uil uil-info-circle text-2xl text-blue-600 mt-0.5"></i>
+                        <div class="text-left">
+                            <span>{{ session('info') }}</span>
+                        </div>
+                    </div>
+                </div>
+                @endif
+                
                 <div class="bg-gradient-to-r from-purple-50 to-indigo-50 border-2 border-purple-200 rounded-2xl p-5 text-sm text-gray-700 max-w-2xl mx-auto">
                     <div class="flex items-start gap-3">
-                        <i class="uil uil-info-circle text-2xl text-purple-600 mt-0.5"></i>
+                        <i class="uil uil-shopping-cart text-2xl text-purple-600 mt-0.5"></i>
                         <div class="text-left">
-                            <strong class="text-purple-700 block mb-1">Info untuk Pembeli:</strong>
-                            <span>Kamu tidak perlu mendaftar atau login untuk berbelanja. 
-                            Langsung kunjungi <a href="{{ route('products.index') }}" class="text-purple-600 underline hover:text-purple-700 font-semibold">halaman market</a> untuk mulai belanja!</span>
+                            <strong class="text-purple-700 block mb-1">📢 Penting untuk Pembeli:</strong>
+                            <span class="block mb-2">Jika Anda ingin <strong>berbelanja</strong>, TIDAK perlu registrasi atau login!</span>
+                            <span class="block">Langsung kunjungi <a href="{{ route('products.index') }}" class="text-purple-600 underline hover:text-purple-700 font-semibold">halaman market</a> dan belanja sebagai guest. Form ini hanya untuk <strong>penjual yang ingin buka toko</strong>.</span>
                         </div>
                     </div>
                 </div>
@@ -89,39 +112,10 @@
             <form method="POST" action="{{ route('register') }}" enctype="multipart/form-data" class="space-y-6">
                 @csrf
 
-                {{-- SECTION 1: AKUN LOGIN --}}
-                <div class="bg-gradient-to-br from-purple-50 to-white rounded-2xl p-6 border-2 border-purple-100">
-                    <div class="flex items-center gap-3 mb-5">
-                        <div class="flex items-center justify-center w-10 h-10 bg-purple-600 text-white rounded-full font-bold">1</div>
-                        <h2 class="text-xl font-bold text-gray-900">Data Akun Login</h2>
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label class="label">Nama Lengkap</label>
-                            <input type="text" name="name" value="{{ old('name') }}" required class="input-field" placeholder="Masukkan nama lengkap">
-                            @error('name')<p class="error-msg"><i class="uil uil-exclamation-circle"></i>{{ $message }}</p>@enderror
-                        </div>
-                        <div>
-                            <label class="label">Email</label>
-                            <input type="email" name="email" value="{{ old('email') }}" required class="input-field" placeholder="nama@example.com">
-                            @error('email')<p class="error-msg"><i class="uil uil-exclamation-circle"></i>{{ $message }}</p>@enderror
-                        </div>
-                        <div>
-                            <label class="label">Password</label>
-                            <input type="password" name="password" required class="input-field" placeholder="Min. 8 karakter">
-                            @error('password')<p class="error-msg"><i class="uil uil-exclamation-circle"></i>{{ $message }}</p>@enderror
-                        </div>
-                        <div>
-                            <label class="label">Konfirmasi Password</label>
-                            <input type="password" name="password_confirmation" required class="input-field" placeholder="Ulangi password">
-                        </div>
-                    </div>
-                </div>
-
-                {{-- SECTION 2: DATA TOKO --}}
+                {{-- SECTION 1: DATA TOKO --}}
                 <div class="bg-gradient-to-br from-indigo-50 to-white rounded-2xl p-6 border-2 border-indigo-100">
                     <div class="flex items-center gap-3 mb-5">
-                        <div class="flex items-center justify-center w-10 h-10 bg-indigo-600 text-white rounded-full font-bold">2</div>
+                        <div class="flex items-center justify-center w-10 h-10 bg-indigo-600 text-white rounded-full font-bold">1</div>
                         <h2 class="text-xl font-bold text-gray-900">Informasi Toko</h2>
                     </div>
                     <div class="space-y-4">
@@ -138,43 +132,52 @@
                     </div>
                 </div>
 
-                {{-- SECTION 3: DATA PIC --}}
+                {{-- SECTION 2: DATA PEMILIK TOKO (PIC) --}}
                 <div class="bg-gradient-to-br from-blue-50 to-white rounded-2xl p-6 border-2 border-blue-100">
                     <div class="flex items-center gap-3 mb-5">
-                        <div class="flex items-center justify-center w-10 h-10 bg-blue-600 text-white rounded-full font-bold">3</div>
-                        <h2 class="text-xl font-bold text-gray-900">Data Penanggung Jawab (PIC)</h2>
+                        <div class="flex items-center justify-center w-10 h-10 bg-blue-600 text-white rounded-full font-bold">2</div>
+                        <h2 class="text-xl font-bold text-gray-900">Data Pemilik Toko (Anda)</h2>
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                            <label class="label">Nama PIC *</label>
-                            <input type="text" name="nama_pic" value="{{ old('nama_pic') }}" required class="input-field" placeholder="Nama penanggung jawab">
+                            <label class="label">Nama Lengkap *</label>
+                            <input type="text" name="nama_pic" value="{{ old('nama_pic') }}" required class="input-field" placeholder="Nama lengkap Anda">
                             @error('nama_pic')<p class="error-msg"><i class="uil uil-exclamation-circle"></i>{{ $message }}</p>@enderror
                         </div>
                         <div>
-                            <label class="label">No. Handphone PIC * <span class="text-xs text-gray-500">(format: 08xxx)</span></label>
+                            <label class="label">No. Handphone / WhatsApp * <span class="text-xs text-gray-500">(format: 08xxx)</span></label>
                             <input type="text" name="no_hp_pic" value="{{ old('no_hp_pic') }}" required pattern="(\\+62|62|0)[0-9]{9,12}" class="input-field" placeholder="081234567890">
                             <p class="text-xs text-gray-500 mt-1">Contoh: 081234567890 atau +6281234567890</p>
                             @error('no_hp_pic')<p class="error-msg"><i class="uil uil-exclamation-circle"></i>{{ $message }}</p>@enderror
                         </div>
                         <div>
-                            <label class="label">Email PIC *</label>
-                            <input type="email" name="email_pic" value="{{ old('email_pic') }}" required class="input-field" placeholder="pic@example.com">
+                            <label class="label">Email * <span class="text-xs text-gray-500">(gunakan untuk login)</span></label>
+                            <input type="email" name="email_pic" value="{{ old('email_pic') }}" required class="input-field" placeholder="email@example.com">
                             @error('email_pic')<p class="error-msg"><i class="uil uil-exclamation-circle"></i>{{ $message }}</p>@enderror
                         </div>
                         <div>
-                            <label class="label">No. KTP PIC * <span class="text-xs text-gray-500">(16 digit)</span></label>
+                            <label class="label">No. KTP (NIK) * <span class="text-xs text-gray-500">(16 digit)</span></label>
                             <input type="text" name="no_ktp_pic" value="{{ old('no_ktp_pic') }}" required maxlength="16" pattern="[0-9]{16}" class="input-field" placeholder="3374010101010001">
                             <p class="text-xs text-gray-500 mt-1">Harus 16 digit angka</p>
                             @error('no_ktp_pic')<p class="error-msg"><i class="uil uil-exclamation-circle"></i>{{ $message }}</p>@enderror
                         </div>
+                        <div>
+                            <label class="label">Password * <span class="text-xs text-gray-500">(min. 8 karakter)</span></label>
+                            <input type="password" name="password" required class="input-field" placeholder="Buat password untuk akun">
+                            @error('password')<p class="error-msg"><i class="uil uil-exclamation-circle"></i>{{ $message }}</p>@enderror
+                        </div>
+                        <div>
+                            <label class="label">Konfirmasi Password *</label>
+                            <input type="password" name="password_confirmation" required class="input-field" placeholder="Ulangi password">
+                        </div>
                     </div>
                 </div>
 
-                {{-- SECTION 4: ALAMAT PIC --}}
+                {{-- SECTION 3: ALAMAT --}}
                 <div class="bg-gradient-to-br from-teal-50 to-white rounded-2xl p-6 border-2 border-teal-100">
                     <div class="flex items-center gap-3 mb-5">
-                        <div class="flex items-center justify-center w-10 h-10 bg-teal-600 text-white rounded-full font-bold">4</div>
-                        <h2 class="text-xl font-bold text-gray-900">Alamat PIC</h2>
+                        <div class="flex items-center justify-center w-10 h-10 bg-teal-600 text-white rounded-full font-bold">3</div>
+                        <h2 class="text-xl font-bold text-gray-900">Alamat Lengkap</h2>
                     </div>
                     <div class="space-y-4">
                         <div>
@@ -203,12 +206,21 @@
                         </div>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
+                                <label class="label">Kecamatan *</label>
+                                <select name="kecamatan" id="kecamatan" required class="input-field">
+                                    <option value="">Pilih kecamatan</option>
+                                </select>
+                                @error('kecamatan')<p class="error-msg"><i class="uil uil-exclamation-circle"></i>{{ $message }}</p>@enderror
+                            </div>
+                            <div>
                                 <label class="label">Kota/Kabupaten *</label>
                                 <select name="kota" id="kota" required class="input-field">
                                     <option value="">Pilih kota/kabupaten</option>
                                 </select>
                                 @error('kota')<p class="error-msg"><i class="uil uil-exclamation-circle"></i>{{ $message }}</p>@enderror
                             </div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
                                 <label class="label">Provinsi *</label>
                                 <select name="provinsi" id="provinsi" required class="input-field">
@@ -254,29 +266,35 @@
                                 </select>
                                 @error('provinsi')<p class="error-msg"><i class="uil uil-exclamation-circle"></i>{{ $message }}</p>@enderror
                             </div>
+                            <div>
+                                <label class="label">Kode Pos *</label>
+                                <input type="text" name="kode_pos" value="{{ old('kode_pos') }}" required maxlength="5" pattern="[0-9]{5}" class="input-field" placeholder="50275">
+                                <p class="text-xs text-gray-500 mt-1">5 digit angka</p>
+                                @error('kode_pos')<p class="error-msg"><i class="uil uil-exclamation-circle"></i>{{ $message }}</p>@enderror
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                {{-- SECTION 5: DOKUMEN --}}
+                {{-- SECTION 4: DOKUMEN --}}
                 <div class="bg-gradient-to-br from-orange-50 to-white rounded-2xl p-6 border-2 border-orange-100">
                     <div class="flex items-center gap-3 mb-5">
-                        <div class="flex items-center justify-center w-10 h-10 bg-orange-600 text-white rounded-full font-bold">5</div>
+                        <div class="flex items-center justify-center w-10 h-10 bg-orange-600 text-white rounded-full font-bold">4</div>
                         <h2 class="text-xl font-bold text-gray-900">Dokumen Verifikasi</h2>
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                            <label class="label">Foto PIC *</label>
+                            <label class="label">Foto Anda (Selfie) *</label>
                             <input type="file" name="foto_pic" required accept="image/jpeg,image/jpg,image/png" 
                                 class="w-full px-4 py-3 bg-white border-2 border-gray-200 rounded-xl text-gray-900 focus:border-orange-500 focus:ring-4 focus:ring-orange-100 transition file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-orange-50 file:text-orange-700 hover:file:bg-orange-100">
-                            <p class="text-xs text-gray-500 mt-2">Format: JPG, JPEG, PNG (Max. 2MB)</p>
+                            <p class="text-xs text-gray-500 mt-2">Foto wajah jelas, Format: JPG, JPEG, PNG (Max. 2MB)</p>
                             @error('foto_pic')<p class="error-msg"><i class="uil uil-exclamation-circle"></i>{{ $message }}</p>@enderror
                         </div>
                         <div>
-                            <label class="label">File KTP PIC *</label>
+                            <label class="label">File Scan KTP *</label>
                             <input type="file" name="file_ktp_pic" required accept="application/pdf,image/jpeg,image/jpg,image/png"
                                 class="w-full px-4 py-3 bg-white border-2 border-gray-200 rounded-xl text-gray-900 focus:border-orange-500 focus:ring-4 focus:ring-orange-100 transition file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-orange-50 file:text-orange-700 hover:file:bg-orange-100">
-                            <p class="text-xs text-gray-500 mt-2">Format: PDF, JPG, JPEG, PNG (Max. 4MB)</p>
+                            <p class="text-xs text-gray-500 mt-2">Scan atau foto KTP yang jelas, Format: PDF, JPG, JPEG, PNG (Max. 4MB)</p>
                             @error('file_ktp_pic')<p class="error-msg"><i class="uil uil-exclamation-circle"></i>{{ $message }}</p>@enderror
                         </div>
                     </div>

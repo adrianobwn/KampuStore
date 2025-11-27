@@ -329,6 +329,19 @@
   
   <!-- Review Form -->
   <div style="position: sticky; top: 120px;">
+    @if($isSeller)
+      <div class="form-card" style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border: 2px solid #f59e0b;">
+        <div style="text-align: center; padding: 20px;">
+          <i class="uil uil-info-circle" style="font-size: 48px; color: #d97706; margin-bottom: 12px;"></i>
+          <h3 style="font-size: 18px; font-weight: 700; color: #92400e; margin-bottom: 8px;">
+            Ini Produk Anda
+          </h3>
+          <p style="color: #78350f; font-size: 14px; line-height: 1.6;">
+            Anda tidak dapat memberikan ulasan pada produk Anda sendiri. Hanya pembeli yang dapat memberikan ulasan.
+          </p>
+        </div>
+      </div>
+    @else
     <div id="review-form" class="form-card">
       <h3 style="font-size: 20px; font-weight: 700; color: #111827; margin-bottom: 20px;">
         <i class="uil uil-pen"></i>
@@ -381,6 +394,7 @@
         </button>
       </form>
     </div>
+    @endif
   </div>
 </div>
 

@@ -29,20 +29,30 @@ class AuthController extends Controller
 
             $user = Auth::user();
 
+            // Admin dapat login
             if ($user->is_admin) {
                 return redirect()->route('admin.dashboard');
             }
 
+            // Cek apakah user adalah seller
             if ($user->seller) {
                 return redirect()->route('seller.dashboard');
             } else {
-                return redirect()->route('products.index')
-                    ->with('warning', 'Silakan lengkapi pendaftaran toko Anda.');
+                // User tidak memiliki role yang valid (bukan admin, bukan seller)
+                // Ini seharusnya tidak terjadi karena registrasi langsung membuat seller
+                // Logout dan suruh registrasi ulang
+                Auth::logout();
+                $request->session()->invalidate();
+                $request->session()->regenerateToken();
+                
+                return redirect()->route('register')
+                    ->with('error', 'Akun Anda tidak terdaftar sebagai penjual. Silakan registrasi ulang sebagai penjual.')
+                    ->with('info', 'Catatan: Pembeli tidak perlu registrasi/login. Langsung belanja di market sebagai guest.');
             }
         }
 
         return back()
-            ->withErrors(['email' => 'Kredensial tidak valid'])
+            ->withErrors(['email' => 'Email atau password salah'])
             ->onlyInput('email');
     }
 
@@ -54,20 +64,11 @@ class AuthController extends Controller
     public function register(Request $request): RedirectResponse
     {
         $validated = $request->validate([
-            // User account
-            'name' => ['required', 'string', 'max:255'],
-            'email' => [
-                'required',
-                'string',
-                'email',
-                'max:255',
-                'unique:users,email',
-            ],
-            'password' => ['required', 'confirmed', Password::defaults()],
-
             // Seller/Toko data
             'nama_toko' => 'required|string|max:255',
             'deskripsi_singkat' => 'required|string|max:500',
+            
+            // Owner/PIC data (also used for login)
             'nama_pic' => 'required|string|max:255',
             'no_hp_pic' => [
                 'required',
@@ -77,28 +78,38 @@ class AuthController extends Controller
             'email_pic' => [
                 'required',
                 'email',
+                'unique:users,email',
             ],
-            'alamat_pic' => 'required|string',
-            'rt' => 'required|string|max:5',
-            'rw' => 'required|string|max:5',
-            'kelurahan' => 'required|string|max:255',
-            'provinsi' => 'required|string|max:255',
-            'kota' => 'required|string|max:255',
             'no_ktp_pic' => [
                 'required',
                 'string',
                 'regex:/^[0-9]{16}$/',
             ],
+            'password' => ['required', 'confirmed', Password::defaults()],
+            
+            // Address
+            'alamat_pic' => 'required|string',
+            'rt' => 'required|string|max:5',
+            'rw' => 'required|string|max:5',
+            'kelurahan' => 'required|string|max:255',
+            'kecamatan' => 'required|string|max:255',
+            'provinsi' => 'required|string|max:255',
+            'kota' => 'required|string|max:255',
+            'kode_pos' => 'required|string|max:10',
+            
+            // Documents
             'foto_pic' => 'required|image|mimes:jpg,jpeg,png|max:2048',
             'file_ktp_pic' => 'required|mimes:pdf,jpg,jpeg,png|max:4096',
         ], [
             'no_hp_pic.regex' => 'Nomor HP harus berformat Indonesia yang valid (contoh: 081234567890)',
             'no_ktp_pic.regex' => 'Nomor KTP harus 16 digit angka',
+            'email_pic.unique' => 'Email sudah terdaftar, silakan gunakan email lain',
         ]);
 
+        // Create user account using PIC data
         $user = User::create([
-            'name' => $validated['name'],
-            'email' => $validated['email'],
+            'name' => $validated['nama_pic'],
+            'email' => $validated['email_pic'],
             'password' => bcrypt($validated['password']),
         ]);
 
@@ -117,8 +128,10 @@ class AuthController extends Controller
             'rt' => $validated['rt'],
             'rw' => $validated['rw'],
             'kelurahan' => $validated['kelurahan'],
+            'kecamatan' => $validated['kecamatan'],
             'provinsi' => $validated['provinsi'],
             'kota' => $validated['kota'],
+            'kode_pos' => $validated['kode_pos'],
             'foto_pic' => $fotoPicPath,
             'file_ktp_pic' => $fileKtpPath,
             'status' => 'pending',

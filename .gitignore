@@ -22,3 +22,7 @@
 Homestead.json
 Homestead.yaml
 Thumbs.db
+
+# Backup files
+resources/views/_backup/
+resources/views/auth/_backup/

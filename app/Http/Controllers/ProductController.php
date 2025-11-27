@@ -95,7 +95,12 @@ class ProductController extends Controller
 
         $avg   = round($product->reviews()->avg('rating') ?? 0, 1);
         $count = $product->reviews()->count();
+        
+        // Check if current user is the seller of this product
+        $isSeller = auth()->check() 
+            && auth()->user()->seller 
+            && $product->seller_id === auth()->user()->seller->id;
 
-        return view('products.show', compact('product', 'avg', 'count'));
+        return view('products.show', compact('product', 'avg', 'count', 'isSeller'));
     }
 }

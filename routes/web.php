@@ -8,6 +8,7 @@ use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Admin\SellerRegistrationController;
 use App\Http\Controllers\Admin\SellerVerificationController;
 use App\Http\Controllers\Admin\AdminDashboardController;
+use App\Http\Controllers\Admin\ReportController;
 
 
 /*
@@ -93,6 +94,22 @@ Route::middleware(['auth', 'can:verify-sellers'])
                 ->name('approve');
             Route::post('/{seller}/reject', [SellerVerificationController::class, 'reject'])
                 ->name('reject');
+        });
+
+        // 🔹 Laporan (SRS-09 to SRS-14)
+        Route::prefix('laporan')->name('reports.')->group(function () {
+            Route::get('/sellers', [ReportController::class, 'sellers'])
+                ->name('sellers'); // SRS-09
+            Route::get('/sellers-by-location', [ReportController::class, 'sellersByLocation'])
+                ->name('sellers-location'); // SRS-10
+            Route::get('/product-ranking', [ReportController::class, 'productRanking'])
+                ->name('product-ranking'); // SRS-11
+            Route::get('/stock', [ReportController::class, 'stock'])
+                ->name('stock'); // SRS-12
+            Route::get('/stock-by-rating', [ReportController::class, 'stockByRating'])
+                ->name('stock-rating'); // SRS-13
+            Route::get('/restock', [ReportController::class, 'restock'])
+                ->name('restock'); // SRS-14
         });
     });
 

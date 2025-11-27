@@ -335,9 +335,22 @@
                 <p class="form-subtitle">
                     Masuk dengan akun penjual Anda untuk mengelola toko
                 </p>
+                @if(session('error'))
+                <div class="info-box" style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); color: #dc2626;">
+                    <strong><i class="uil uil-exclamation-triangle"></i> Error:</strong> {{ session('error') }}
+                </div>
+                @endif
+                
+                @if(session('info'))
+                <div class="info-box" style="background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.3); color: #2563eb;">
+                    <strong><i class="uil uil-info-circle"></i> Info:</strong> {{ session('info') }}
+                </div>
+                @endif
+                
                 <div class="info-box">
-                    <strong><i class="uil uil-info-circle"></i> Info:</strong> Login ini khusus untuk penjual. 
-                    Pembeli bisa langsung belanja tanpa login di <a href="{{ route('products.index') }}">halaman market</a>.
+                    <strong><i class="uil uil-info-circle"></i> Penting:</strong> Login ini khusus untuk <strong>penjual toko</strong>. 
+                    <br><br>
+                    <strong>Pembeli:</strong> Tidak perlu registrasi/login! Langsung belanja di <a href="{{ route('products.index') }}">halaman market</a> sebagai guest.
                 </div>
             </div>
 
@@ -405,9 +418,45 @@
         </div>
     </div>
 
-    @if(session('status'))
+    @if(session('status') || session('info') || session('error') || session('success'))
+    <div id="flash-notification" style="position: fixed; top: 20px; right: 20px; z-index: 9999; max-width: 400px; background: white; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); padding: 20px; animation: slideInRight 0.3s ease-out;">
+        <div style="display: flex; align-items: start; gap: 12px;">
+            @if(session('status') || session('success'))
+                <i class="uil uil-check-circle" style="font-size: 24px; color: #10b981;"></i>
+                <div style="flex: 1;">
+                    <div style="font-weight: 700; color: #059669; margin-bottom: 4px;">Berhasil!</div>
+                    <div style="color: #6b7280; font-size: 14px;">{{ session('status') ?? session('success') }}</div>
+                </div>
+            @elseif(session('info'))
+                <i class="uil uil-info-circle" style="font-size: 24px; color: #3b82f6;"></i>
+                <div style="flex: 1;">
+                    <div style="font-weight: 700; color: #2563eb; margin-bottom: 4px;">Informasi</div>
+                    <div style="color: #6b7280; font-size: 14px;">{{ session('info') }}</div>
+                </div>
+            @elseif(session('error'))
+                <i class="uil uil-times-circle" style="font-size: 24px; color: #ef4444;"></i>
+                <div style="flex: 1;">
+                    <div style="font-weight: 700; color: #dc2626; margin-bottom: 4px;">Error</div>
+                    <div style="color: #6b7280; font-size: 14px;">{{ session('error') }}</div>
+                </div>
+            @endif
+            <button onclick="this.parentElement.parentElement.remove()" style="background: none; border: none; cursor: pointer; padding: 0; color: #9ca3af; font-size: 20px;">×</button>
+        </div>
+    </div>
+    <style>
+        @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+    </style>
     <script>
-        alert('{{ session('status') }}');
+        setTimeout(() => {
+            const notification = document.getElementById('flash-notification');
+            if (notification) {
+                notification.style.animation = 'slideInRight 0.3s ease-out reverse';
+                setTimeout(() => notification.remove(), 300);
+            }
+        }, 5000);
     </script>
     @endif
 </body>

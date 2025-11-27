@@ -71,6 +71,39 @@
                         <a href="{{ route('admin.sellers.index') }}" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
                             <i class="uil uil-store mr-2"></i>Pengajuan Toko
                         </a>
+                        <div class="relative" x-data="{ openReports: false }">
+                            <button @click="openReports = !openReports" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                                <i class="uil uil-chart-line mr-2"></i>Laporan
+                                <i class="uil uil-angle-down ml-1"></i>
+                            </button>
+                            <div x-show="openReports" @click.away="openReports = false" 
+                                 x-transition:enter="transition ease-out duration-200"
+                                 x-transition:enter-start="opacity-0 scale-95"
+                                 x-transition:enter-end="opacity-100 scale-100"
+                                 class="absolute left-0 mt-2 w-64 rounded-lg shadow-lg bg-white ring-1 ring-black ring-opacity-5"
+                                 style="display: none;">
+                                <div class="py-2">
+                                    <a href="{{ route('admin.reports.sellers') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-50">
+                                        <i class="uil uil-users-alt mr-2"></i>Daftar Akun Penjual
+                                    </a>
+                                    <a href="{{ route('admin.reports.sellers-location') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-50">
+                                        <i class="uil uil-map-marker mr-2"></i>Penjual per Lokasi
+                                    </a>
+                                    <a href="{{ route('admin.reports.product-ranking') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-50">
+                                        <i class="uil uil-trophy mr-2"></i>Peringkat Produk
+                                    </a>
+                                    <a href="{{ route('admin.reports.stock') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-50">
+                                        <i class="uil uil-box mr-2"></i>Stok Produk
+                                    </a>
+                                    <a href="{{ route('admin.reports.stock-rating') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-50">
+                                        <i class="uil uil-star mr-2"></i>Stok by Rating
+                                    </a>
+                                    <a href="{{ route('admin.reports.restock') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-50">
+                                        <i class="uil uil-exclamation-triangle mr-2"></i>Restock Alert
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 
