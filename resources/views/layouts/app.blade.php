@@ -276,7 +276,7 @@
         <div class="auth-links">
           <a href="{{ route('login') }}" class="auth-btn btn-login">
             <i class="uil uil-shop"></i>
-            Login Penjual
+            Login
           </a>
           <a href="{{ route('register') }}" class="auth-btn btn-register">
             <i class="uil uil-store-alt"></i>

@@ -646,7 +646,7 @@
             <div class="nav-buttons">
                 <a href="{{ route('login') }}" class="btn btn-outline">
                     <i class="uil uil-signin"></i>
-                    Login Penjual
+                    Login
                 </a>
                 <a href="{{ route('register') }}" class="btn btn-primary">
                     <i class="uil uil-store-alt"></i>
@@ -832,7 +832,7 @@
                     <h4>Penjual</h4>
                     <ul>
                         <li><a href="{{ route('register') }}">Daftar Penjual</a></li>
-                        <li><a href="{{ route('login') }}">Login Penjual</a></li>
+                        <li><a href="{{ route('login') }}">Login</a></li>
                         <li><a href="{{ route('seller.dashboard') }}">Dashboard</a></li>
                     </ul>
                 </div>

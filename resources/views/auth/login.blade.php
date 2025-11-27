@@ -1,4 +1,4 @@
-@php($title = 'Login Penjual | kampuStore')
+@php($title = 'Login | kampuStore')
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -321,7 +321,7 @@
                 <div class="visual-icon">
                     <i class="uil uil-shop"></i>
                 </div>
-                <h2 class="visual-title">Login Penjual</h2>
+                <h2 class="visual-title">Login</h2>
                 <p class="visual-text">
                     Kelola toko dan produk Anda dengan mudah melalui dashboard penjual KampuStore
                 </p>

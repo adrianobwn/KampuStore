@@ -360,7 +360,7 @@
             @else
                 <a href="{{ route('login') }}" style="padding: 10px 24px; border-radius: 50px; font-size: 14px; font-weight: 600; background: white; color: #667eea; border: 2px solid #667eea; text-decoration: none; display: inline-flex; align-items: center; gap: 6px;">
                     <i class="uil uil-shop"></i>
-                    Login Penjual
+                    Login
                 </a>
                 <a href="{{ route('register') }}" style="padding: 10px 24px; border-radius: 50px; font-size: 14px; font-weight: 600; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: 2px solid transparent; text-decoration: none; display: inline-flex; align-items: center; gap: 6px;">
                     <i class="uil uil-store-alt"></i>
