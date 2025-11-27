@@ -185,41 +185,6 @@
                             <input type="text" name="alamat_pic" value="{{ old('alamat_pic') }}" required class="input-field" placeholder="Jl. Contoh No. 123">
                             @error('alamat_pic')<p class="error-msg"><i class="uil uil-exclamation-circle"></i>{{ $message }}</p>@enderror
                         </div>
-                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                            <div>
-                                <label class="label">RT *</label>
-                                <input type="text" name="rt" value="{{ old('rt') }}" required class="input-field" placeholder="001">
-                                @error('rt')<p class="error-msg"><i class="uil uil-exclamation-circle"></i>{{ $message }}</p>@enderror
-                            </div>
-                            <div>
-                                <label class="label">RW *</label>
-                                <input type="text" name="rw" value="{{ old('rw') }}" required class="input-field" placeholder="002">
-                                @error('rw')<p class="error-msg"><i class="uil uil-exclamation-circle"></i>{{ $message }}</p>@enderror
-                            </div>
-                            <div class="col-span-2">
-                                <label class="label">Kelurahan/Desa *</label>
-                                <select name="kelurahan" id="kelurahan" required class="input-field">
-                                    <option value="">Pilih kelurahan/desa</option>
-                                </select>
-                                @error('kelurahan')<p class="error-msg"><i class="uil uil-exclamation-circle"></i>{{ $message }}</p>@enderror
-                            </div>
-                        </div>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <label class="label">Kecamatan *</label>
-                                <select name="kecamatan" id="kecamatan" required class="input-field">
-                                    <option value="">Pilih kecamatan</option>
-                                </select>
-                                @error('kecamatan')<p class="error-msg"><i class="uil uil-exclamation-circle"></i>{{ $message }}</p>@enderror
-                            </div>
-                            <div>
-                                <label class="label">Kota/Kabupaten *</label>
-                                <select name="kota" id="kota" required class="input-field">
-                                    <option value="">Pilih kota/kabupaten</option>
-                                </select>
-                                @error('kota')<p class="error-msg"><i class="uil uil-exclamation-circle"></i>{{ $message }}</p>@enderror
-                            </div>
-                        </div>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
                                 <label class="label">Provinsi *</label>
@@ -267,12 +232,48 @@
                                 @error('provinsi')<p class="error-msg"><i class="uil uil-exclamation-circle"></i>{{ $message }}</p>@enderror
                             </div>
                             <div>
+                                <label class="label">Kota/Kabupaten *</label>
+                                <select name="kota" id="kota" required class="input-field">
+                                    <option value="">Pilih kota/kabupaten</option>
+                                </select>
+                                @error('kota')<p class="error-msg"><i class="uil uil-exclamation-circle"></i>{{ $message }}</p>@enderror
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="label">Kecamatan *</label>
+                                <select name="kecamatan" id="kecamatan" required class="input-field">
+                                    <option value="">Pilih kecamatan</option>
+                                </select>
+                                @error('kecamatan')<p class="error-msg"><i class="uil uil-exclamation-circle"></i>{{ $message }}</p>@enderror
+                            </div>
+                            <div>
+                                <label class="label">Kelurahan/Desa *</label>
+                                <select name="kelurahan" id="kelurahan" required class="input-field">
+                                    <option value="">Pilih kelurahan/desa</option>
+                                </select>
+                                @error('kelurahan')<p class="error-msg"><i class="uil uil-exclamation-circle"></i>{{ $message }}</p>@enderror
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            <div>
+                                <label class="label">RT *</label>
+                                <input type="text" name="rt" value="{{ old('rt') }}" required class="input-field" placeholder="001">
+                                @error('rt')<p class="error-msg"><i class="uil uil-exclamation-circle"></i>{{ $message }}</p>@enderror
+                            </div>
+                            <div>
+                                <label class="label">RW *</label>
+                                <input type="text" name="rw" value="{{ old('rw') }}" required class="input-field" placeholder="002">
+                                @error('rw')<p class="error-msg"><i class="uil uil-exclamation-circle"></i>{{ $message }}</p>@enderror
+                            </div>
+                            <div class="col-span-2">
                                 <label class="label">Kode Pos *</label>
                                 <input type="text" name="kode_pos" value="{{ old('kode_pos') }}" required maxlength="5" pattern="[0-9]{5}" class="input-field" placeholder="50275">
                                 <p class="text-xs text-gray-500 mt-1">5 digit angka</p>
                                 @error('kode_pos')<p class="error-msg"><i class="uil uil-exclamation-circle"></i>{{ $message }}</p>@enderror
                             </div>
                         </div>
+
                     </div>
                 </div>
 
@@ -323,15 +324,90 @@
 </footer>
 
 <script>
-// Data Wilayah Indonesia (Cascading)
+// API Wilayah Indonesia - wilayah.id (Data Lengkap 2025)
+const API_BASE = 'https://www.emsifa.com/api-wilayah-indonesia/api';
+
+// Cache untuk menyimpan data yang sudah di-fetch (agar tidak fetch ulang)
+const dataCache = {
+    provinces: null,
+    regencies: {},
+    districts: {},
+    villages: {}
+};
+
+// Helper function untuk fetch data dari API
+async function fetchWilayahData(url) {
+    try {
+        const response = await fetch(url);
+        if (!response.ok) throw new Error('Network response was not ok');
+        return await response.json();
+    } catch (error) {
+        console.error('Error fetching data:', error);
+        return [];
+    }
+}
+
+// Fallback data untuk offline mode (data minimal)
 const wilayahData = {
     "DKI Jakarta": {
-        "Jakarta Pusat": ["Menteng", "Tanah Abang", "Gambir", "Kemayoran", "Sawah Besar", "Cempaka Putih", "Johar Baru", "Senen"],
-        "Jakarta Utara": ["Koja", "Kelapa Gading", "Tanjung Priok", "Pademangan", "Penjaringan", "Cilincing"],
-        "Jakarta Barat": ["Kebon Jeruk", "Tambora", "Taman Sari", "Grogol Petamburan", "Cengkareng", "Kalideres", "Palmerah", "Kembangan"],
-        "Jakarta Selatan": ["Kebayoran Baru", "Kebayoran Lama", "Cilandak", "Jagakarsa", "Mampang Prapatan", "Pancoran", "Pasar Minggu", "Pesanggrahan", "Setiabudi", "Tebet"],
-        "Jakarta Timur": ["Matraman", "Pulo Gadung", "Jatinegara", "Kramat Jati", "Pasar Rebo", "Cakung", "Cipayung", "Ciracas", "Duren Sawit", "Makasar"],
-        "Kepulauan Seribu": ["Pulau Tidung", "Pulau Pramuka", "Pulau Harapan", "Pulau Untung Jawa"]
+        "Jakarta Pusat": {
+            "Menteng": ["Menteng", "Pegangsaan", "Cikini", "Kebon Sirih", "Gondangdia"],
+            "Tanah Abang": ["Tanah Abang", "Bendungan Hilir", "Karet Tengsin", "Petamburan", "Kebon Melati"],
+            "Gambir": ["Gambir", "Cideng", "Petojo Utara", "Petojo Selatan", "Duri Pulo"],
+            "Kemayoran": ["Kemayoran", "Gunung Sahari Selatan", "Serdang", "Cempaka Putih Timur"],
+            "Sawah Besar": ["Pasar Baru", "Karang Anyar", "Kartini", "Gunung Sahari"],
+            "Cempaka Putih": ["Cempaka Putih Barat", "Cempaka Putih Timur", "Rawasari"],
+            "Johar Baru": ["Johar Baru", "Kampung Rawa", "Galur", "Tanah Tinggi"],
+            "Senen": ["Senen", "Kramat", "Bungur", "Paseban", "Kwitang"]
+        },
+        "Jakarta Utara": {
+            "Koja": ["Koja", "Tugu Utara", "Tugu Selatan", "Lagoa", "Rawa Badak"],
+            "Kelapa Gading": ["Kelapa Gading Barat", "Kelapa Gading Timur", "Pegangsaan Dua"],
+            "Tanjung Priok": ["Tanjung Priok", "Sunter Agung", "Sunter Jaya", "Papanggo"],
+            "Pademangan": ["Pademangan Barat", "Pademangan Timur", "Ancol"],
+            "Penjaringan": ["Penjaringan", "Pluit", "Pejagalan", "Kamal Muara"],
+            "Cilincing": ["Cilincing", "Kalibaru", "Semper", "Sukapura", "Marunda"]
+        },
+        "Jakarta Barat": {
+            "Kebon Jeruk": ["Kebon Jeruk", "Sukabumi Utara", "Kelapa Dua", "Duri Kepa"],
+            "Tambora": ["Tambora", "Roa Malaka", "Pekojan", "Jembatan Lima"],
+            "Taman Sari": ["Taman Sari", "Krukut", "Maphar", "Tangki"],
+            "Grogol Petamburan": ["Grogol", "Tomang", "Wijaya Kusuma", "Jelambar"],
+            "Cengkareng": ["Cengkareng Barat", "Cengkareng Timur", "Kapuk", "Kedaung Kaliangke"],
+            "Kalideres": ["Kalideres", "Semanan", "Tegal Alur", "Pegadungan", "Kamal"],
+            "Palmerah": ["Palmerah", "Slipi", "Kota Bambu", "Jatipulo"],
+            "Kembangan": ["Kembangan Utara", "Kembangan Selatan", "Meruya Utara", "Meruya Selatan"]
+        },
+        "Jakarta Selatan": {
+            "Kebayoran Baru": ["Selong", "Gunung", "Kramat Pela", "Gandaria Utara", "Cipete Utara"],
+            "Kebayoran Lama": ["Kebayoran Lama Utara", "Kebayoran Lama Selatan", "Pondok Pinang", "Cipulir"],
+            "Cilandak": ["Cilandak", "Lebak Bulus", "Pondok Labu", "Cipete Selatan"],
+            "Jagakarsa": ["Jagakarsa", "Lenteng Agung", "Tanjung Barat", "Ciganjur"],
+            "Mampang Prapatan": ["Mampang Prapatan", "Bangka", "Pela Mampang", "Kuningan Barat"],
+            "Pancoran": ["Pancoran", "Kalibata", "Rawa Jati", "Duren Tiga", "Cikoko"],
+            "Pasar Minggu": ["Pasar Minggu", "Jati Padang", "Ragunan", "Cilandak Timur"],
+            "Pesanggrahan": ["Pesanggrahan", "Bintaro", "Petukangan Utara", "Ulujami"],
+            "Setiabudi": ["Setiabudi", "Kuningan Timur", "Karet", "Karet Semanggi"],
+            "Tebet": ["Tebet Barat", "Tebet Timur", "Kebon Baru", "Bukit Duri", "Manggarai"]
+        },
+        "Jakarta Timur": {
+            "Matraman": ["Matraman", "Palmeriam", "Kebon Manggis", "Utan Kayu"],
+            "Pulo Gadung": ["Pulo Gadung", "Pisangan Timur", "Rawamangun", "Jati"],
+            "Jatinegara": ["Jatinegara", "Kampung Melayu", "Bidaracina", "Cipinang"],
+            "Kramat Jati": ["Kramat Jati", "Batu Ampar", "Balekambang", "Cawang"],
+            "Pasar Rebo": ["Pasar Rebo", "Cijantung", "Gedong", "Baru"],
+            "Cakung": ["Cakung Barat", "Cakung Timur", "Pulo Gebang", "Ujung Menteng"],
+            "Cipayung": ["Cipayung", "Bambu Apus", "Cilangkap", "Pondok Ranggon"],
+            "Ciracas": ["Ciracas", "Susukan", "Cibubur", "Kelapa Dua Wetan"],
+            "Duren Sawit": ["Duren Sawit", "Pondok Bambu", "Pondok Kelapa", "Malaka Jaya"],
+            "Makasar": ["Makasar", "Pinang Ranti", "Kebon Pala", "Halim Perdana Kusuma"]
+        },
+        "Kepulauan Seribu": {
+            "Pulau Tidung": ["Tidung Besar", "Tidung Kecil"],
+            "Pulau Pramuka": ["Pramuka", "Panggang"],
+            "Pulau Harapan": ["Harapan", "Kelapa"],
+            "Pulau Untung Jawa": ["Untung Jawa"]
+        }
     },
     "Jawa Barat": {
         "Kota Bandung": ["Cibeunying Kidul", "Cibeunying Kaler", "Coblong", "Sukasari", "Sukajadi", "Cicendo", "Andir", "Bandung Kulon", "Bandung Wetan", "Sumur Bandung", "Regol", "Batununggal", "Lengkong", "Buah Batu", "Cidadap", "Antapani", "Arcamanik", "Cibiru"],
@@ -348,7 +424,24 @@ const wilayahData = {
         "Kabupaten Cianjur": ["Cianjur", "Warungkondang", "Mande", "Cibeber", "Cipanas"]
     },
     "Jawa Tengah": {
-        "Kota Semarang": ["Semarang Tengah", "Semarang Utara", "Semarang Timur", "Semarang Selatan", "Semarang Barat", "Gayamsari", "Candisari", "Gajahmungkur", "Tembalang", "Banyumanik", "Gunungpati", "Pedurungan", "Genuk", "Tugu", "Ngaliyan", "Mijen"],
+        "Kota Semarang": {
+            "Semarang Tengah": ["Purwodinatan", "Kauman", "Pekunden", "Miroto", "Brumbungan", "Pandansari", "Pindrikan Kidul", "Pindrikan Lor", "Kranggan", "Gabahan", "Jagalan", "Karangkidul", "Kembangsari", "Bangunharjo"],
+            "Semarang Utara": ["Kuningan", "Bandarharjo", "Tanjung Mas", "Panggung Lor", "Plombokan", "Purwosari", "Dadapsari", "Bulu Lor"],
+            "Semarang Timur": ["Mlatibaru", "Mlatiharjo", "Karangtempel", "Kemijen", "Bugangan", "Rejomulyo", "Rejosari", "Sarirejo", "Kebonagung", "Karangturi"],
+            "Semarang Selatan": ["Lamper Lor", "Lamper Kidul", "Lamper Tengah", "Randusari", "Barusari", "Bulustalan", "Pleburan", "Wonodri", "Peterongan", "Mugassari"],
+            "Semarang Barat": ["Ngemplak Simongan", "Tambakharjo", "Karangayu", "Bongsari", "Gisikdrono", "Manyaran", "Cabean", "Salaman Mloyo", "Krapyak", "Krobokan", "Bojong Salaman"],
+            "Gayamsari": ["Kaligawe", "Sambirejo", "Sawah Besar", "Gayamsari", "Siwalan", "Pandean Lamper", "Tambakrejo"],
+            "Candisari": ["Candi", "Jomblang", "Jatingaleh", "Wonotingal", "Karanganyar Gunung", "Kaliwiru", "Tegalsari"],
+            "Gajahmungkur": ["Gajahmungkur", "Bendungan", "Lempongsari", "Sampangan", "Petompon", "Karangkidul", "Sari Rejo"],
+            "Tembalang": ["Tembalang", "Bulusan", "Mangunharjo", "Meteseh", "Sendangmulyo", "Kramas", "Tandang", "Rowosari", "Sendangguwo", "Sambiroto", "Jangli"],
+            "Banyumanik": ["Banyumanik", "Srondol Kulon", "Srondol Wetan", "Tinjomoyo", "Ngesrep", "Sumurboto", "Padangsari", "Pedalangan", "Pudakpayung", "Gedawang"],
+            "Gunungpati": ["Gunungpati", "Sadeng", "Pongangan", "Pakintelan", "Nongkosawit", "Sukorejo", "Kandri", "Ngijo", "Sekaran", "Mangunsari", "Plalangan", "Patemon"],
+            "Pedurungan": ["Pedurungan Tengah", "Pedurungan Lor", "Pedurungan Kidul", "Kalicari", "Tlogomulyo", "Palebon", "Penggaron Lor", "Plamongan Sari", "Muktiharjo Lor", "Gemah"],
+            "Genuk": ["Genuksari", "Banjardowo", "Trimulyo", "Bangetayu Kulon", "Bangetayu Wetan", "Gebangsari", "Muktiharjo Kidul", "Kudu", "Terboyo Kulon", "Terboyo Wetan"],
+            "Tugu": ["Randugarut", "Tugurejo", "Jrakah", "Karanganyar", "Mangkang Kulon", "Mangkang Wetan"],
+            "Ngaliyan": ["Ngaliyan", "Podorejo", "Purwoyoso", "Kalipancur", "Gondoriyo", "Tambakaji", "Wonosari", "Beringin", "Bambankerep"],
+            "Mijen": ["Mijen", "Jatibarang", "Ngadirgo", "Bubakan", "Kedungpane", "Cangkiran", "Wonoplumbon", "Wonolopo", "Jatisari", "Polaman"]
+        },
         "Kota Surakarta": ["Laweyan", "Serengan", "Pasar Kliwon", "Jebres", "Banjarsari"],
         "Kota Magelang": ["Magelang Utara", "Magelang Tengah", "Magelang Selatan"],
         "Kota Salatiga": ["Sidorejo", "Argomulyo", "Tingkir", "Sidomukti"],
@@ -487,11 +580,40 @@ const wilayahData = {
         "Kabupaten Natuna": ["Ranai", "Bunguran Timur", "Bunguran Barat", "Serasan"]
     },
     "Jambi": {
-        "Kota Jambi": ["Telanaipura", "Jambi Selatan", "Kotabaru", "Jelutung", "Pasar Jambi", "Pelayangan", "Danau Teluk", "Jambi Timur"],
-        "Kota Sungai Penuh": ["Sungai Penuh", "Pesisir Bukit", "Kumun Debai", "Tanah Kampung"],
-        "Kabupaten Batang Hari": ["Muara Bulian", "Maro Sebo", "Mersam", "Bajubang"],
-        "Kabupaten Muaro Jambi": ["Sengeti", "Mestong", "Jambi Luar Kota", "Sekernan"],
-        "Kabupaten Bungo": ["Muara Bungo", "Pelepat", "Jujuhan", "Tanah Sepenggal"]
+        "Kota Jambi": {
+            "Telanaipura": ["Telanaipura", "Tambak Sari", "Buluran Kenali", "Sungai Asam", "Eka Jaya"],
+            "Jambi Selatan": ["Pasir Putih", "Kenali Besar", "Kenali Asam Bawah", "Payo Lebar"],
+            "Kotabaru": ["Ulu Gedong", "Sijinjang", "Kebun Handil", "Sungai Putri"],
+            "Jelutung": ["Jelutung", "Handil Jaya", "Cempaka Putih", "Payo Selincah"],
+            "Pasar Jambi": ["Pasar Jambi", "Talang Banjar", "Beringin", "Sungai Hitam"],
+            "Pelayangan": ["Pelayangan", "Talang Jauh", "Mudung Laut", "Kasang"],
+            "Danau Teluk": ["Olak Kemang", "Lanjut", "Danau Teluk", "Penyengat Olak"],
+            "Jambi Timur": ["The Hok", "Sulanjana", "Tambak Sari", "Pakuan Baru"]
+        },
+        "Kota Sungai Penuh": {
+            "Sungai Penuh": ["Sungai Penuh", "Pasar Sungai Penuh", "Koto Renah", "Tanah Kampung"],
+            "Pesisir Bukit": ["Pesisir Bukit", "Dusun Baru", "Sumur Anyir", "Koto Tinggi"],
+            "Kumun Debai": ["Kumun Debai", "Kumun Mudik", "Dusun Tengah", "Koto Beringin"],
+            "Tanah Kampung": ["Tanah Kampung", "Pasar Tanah Kampung", "Pelayang Raya", "Dusun Dalam"]
+        },
+        "Kabupaten Batang Hari": {
+            "Muara Bulian": ["Muara Bulian", "Sengeti", "Pulau Pauh", "Teratai"],
+            "Maro Sebo": ["Maro Sebo Ilir", "Maro Sebo Ulu", "Sungai Baung", "Bulian Jaya"],
+            "Mersam": ["Mersam", "Rantau Gedang", "Sungai Landai", "Terusan"],
+            "Bajubang": ["Bajubang", "Simpang", "Olak", "Limbur Tembesi"]
+        },
+        "Kabupaten Muaro Jambi": {
+            "Sengeti": ["Sengeti", "Bukit Baling", "Sungai Baung", "Simpang Sungai Duren"],
+            "Mestong": ["Mestong", "Aur Gading", "Kebon IX", "Pematang Gajah"],
+            "Jambi Luar Kota": ["Pijoan", "Simpang Sei Duren", "Kasang Pudak", "Muara Kumpeh"],
+            "Sekernan": ["Sekernan", "Pudak", "Olak Besar", "Sungai Gelam"]
+        },
+        "Kabupaten Bungo": {
+            "Muara Bungo": ["Bungo Dani", "Jujun", "Pasir Putih", "Bungo Tanjung"],
+            "Pelepat": ["Pelepat", "Batu Kerbau", "Pelepat Ilir", "Jangkat"],
+            "Jujuhan": ["Jujuhan", "Jujuhan Ilir", "Tanah Tumbuh", "Sako"],
+            "Tanah Sepenggal": ["Tanah Sepenggal", "Pelayang", "Tanah Periuk", "Renah Kayu Embun"]
+        }
     },
     "Sumatera Selatan": {
         "Kota Palembang": ["Ilir Barat I", "Ilir Timur I", "Seberang Ulu I", "Kertapati", "Plaju", "Sako", "Sukarami", "Alang-Alang Lebar"],
@@ -627,73 +749,225 @@ const wilayahData = {
 // Inisialisasi Dropdown
 const provinsiSelect = document.getElementById('provinsi');
 const kotaSelect = document.getElementById('kota');
+const kecamatanSelect = document.getElementById('kecamatan');
 const kelurahanSelect = document.getElementById('kelurahan');
 
 // Simpan nilai old() jika ada error validasi
 const oldProvinsi = "{{ old('provinsi') }}";
 const oldKota = "{{ old('kota') }}";
+const oldKecamatan = "{{ old('kecamatan') }}";
 const oldKelurahan = "{{ old('kelurahan') }}";
 
-// Event listener untuk Provinsi
-provinsiSelect.addEventListener('change', function() {
-    const selectedProvinsi = this.value;
+// Loading state
+function setLoading(selectElement, isLoading) {
+    if (isLoading) {
+        selectElement.innerHTML = '<option value="">Loading...</option>';
+        selectElement.disabled = true;
+    } else {
+        selectElement.disabled = false;
+    }
+}
+
+// Load Provinsi dari API saat halaman load
+async function loadProvinsi() {
+    if (dataCache.provinces) {
+        populateProvinsiDropdown(dataCache.provinces);
+        return;
+    }
     
-    // Reset dropdown kota dan kelurahan
+    try {
+        const provinces = await fetchWilayahData(`${API_BASE}/provinces.json`);
+        dataCache.provinces = provinces;
+        populateProvinsiDropdown(provinces);
+    } catch (error) {
+        console.error('Gagal load provinsi, menggunakan fallback data');
+        // Fallback ke data hardcoded
+        const provinsiList = Object.keys(wilayahData);
+        provinsiSelect.innerHTML = '<option value="">Pilih Provinsi</option>';
+        provinsiList.forEach(prov => {
+            const option = document.createElement('option');
+            option.value = prov;
+            option.textContent = prov;
+            provinsiSelect.appendChild(option);
+        });
+    }
+}
+
+function populateProvinsiDropdown(provinces) {
+    provinsiSelect.innerHTML = '<option value="">Pilih Provinsi</option>';
+    provinces.forEach(prov => {
+        const option = document.createElement('option');
+        option.value = prov.id;
+        option.textContent = prov.name;
+        option.dataset.name = prov.name; // Simpan nama asli
+        provinsiSelect.appendChild(option);
+    });
+}
+
+// Event listener untuk Provinsi
+provinsiSelect.addEventListener('change', async function() {
+    const selectedProvinsiId = this.value;
+    const selectedProvinsiName = this.options[this.selectedIndex]?.dataset?.name || this.options[this.selectedIndex]?.text;
+    
+    // Reset dropdown
     kotaSelect.innerHTML = '<option value="">Pilih kota/kabupaten</option>';
+    kecamatanSelect.innerHTML = '<option value="">Pilih kecamatan</option>';
     kelurahanSelect.innerHTML = '<option value="">Pilih kelurahan/desa</option>';
     
-    // Jika provinsi dipilih, populate kota
-    if (selectedProvinsi && wilayahData[selectedProvinsi]) {
-        const kotaList = Object.keys(wilayahData[selectedProvinsi]);
-        kotaList.forEach(kota => {
-            const option = document.createElement('option');
-            option.value = kota;
-            option.textContent = kota;
-            kotaSelect.appendChild(option);
-        });
+    if (!selectedProvinsiId) return;
+    
+    // Cek cache
+    if (dataCache.regencies[selectedProvinsiId]) {
+        populateKotaDropdown(dataCache.regencies[selectedProvinsiId]);
+        return;
+    }
+    
+    // Load dari API
+    setLoading(kotaSelect, true);
+    try {
+        const regencies = await fetchWilayahData(`${API_BASE}/regencies/${selectedProvinsiId}.json`);
+        dataCache.regencies[selectedProvinsiId] = regencies;
+        populateKotaDropdown(regencies);
+    } catch (error) {
+        console.error('Gagal load kota, menggunakan fallback');
+        // Fallback ke hardcoded data
+        if (wilayahData[selectedProvinsiName]) {
+            const kotaList = Object.keys(wilayahData[selectedProvinsiName]);
+            kotaSelect.innerHTML = '<option value="">Pilih kota/kabupaten</option>';
+            kotaList.forEach(kota => {
+                const option = document.createElement('option');
+                option.value = kota;
+                option.textContent = kota;
+                kotaSelect.appendChild(option);
+            });
+        }
+    } finally {
+        setLoading(kotaSelect, false);
     }
 });
 
+function populateKotaDropdown(regencies) {
+    kotaSelect.innerHTML = '<option value="">Pilih kota/kabupaten</option>';
+    regencies.forEach(reg => {
+        const option = document.createElement('option');
+        option.value = reg.id;
+        option.textContent = reg.name;
+        option.dataset.name = reg.name;
+        kotaSelect.appendChild(option);
+    });
+}
+
 // Event listener untuk Kota
-kotaSelect.addEventListener('change', function() {
-    const selectedProvinsi = provinsiSelect.value;
-    const selectedKota = this.value;
+kotaSelect.addEventListener('change', async function() {
+    const selectedKotaId = this.value;
+    
+    // Reset dropdown
+    kecamatanSelect.innerHTML = '<option value="">Pilih kecamatan</option>';
+    kelurahanSelect.innerHTML = '<option value="">Pilih kelurahan/desa</option>';
+    
+    if (!selectedKotaId) return;
+    
+    // Cek cache
+    if (dataCache.districts[selectedKotaId]) {
+        populateKecamatanDropdown(dataCache.districts[selectedKotaId]);
+        return;
+    }
+    
+    // Load dari API
+    setLoading(kecamatanSelect, true);
+    try {
+        const districts = await fetchWilayahData(`${API_BASE}/districts/${selectedKotaId}.json`);
+        dataCache.districts[selectedKotaId] = districts;
+        populateKecamatanDropdown(districts);
+    } catch (error) {
+        console.error('Gagal load kecamatan:', error);
+        kecamatanSelect.innerHTML = '<option value="">Data tidak tersedia</option>';
+    } finally {
+        setLoading(kecamatanSelect, false);
+    }
+});
+
+function populateKecamatanDropdown(districts) {
+    kecamatanSelect.innerHTML = '<option value="">Pilih kecamatan</option>';
+    districts.forEach(dist => {
+        const option = document.createElement('option');
+        option.value = dist.id;
+        option.textContent = dist.name;
+        option.dataset.name = dist.name;
+        kecamatanSelect.appendChild(option);
+    });
+}
+
+// Event listener untuk Kecamatan
+kecamatanSelect.addEventListener('change', async function() {
+    const selectedKecamatanId = this.value;
     
     // Reset dropdown kelurahan
     kelurahanSelect.innerHTML = '<option value="">Pilih kelurahan/desa</option>';
     
-    // Jika kota dipilih, populate kelurahan
-    if (selectedProvinsi && selectedKota && wilayahData[selectedProvinsi][selectedKota]) {
-        const kelurahanList = wilayahData[selectedProvinsi][selectedKota];
-        kelurahanList.forEach(kelurahan => {
-            const option = document.createElement('option');
-            option.value = kelurahan;
-            option.textContent = kelurahan;
-            kelurahanSelect.appendChild(option);
-        });
+    if (!selectedKecamatanId) return;
+    
+    // Cek cache
+    if (dataCache.villages[selectedKecamatanId]) {
+        populateKelurahanDropdown(dataCache.villages[selectedKecamatanId]);
+        return;
+    }
+    
+    // Load dari API
+    setLoading(kelurahanSelect, true);
+    try {
+        const villages = await fetchWilayahData(`${API_BASE}/villages/${selectedKecamatanId}.json`);
+        dataCache.villages[selectedKecamatanId] = villages;
+        populateKelurahanDropdown(villages);
+    } catch (error) {
+        console.error('Gagal load kelurahan:', error);
+        kelurahanSelect.innerHTML = '<option value="">Data tidak tersedia</option>';
+    } finally {
+        setLoading(kelurahanSelect, false);
     }
 });
 
-// Restore nilai old() setelah page load (jika ada error validasi)
-window.addEventListener('DOMContentLoaded', function() {
+function populateKelurahanDropdown(villages) {
+    kelurahanSelect.innerHTML = '<option value="">Pilih kelurahan/desa</option>';
+    villages.forEach(vill => {
+        const option = document.createElement('option');
+        option.value = vill.name; // Simpan nama asli untuk submit form
+        option.textContent = vill.name;
+        kelurahanSelect.appendChild(option);
+    });
+}
+
+// Load provinsi saat halaman dimuat
+window.addEventListener('DOMContentLoaded', async function() {
+    await loadProvinsi();
+    
+    // Restore nilai old() setelah provinsi ter-load (jika ada error validasi)
     if (oldProvinsi) {
         provinsiSelect.value = oldProvinsi;
-        provinsiSelect.dispatchEvent(new Event('change'));
+        await provinsiSelect.dispatchEvent(new Event('change'));
         
         // Tunggu sebentar agar kota ter-populate
-        setTimeout(() => {
+        setTimeout(async () => {
             if (oldKota) {
                 kotaSelect.value = oldKota;
-                kotaSelect.dispatchEvent(new Event('change'));
+                await kotaSelect.dispatchEvent(new Event('change'));
                 
-                // Tunggu sebentar agar kelurahan ter-populate
-                setTimeout(() => {
-                    if (oldKelurahan) {
-                        kelurahanSelect.value = oldKelurahan;
+                // Tunggu sebentar agar kecamatan ter-populate
+                setTimeout(async () => {
+                    if (oldKecamatan) {
+                        kecamatanSelect.value = oldKecamatan;
+                        await kecamatanSelect.dispatchEvent(new Event('change'));
+                        
+                        // Tunggu sebentar agar kelurahan ter-populate
+                        setTimeout(() => {
+                            if (oldKelurahan) {
+                                kelurahanSelect.value = oldKelurahan;
+                            }
+                        }, 500);
                     }
-                }, 100);
+                }, 500);
             }
-        }, 100);
+        }, 500);
     }
 });
 </script>
