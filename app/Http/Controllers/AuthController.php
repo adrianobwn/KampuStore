@@ -33,11 +33,8 @@ class AuthController extends Controller
                 return redirect()->route('admin.dashboard');
             }
 
-            if ($user->seller && $user->seller->status === 'approved') {
+            if ($user->seller) {
                 return redirect()->route('seller.dashboard');
-            } elseif ($user->seller && $user->seller->status === 'pending') {
-                return redirect()->route('products.index')
-                    ->with('info', 'Toko Anda sedang dalam proses verifikasi admin.');
             } else {
                 return redirect()->route('products.index')
                     ->with('warning', 'Silakan lengkapi pendaftaran toko Anda.');
