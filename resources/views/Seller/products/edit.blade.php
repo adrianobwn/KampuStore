@@ -465,37 +465,57 @@ document.addEventListener('DOMContentLoaded', function() {
     const imageInput = document.getElementById('images');
     const previewContainer = document.getElementById('newImagePreview');
     const previewGrid = document.getElementById('newPreviewGrid');
+    let selectedFiles = [];
 
     if (imageInput) {
         imageInput.addEventListener('change', function(e) {
-            const files = e.target.files;
-            previewGrid.innerHTML = '';
-            
-            if (files.length > 0) {
-                previewContainer.classList.remove('hidden');
-                
-                const maxFiles = Math.min(files.length, 5);
-                for (let i = 0; i < maxFiles; i++) {
-                    const file = files[i];
-                    const reader = new FileReader();
-                    
-                    reader.onload = function(e) {
-                        const imgContainer = document.createElement('div');
-                        imgContainer.className = 'relative';
-                        imgContainer.innerHTML = `
-                            <img src="${e.target.result}" class="w-full h-32 object-cover rounded-lg border-2 border-slate-700">
-                            <span class="absolute top-1 left-1 bg-green-500 text-white text-xs px-2 py-1 rounded-full font-semibold">Baru</span>
-                        `;
-                        previewGrid.appendChild(imgContainer);
-                    };
-                    
-                    reader.readAsDataURL(file);
-                }
-            } else {
-                previewContainer.classList.add('hidden');
-            }
+            const files = Array.from(e.target.files);
+            selectedFiles = files.slice(0, 5);
+            renderNewPreviews();
         });
     }
+
+    function renderNewPreviews() {
+        previewGrid.innerHTML = '';
+        
+        if (selectedFiles.length > 0) {
+            previewContainer.classList.remove('hidden');
+            
+            selectedFiles.forEach((file, index) => {
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    const imgContainer = document.createElement('div');
+                    imgContainer.className = 'relative group';
+                    imgContainer.innerHTML = `
+                        <img src="${e.target.result}" class="w-full h-32 object-cover rounded-lg border-2 border-slate-700">
+                        <span class="absolute top-1 left-1 bg-green-500 text-white text-xs px-2 py-1 rounded-full font-semibold">Baru</span>
+                        <button type="button" class="absolute -top-2 -right-2 w-6 h-6 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-lg" onclick="removeNewImage(${index})" title="Hapus gambar">
+                            <i class="uil uil-times text-sm"></i>
+                        </button>
+                    `;
+                    previewGrid.appendChild(imgContainer);
+                };
+                
+                reader.readAsDataURL(file);
+            });
+        } else {
+            previewContainer.classList.add('hidden');
+        }
+        
+        updateNewFileInput();
+    }
+
+    function updateNewFileInput() {
+        const dt = new DataTransfer();
+        selectedFiles.forEach(file => dt.items.add(file));
+        imageInput.files = dt.files;
+    }
+
+    window.removeNewImage = function(index) {
+        selectedFiles.splice(index, 1);
+        renderNewPreviews();
+    };
 
     const priceDisplay = document.getElementById('price_display');
     const priceHidden = document.getElementById('price');

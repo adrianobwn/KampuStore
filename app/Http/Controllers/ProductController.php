@@ -110,9 +110,9 @@ class ProductController extends Controller
         $showPlaceholder = !$showImages && !$product->image_url;
         
         // Check if current user is the seller of this product
-        $isSeller = auth()->check() 
-            && auth()->user()->seller 
-            && $product->seller_id === auth()->user()->seller->id;
+        $isSeller = Auth::check() 
+            && Auth::user()->seller 
+            && $product->seller_id === Auth::user()->seller->id;
 
         return view('products.show', compact('product', 'avg', 'count', 'isSeller', 'images', 'showImages', 'hasMultipleImages', 'showFallback', 'showPlaceholder'));
     }

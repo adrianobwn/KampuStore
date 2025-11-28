@@ -137,6 +137,15 @@
 
         .preview-box { margin-top:16px; }
         .preview-box img { width:160px;height:160px;object-fit:cover;border-radius:12px;border:2px solid var(--card-border); }
+        .preview-item { position:relative;display:inline-block; }
+        .preview-item .btn-remove {
+            position:absolute;top:-8px;right:-8px;width:24px;height:24px;
+            background:#ef4444;color:#fff;border:none;border-radius:50%;
+            font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;
+            opacity:0;transition:opacity 0.2s;z-index:10;box-shadow:0 2px 6px rgba(0,0,0,0.3);
+        }
+        .preview-item:hover .btn-remove { opacity:1; }
+        .preview-item .btn-remove:hover { background:#dc2626;transform:scale(1.1); }
 
         .form-actions { display:flex;gap:16px;margin-top:32px; }
         .btn-submit {
@@ -360,53 +369,93 @@ document.addEventListener('DOMContentLoaded', function() {
     const previewContainer = document.getElementById('imagePreviewContainer');
     const previewGrid = document.getElementById('previewGrid');
     const primaryInput = document.getElementById('primary_image');
+    
+    let selectedFiles = [];
 
     if (imageInput) {
         imageInput.addEventListener('change', function(e) {
-            const files = e.target.files;
-            previewGrid.innerHTML = '';
+            const files = Array.from(e.target.files);
+            selectedFiles = files.slice(0, 5);
             
-            if (files.length > 0) {
-                previewContainer.style.display = 'block';
-                
-                if (files.length > 5) {
-                    alert('Maksimal 5 gambar. Hanya 5 gambar pertama yang akan digunakan.');
-                }
-                
-                const maxFiles = Math.min(files.length, 5);
-                for (let i = 0; i < maxFiles; i++) {
-                    const file = files[i];
-                    const reader = new FileReader();
-                    
-                    reader.onload = (function(index) {
-                        return function(e) {
-                            const imgContainer = document.createElement('div');
-                            imgContainer.style.cssText = 'position:relative;cursor:pointer;';
-                            imgContainer.innerHTML = `
-                                <img src="${e.target.result}" style="width:120px;height:120px;object-fit:cover;border-radius:10px;border:3px solid ${index === 0 ? 'var(--accent)' : 'var(--card-border)'};transition:all 0.2s;" data-index="${index}">
-                                <span style="position:absolute;top:4px;left:4px;background:${index === 0 ? 'var(--accent)' : 'rgba(0,0,0,0.6)'};color:${index === 0 ? '#111' : '#fff'};font-size:11px;padding:2px 8px;border-radius:20px;font-weight:600;">${index === 0 ? 'Utama' : index + 1}</span>
-                            `;
-                            imgContainer.onclick = function() {
-                                primaryInput.value = index;
-                                updatePrimarySelection(index);
-                            };
-                            previewGrid.appendChild(imgContainer);
-                        };
-                    })(i);
-                    
-                    reader.readAsDataURL(file);
-                }
-            } else {
-                previewContainer.style.display = 'none';
+            if (files.length > 5) {
+                alert('Maksimal 5 gambar. Hanya 5 gambar pertama yang akan digunakan.');
             }
+            
+            renderPreviews();
         });
     }
 
+    function renderPreviews() {
+        previewGrid.innerHTML = '';
+        
+        if (selectedFiles.length > 0) {
+            previewContainer.style.display = 'block';
+            
+            selectedFiles.forEach((file, index) => {
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    const imgContainer = document.createElement('div');
+                    imgContainer.className = 'preview-item';
+                    imgContainer.style.cssText = 'position:relative;cursor:pointer;';
+                    imgContainer.dataset.index = index;
+                    
+                    const isPrimary = index === parseInt(primaryInput.value);
+                    imgContainer.innerHTML = `
+                        <img src="${e.target.result}" style="width:120px;height:120px;object-fit:cover;border-radius:10px;border:3px solid ${isPrimary ? 'var(--accent)' : 'var(--card-border)'};transition:all 0.2s;" data-index="${index}">
+                        <span class="badge-label" style="position:absolute;top:4px;left:4px;background:${isPrimary ? 'var(--accent)' : 'rgba(0,0,0,0.6)'};color:${isPrimary ? '#111' : '#fff'};font-size:11px;padding:2px 8px;border-radius:20px;font-weight:600;">${isPrimary ? 'Utama' : index + 1}</span>
+                        <button type="button" class="btn-remove" data-index="${index}" title="Hapus gambar">
+                            <i class="uil uil-times"></i>
+                        </button>
+                    `;
+                    
+                    imgContainer.querySelector('img').onclick = function(ev) {
+                        ev.stopPropagation();
+                        primaryInput.value = index;
+                        updatePrimarySelection(index);
+                    };
+                    
+                    imgContainer.querySelector('.btn-remove').onclick = function(ev) {
+                        ev.stopPropagation();
+                        removeImage(index);
+                    };
+                    
+                    previewGrid.appendChild(imgContainer);
+                };
+                
+                reader.readAsDataURL(file);
+            });
+        } else {
+            previewContainer.style.display = 'none';
+            primaryInput.value = 0;
+        }
+        
+        updateFileInput();
+    }
+
+    function removeImage(index) {
+        selectedFiles.splice(index, 1);
+        
+        if (parseInt(primaryInput.value) === index) {
+            primaryInput.value = 0;
+        } else if (parseInt(primaryInput.value) > index) {
+            primaryInput.value = parseInt(primaryInput.value) - 1;
+        }
+        
+        renderPreviews();
+    }
+
+    function updateFileInput() {
+        const dt = new DataTransfer();
+        selectedFiles.forEach(file => dt.items.add(file));
+        imageInput.files = dt.files;
+    }
+
     function updatePrimarySelection(selectedIndex) {
-        const containers = previewGrid.querySelectorAll('div');
+        const containers = previewGrid.querySelectorAll('.preview-item');
         containers.forEach((container, idx) => {
             const img = container.querySelector('img');
-            const badge = container.querySelector('span');
+            const badge = container.querySelector('.badge-label');
             if (idx === selectedIndex) {
                 img.style.borderColor = 'var(--accent)';
                 badge.style.background = 'var(--accent)';

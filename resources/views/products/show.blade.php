@@ -341,6 +341,57 @@
     border-radius: 16px;
     border: 2px dashed var(--card-border);
   }
+
+  .description-wrapper {
+    position: relative;
+  }
+
+  .description-text {
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+  }
+
+  .description-text.collapsed {
+    max-height: 120px;
+    -webkit-mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+    mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+  }
+
+  .description-text.expanded {
+    max-height: none;
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+
+  .toggle-desc-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 12px;
+    padding: 8px 16px;
+    background: rgba(249,115,22,0.1);
+    color: #f97316;
+    border: 1px solid rgba(249,115,22,0.3);
+    border-radius: 50px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+
+  .toggle-desc-btn:hover {
+    background: rgba(249,115,22,0.2);
+    border-color: #f97316;
+  }
+
+  .toggle-desc-btn i {
+    font-size: 18px;
+    transition: transform 0.3s;
+  }
+
+  .toggle-desc-btn.expanded i {
+    transform: rotate(180deg);
+  }
   
   @media (max-width: 768px) {
     .product-container {
@@ -419,6 +470,36 @@
           }
         </script>
       @endif
+
+      <script>
+        function toggleDescription() {
+          const text = document.getElementById('descriptionText');
+          const btn = document.getElementById('toggleDescBtn');
+          
+          if (text.classList.contains('collapsed')) {
+            text.classList.remove('collapsed');
+            text.classList.add('expanded');
+            btn.classList.add('expanded');
+            btn.innerHTML = '<i class="uil uil-angle-up"></i> Lihat lebih sedikit';
+          } else {
+            text.classList.remove('expanded');
+            text.classList.add('collapsed');
+            btn.classList.remove('expanded');
+            btn.innerHTML = '<i class="uil uil-angle-down"></i> Lihat lebih banyak';
+          }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+          const descText = document.getElementById('descriptionText');
+          const toggleBtn = document.getElementById('toggleDescBtn');
+          if (descText && toggleBtn) {
+            if (descText.scrollHeight <= 120) {
+              toggleBtn.style.display = 'none';
+              descText.classList.remove('collapsed');
+            }
+          }
+        });
+      </script>
 
       @if($showFallback)
         @php
@@ -499,7 +580,14 @@
         <h3 class="section-title">
           <i class="uil uil-file-alt"></i> Deskripsi Produk
         </h3>
-        <p class="product-text" style="line-height: 1.7; white-space: pre-wrap;">{{ $product->description }}</p>
+        <div class="description-wrapper">
+          <p id="descriptionText" class="product-text description-text collapsed" style="line-height: 1.7; white-space: pre-wrap;">{{ $product->description }}</p>
+          @if(strlen($product->description) > 300)
+          <button type="button" id="toggleDescBtn" class="toggle-desc-btn" onclick="toggleDescription()">
+            <i class="uil uil-angle-down"></i> Lihat lebih banyak
+          </button>
+          @endif
+        </div>
       </div>
       
       <hr style="border: none; height: 1px; background: var(--card-border); margin: 28px 0;">
@@ -616,48 +704,6 @@
           @error('guest_email')<p class="error-text">{{ $message }}</p>@enderror
         </div>
         
-        {{-- SRS-08: Field Provinsi untuk tracking lokasi reviewer --}}
-        <div class="form-group">
-          <label class="form-label">Provinsi <span style="font-weight:400;color:var(--section-text);">(opsional)</span></label>
-          <select name="guest_province" class="form-select">
-            <option value="">Pilih provinsi...</option>
-            <option value="Aceh">Aceh</option>
-            <option value="Sumatera Utara">Sumatera Utara</option>
-            <option value="Sumatera Barat">Sumatera Barat</option>
-            <option value="Riau">Riau</option>
-            <option value="Jambi">Jambi</option>
-            <option value="Sumatera Selatan">Sumatera Selatan</option>
-            <option value="Bengkulu">Bengkulu</option>
-            <option value="Lampung">Lampung</option>
-            <option value="Kepulauan Bangka Belitung">Kepulauan Bangka Belitung</option>
-            <option value="Kepulauan Riau">Kepulauan Riau</option>
-            <option value="DKI Jakarta">DKI Jakarta</option>
-            <option value="Jawa Barat">Jawa Barat</option>
-            <option value="Jawa Tengah">Jawa Tengah</option>
-            <option value="DI Yogyakarta">DI Yogyakarta</option>
-            <option value="Jawa Timur">Jawa Timur</option>
-            <option value="Banten">Banten</option>
-            <option value="Bali">Bali</option>
-            <option value="Nusa Tenggara Barat">Nusa Tenggara Barat</option>
-            <option value="Nusa Tenggara Timur">Nusa Tenggara Timur</option>
-            <option value="Kalimantan Barat">Kalimantan Barat</option>
-            <option value="Kalimantan Tengah">Kalimantan Tengah</option>
-            <option value="Kalimantan Selatan">Kalimantan Selatan</option>
-            <option value="Kalimantan Timur">Kalimantan Timur</option>
-            <option value="Kalimantan Utara">Kalimantan Utara</option>
-            <option value="Sulawesi Utara">Sulawesi Utara</option>
-            <option value="Sulawesi Tengah">Sulawesi Tengah</option>
-            <option value="Sulawesi Selatan">Sulawesi Selatan</option>
-            <option value="Sulawesi Tenggara">Sulawesi Tenggara</option>
-            <option value="Gorontalo">Gorontalo</option>
-            <option value="Sulawesi Barat">Sulawesi Barat</option>
-            <option value="Maluku">Maluku</option>
-            <option value="Maluku Utara">Maluku Utara</option>
-            <option value="Papua Barat">Papua Barat</option>
-            <option value="Papua">Papua</option>
-          </select>
-          @error('guest_province')<p class="error-text">{{ $message }}</p>@enderror
-        </div>
         @endguest
         
         <div class="form-group">

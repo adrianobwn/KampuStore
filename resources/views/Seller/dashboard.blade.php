@@ -428,41 +428,6 @@
                 @endif
             </div>
 
-            {{-- SRS-08: Sebaran Reviewer per Provinsi --}}
-            <div class="chart-card">
-                <div class="chart-title"><i class="uil uil-map-marker"></i> Pemberi Rating per Provinsi</div>
-                <div class="chart-subtitle">Distribusi pengunjung yang memberikan ulasan</div>
-                @if($reviewersByProvince->count() > 0)
-                    @php $maxReviewer = $reviewersByProvince->max('total') ?: 1; @endphp
-                    <div class="progress-list">
-                        @foreach($reviewersByProvince as $idx => $item)
-                            @php 
-                                $revPct = ($item->total / $maxReviewer) * 100;
-                                $colors = ['#06b6d4', '#22c55e', '#f97316', '#a855f7', '#3b82f6'];
-                                $color = $colors[$idx % count($colors)];
-                            @endphp
-                            <div class="progress-item">
-                                <div class="progress-header">
-                                    <span class="progress-label">
-                                        <span class="progress-dot" style="background:{{ $color }};"></span>
-                                        {{ $item->guest_province }}
-                                    </span>
-                                    <span class="progress-value">{{ $item->total }} reviewer</span>
-                                </div>
-                                <div class="progress-bar">
-                                    <div class="progress-fill" style="width:{{ $revPct }}%; background:linear-gradient(to right, {{ $color }}, {{ $color }}99);"></div>
-                                </div>
-                            </div>
-                        @endforeach
-                    </div>
-                @else
-                    <div style="text-align:center;padding:30px;color:var(--text-muted);">
-                        <i class="uil uil-info-circle" style="font-size:32px;"></i>
-                        <p style="font-size:13px;">Belum ada data lokasi reviewer</p>
-                        <p style="font-size:11px;color:var(--text-muted);">Data akan muncul setelah pengunjung mengisi provinsi saat memberikan ulasan</p>
-                    </div>
-                @endif
-            </div>
         </div>
 
         {{-- Recent Products --}}
