@@ -1,4 +1,6 @@
-@php($title = 'Registrasi Toko | kampuStore')
+@php
+    $title = 'Registrasi Toko | kampuStore';
+@endphp
 <!DOCTYPE html>
 <html lang="id">
 <head>

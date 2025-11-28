@@ -3,434 +3,599 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Toko - {{ $seller->nama_toko }} | KampuStore</title>
+    <title>Dashboard Toko - {{ $seller->nama_toko }} | kampuStore</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.8/css/line.css">
     <style>
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        :root {
+            --bg-main: radial-gradient(circle at top left,#1f3b8a 0,#020617 52%,#020617 100%);
+            --nav-bg: rgba(2,6,23,0.95);
+            --card-bg: rgba(15,23,42,0.96);
+            --card-border: rgba(148,163,184,0.2);
+            --text-main: #f9fafb;
+            --text-muted: #9ca3af;
+            --sidebar-bg: rgba(15,23,42,0.96);
+            --sidebar-border: rgba(148,163,184,0.2);
+            --accent: #f97316;
+            --accent-hover: #fb923c;
         }
-        .fade-in-up {
-            animation: fadeInUp 0.6s ease-out forwards;
+        body.theme-light {
+            --bg-main: linear-gradient(135deg, #ffffff 0%, #e3e8ff 40%, #d5ddff 100%);
+            --nav-bg: rgba(255,255,255,0.95);
+            --card-bg: rgba(255,255,255,0.96);
+            --card-border: #e5e7eb;
+            --text-main: #111827;
+            --text-muted: #6b7280;
+            --sidebar-bg: rgba(255,255,255,0.96);
+            --sidebar-border: #e5e7eb;
         }
-        .card-hover {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        * { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif; box-sizing: border-box; }
+        body { margin:0; background: var(--bg-main); min-height:100vh; color: var(--text-main); }
+
+        /* NAV */
+        .nav {
+            position:fixed;top:0;left:0;right:0;z-index:100;
+            background:var(--nav-bg);backdrop-filter:blur(20px);
+            border-bottom:1px solid rgba(249,115,22,0.3);
+            padding:12px 32px;display:flex;align-items:center;justify-content:space-between;
         }
-        .card-hover:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.3), 0 8px 10px -6px rgb(0 0 0 / 0.3);
+        .nav-left { display:flex;align-items:center;gap:32px; }
+        .nav-logo { display:flex;align-items:center;gap:10px;text-decoration:none; }
+        .nav-logo img { height:38px;width:38px; }
+        .nav-logo span { font-size:22px;font-weight:700;color:var(--text-main); }
+        .nav-menu { display:flex;gap:24px; }
+        .nav-menu a { color:var(--text-muted);font-size:14px;font-weight:500;text-decoration:none;transition:color .2s; }
+        .nav-menu a:hover, .nav-menu a.active { color:var(--accent); }
+        .nav-actions { display:flex;align-items:center;gap:16px; }
+
+        /* Toggle */
+        .theme-toggle-wrapper{display:flex;justify-content:center;align-items:center;}
+        .toggle-switch{position:relative;display:inline-block;width:74px;height:36px;transform:scale(.95);transition:transform .2s;}
+        .toggle-switch:hover{transform:scale(1);}
+        .toggle-switch input{opacity:0;width:0;height:0;}
+        .slider{position:absolute;cursor:pointer;inset:0;background:linear-gradient(145deg,#fbbf24,#f97316);transition:.4s;border-radius:34px;box-shadow:0 0 12px rgba(249,115,22,0.5);overflow:hidden;}
+        .slider:before{position:absolute;content:"☀";height:28px;width:28px;left:4px;bottom:4px;background:white;transition:.4s;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;box-shadow:0 0 10px rgba(0,0,0,.15);z-index:2;}
+        .clouds{position:absolute;width:100%;height:100%;overflow:hidden;pointer-events:none;}
+        .cloud{position:absolute;width:24px;height:24px;fill:rgba(255,255,255,0.9);filter:drop-shadow(0 2px 3px rgba(0,0,0,0.08));}
+        .cloud1{top:6px;left:10px;animation:floatCloud1 8s infinite linear;}
+        .cloud2{top:10px;left:38px;transform:scale(.85);animation:floatCloud2 12s infinite linear;}
+        @keyframes floatCloud1{0%{transform:translateX(-20px);opacity:0;}20%{opacity:1;}80%{opacity:1;}100%{transform:translateX(80px);opacity:0;}}
+        @keyframes floatCloud2{0%{transform:translateX(-20px) scale(.85);opacity:0;}20%{opacity:.7;}80%{opacity:.7;}100%{transform:translateX(80px) scale(.85);opacity:0;}}
+        input.js-theme-toggle:checked + .slider{background:linear-gradient(145deg,#1f2937,#020617);box-shadow:0 0 14px rgba(15,23,42,0.8);}
+        input.js-theme-toggle:checked + .slider:before{transform:translateX(38px);content:"🌙";}
+        input.js-theme-toggle:checked + .slider .cloud{opacity:0;transform:translateY(-18px);}
+
+        .btn-logout {
+            border:none;background:rgba(239,68,68,0.1);color:#ef4444;cursor:pointer;
+            padding:8px 16px;border-radius:50px;font-size:13px;font-weight:600;transition:all .3s;
+            display:flex;align-items:center;gap:6px;
+        }
+        .btn-logout:hover{background:#ef4444;color:white;}
+
+        /* LAYOUT */
+        .main-container { max-width:1400px;margin:0 auto;padding:90px 24px 40px;display:grid;grid-template-columns:260px 1fr;gap:28px; }
+        @media(max-width:900px) { .main-container { grid-template-columns:1fr;padding-top:80px; } }
+
+        /* SIDEBAR */
+        .sidebar {
+            background:var(--sidebar-bg);border-radius:16px;padding:24px;
+            border:1px solid var(--sidebar-border);box-shadow:0 10px 40px rgba(0,0,0,0.2);
+            position:sticky;top:90px;max-height:calc(100vh - 110px);overflow-y:auto;
+        }
+        .sidebar-section { margin-bottom:24px;padding-bottom:20px;border-bottom:1px solid var(--sidebar-border); }
+        .sidebar-section:last-child { border-bottom:none;margin-bottom:0;padding-bottom:0; }
+        .sidebar-title { font-size:13px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:14px; }
+        .sidebar-menu { display:flex;flex-direction:column;gap:6px; }
+        .sidebar-link {
+            display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:10px;
+            font-size:14px;font-weight:500;color:var(--text-main);text-decoration:none;transition:all .2s;
+        }
+        .sidebar-link:hover { background:rgba(249,115,22,0.1);color:var(--accent); }
+        .sidebar-link.active { background:rgba(249,115,22,0.15);color:var(--accent);font-weight:600; }
+        .sidebar-link i { font-size:20px;width:24px;text-align:center; }
+        .sidebar-submenu { margin-left:36px;display:flex;flex-direction:column;gap:4px;margin-top:6px; }
+        .sidebar-submenu a {
+            display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:8px;
+            font-size:13px;color:var(--text-muted);text-decoration:none;transition:all .2s;
+        }
+        .sidebar-submenu a:hover { background:rgba(249,115,22,0.08);color:var(--accent); }
+
+        .shop-info-box {
+            background:rgba(249,115,22,0.1);border:1px solid rgba(249,115,22,0.3);
+            border-radius:12px;padding:16px;text-align:center;
+        }
+        .shop-name { font-size:16px;font-weight:700;color:var(--text-main);margin-bottom:4px; }
+        .shop-status { display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:50px;font-size:12px;font-weight:600; }
+        .shop-status.approved { background:rgba(34,197,94,0.2);color:#22c55e; }
+        .shop-status.pending { background:rgba(234,179,8,0.2);color:#eab308; }
+        .shop-status.rejected { background:rgba(239,68,68,0.2);color:#ef4444; }
+
+        /* CONTENT */
+        .content { min-width:0; }
+        .page-header { margin-bottom:24px; }
+        .page-title { font-size:28px;font-weight:800;color:var(--text-main);margin-bottom:6px; }
+        .page-subtitle { font-size:14px;color:var(--text-muted); }
+
+        /* CARDS */
+        .stats-grid { display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px;margin-bottom:28px; }
+        .stat-card {
+            background:var(--card-bg);border:1px solid var(--card-border);border-radius:16px;
+            padding:24px;transition:all .3s;
+        }
+        .stat-card:hover { transform:translateY(-4px);box-shadow:0 20px 40px rgba(0,0,0,0.2); }
+        .stat-icon { width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:16px; }
+        .stat-icon.blue { background:rgba(59,130,246,0.2);color:#3b82f6; }
+        .stat-icon.green { background:rgba(34,197,94,0.2);color:#22c55e; }
+        .stat-icon.orange { background:rgba(249,115,22,0.2);color:#f97316; }
+        .stat-icon.yellow { background:rgba(234,179,8,0.2);color:#eab308; }
+        .stat-value { font-size:32px;font-weight:800;color:var(--text-main);margin-bottom:4px; }
+        .stat-label { font-size:13px;color:var(--text-muted); }
+
+        .card {
+            background:var(--card-bg);border:1px solid var(--card-border);border-radius:16px;
+            padding:24px;margin-bottom:24px;
+        }
+        .card-header { display:flex;align-items:center;justify-content:space-between;margin-bottom:20px; }
+        .card-title { font-size:18px;font-weight:700;color:var(--text-main); }
+        .card-link { font-size:13px;color:var(--accent);text-decoration:none;display:flex;align-items:center;gap:4px; }
+        .card-link:hover { color:var(--accent-hover); }
+
+        /* TABLE */
+        .table-wrap { overflow-x:auto; }
+        table { width:100%;border-collapse:collapse; }
+        th { text-align:left;padding:12px 16px;font-size:12px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;border-bottom:1px solid var(--card-border); }
+        td { padding:16px;border-bottom:1px solid var(--card-border);font-size:14px;color:var(--text-main); }
+        tr:hover td { background:rgba(249,115,22,0.03); }
+        .product-cell { display:flex;align-items:center;gap:12px; }
+        .product-img { width:48px;height:48px;border-radius:10px;object-fit:cover;background:var(--card-border); }
+        .product-name { font-weight:600; }
+        .product-desc { font-size:12px;color:var(--text-muted); }
+        .badge { padding:4px 10px;border-radius:50px;font-size:12px;font-weight:600; }
+        .badge-blue { background:rgba(59,130,246,0.2);color:#3b82f6; }
+        .badge-green { background:rgba(34,197,94,0.2);color:#22c55e; }
+        .badge-orange { background:rgba(249,115,22,0.2);color:#f97316; }
+        .action-btn { padding:8px;border-radius:8px;color:var(--text-muted);transition:all .2s;background:none;border:none;cursor:pointer; }
+        .action-btn:hover { background:rgba(249,115,22,0.1);color:var(--accent); }
+
+        /* ALERT */
+        .alert { padding:16px 20px;border-radius:12px;margin-bottom:24px;display:flex;align-items:flex-start;gap:12px; }
+        .alert-warning { background:rgba(234,179,8,0.1);border:1px solid rgba(234,179,8,0.3); }
+        .alert-warning i { color:#eab308;font-size:24px; }
+        .alert-error { background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3); }
+        .alert-error i { color:#ef4444;font-size:24px; }
+        .alert-title { font-weight:600;margin-bottom:4px; }
+        .alert-text { font-size:13px;color:var(--text-muted); }
+
+        /* INFO GRID */
+        .info-grid { display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px; }
+        .info-item { background:rgba(0,0,0,0.1);border-radius:12px;padding:16px; }
+        body.theme-light .info-item { background:rgba(0,0,0,0.03); }
+        .info-label { font-size:12px;color:var(--text-muted);margin-bottom:6px;display:flex;align-items:center;gap:6px; }
+        .info-value { font-size:14px;font-weight:500;color:var(--text-main); }
+        .info-full { grid-column:1/-1; }
+
+        .btn-add {
+            display:inline-flex;align-items:center;gap:8px;padding:12px 24px;
+            background:var(--accent);color:#111827;border-radius:50px;font-size:14px;font-weight:600;
+            text-decoration:none;transition:all .3s;
+        }
+        .btn-add:hover { background:var(--accent-hover);transform:translateY(-2px);box-shadow:0 8px 20px rgba(249,115,22,0.3); }
+
+        .empty-state { text-align:center;padding:48px 24px; }
+        .empty-state i { font-size:64px;color:var(--text-muted);margin-bottom:16px; }
+        .empty-state p { color:var(--text-muted);margin-bottom:20px; }
+
+        /* FOOTER */
+        .footer { background:var(--nav-bg);border-top:1px solid var(--card-border);padding:20px 32px;text-align:center;margin-top:auto; }
+        .footer p { font-size:13px;color:var(--text-muted); }
+        .footer span { color:var(--accent);font-weight:600; }
+
+        @media(max-width:900px) {
+            .nav { padding:12px 16px; }
+            .nav-menu { display:none; }
+            .sidebar { position:relative;top:0;max-height:none; }
+            .main-container { padding:80px 16px 32px; }
         }
     </style>
 </head>
-<body class="bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 min-h-screen flex flex-col">
-<!-- DASHBOARD PENJUAL BARU -->
+<body class="theme-dark">
 
 {{-- NAVBAR --}}
-<nav class="fixed top-0 left-0 right-0 z-50 bg-slate-900/95 backdrop-blur-xl border-b border-blue-500/30 shadow-lg">
-    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex items-center justify-between h-16">
-            {{-- Logo --}}
-            <a href="{{ route('seller.dashboard') }}" class="flex items-center gap-2">
-                <div class="w-8 h-8 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-lg flex items-center justify-center">
-                    <i class="uil uil-shop text-white text-lg"></i>
-                </div>
-                <span class="text-xl sm:text-2xl font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
-                    kampuStore
-                </span>
-            </a>
-            
-            {{-- Center Menu --}}
-            <div class="hidden md:flex items-center gap-6">
-                <a href="{{ route('seller.dashboard') }}" class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-white bg-blue-500/20 border border-blue-500/40">
-                    <i class="uil uil-dashboard text-base"></i>
-                    <span>Dashboard</span>
-                </a>
-                <a href="{{ route('seller.products.index') }}" class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-gray-300 hover:text-white hover:bg-slate-800/50 transition-all">
-                    <i class="uil uil-box text-base"></i>
-                    <span>Produk Saya</span>
-                </a>
-                <div class="relative" x-data="{ openReports: false }">
-                    <button @click="openReports = !openReports" class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-gray-300 hover:text-white hover:bg-slate-800/50 transition-all">
-                        <i class="uil uil-chart-line text-base"></i>
-                        <span>Laporan</span>
-                        <i class="uil uil-angle-down ml-1"></i>
-                    </button>
-                    <div x-show="openReports" @click.away="openReports = false" 
-                         x-transition:enter="transition ease-out duration-200"
-                         x-transition:enter-start="opacity-0 scale-95"
-                         x-transition:enter-end="opacity-100 scale-100"
-                         class="absolute left-0 mt-2 w-56 rounded-lg shadow-lg bg-slate-800 border border-blue-500/30"
-                         style="display: none;">
-                        <div class="py-2">
-                            <a href="{{ route('seller.reports.stock') }}" class="block px-4 py-2 text-sm text-gray-300 hover:bg-slate-700">
-                                <i class="uil uil-box mr-2"></i>Laporan Stok
-                            </a>
-                            <a href="{{ route('seller.reports.rating') }}" class="block px-4 py-2 text-sm text-gray-300 hover:bg-slate-700">
-                                <i class="uil uil-star mr-2"></i>Laporan Rating
-                            </a>
-                            <a href="{{ route('seller.reports.restock') }}" class="block px-4 py-2 text-sm text-gray-300 hover:bg-slate-700">
-                                <i class="uil uil-exclamation-triangle mr-2"></i>Restock Alert
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                <a href="{{ route('products.index') }}" class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-gray-300 hover:text-white hover:bg-slate-800/50 transition-all">
-                    <i class="uil uil-store text-base"></i>
-                    <span>Market</span>
-                </a>
-            </div>
-
-            {{-- Right Menu --}}
-            <div class="flex items-center gap-3">
-                {{-- User Info --}}
-                <div class="hidden sm:flex items-center gap-2 px-3 py-2 bg-slate-800/50 rounded-lg border border-slate-700/50">
-                    <i class="uil uil-shop text-blue-400"></i>
-                    <span class="text-sm text-gray-300">{{ $seller->nama_toko }}</span>
-                </div>
-                
-                {{-- Logout --}}
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-                    <button type="submit" class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-all">
-                        <i class="uil uil-sign-out-alt text-base"></i>
-                        <span class="hidden sm:inline">Logout</span>
-                    </button>
-                </form>
-            </div>
+<nav class="nav">
+    <div class="nav-left">
+        <a href="{{ route('home') }}" class="nav-logo">
+            <img src="{{ asset('images/logo.png') }}" alt="kampuStore">
+            <span>kampuStore</span>
+        </a>
+        <div class="nav-menu">
+            <a href="{{ route('home') }}">Home</a>
+            <a href="{{ route('home') }}#features">Features</a>
+            <a href="{{ route('products.index') }}">Market</a>
+            <a href="{{ route('home') }}#about">About</a>
+            <a href="{{ route('home') }}#contact">Contact</a>
         </div>
+    </div>
+    <div class="nav-actions">
+        <div class="theme-toggle-wrapper">
+            <label class="toggle-switch">
+                <input type="checkbox" class="js-theme-toggle" />
+                <span class="slider">
+                    <div class="clouds">
+                        <svg viewBox="0 0 100 100" class="cloud cloud1"><path d="M30,45 Q35,25 50,25 Q65,25 70,45 Q80,45 85,50 Q90,55 85,60 Q80,65 75,60 Q65,60 60,65 Q55,70 50,65 Q45,70 40,65 Q35,60 25,60 Q20,65 15,60 Q10,55 15,50 Q20,45 30,45"></path></svg>
+                        <svg viewBox="0 0 100 100" class="cloud cloud2"><path d="M30,45 Q35,25 50,25 Q65,25 70,45 Q80,45 85,50 Q90,55 85,60 Q80,65 75,60 Q65,60 60,65 Q55,70 50,65 Q45,70 40,65 Q35,60 25,60 Q20,65 15,60 Q10,55 15,50 Q20,45 30,45"></path></svg>
+                    </div>
+                </span>
+            </label>
+        </div>
+        <form method="POST" action="{{ route('logout') }}">
+            @csrf
+            <button type="submit" class="btn-logout">
+                <i class="uil uil-sign-out-alt"></i> Logout
+            </button>
+        </form>
     </div>
 </nav>
 
-<main class="flex-1 pt-24 pb-12 px-4">
-    <div class="container mx-auto max-w-7xl">
-        
-        {{-- HEADER DENGAN STATUS TOKO --}}
-        <div class="bg-slate-800/50 backdrop-blur-lg rounded-2xl shadow-2xl border border-blue-500/30 p-6 sm:p-8 mb-6 fade-in-up">
-            <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
-                <div class="flex-1">
-                    <h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-2">{{ $seller->nama_toko }}</h1>
-                    <p class="text-gray-400 mb-4 text-sm sm:text-base">{{ $seller->deskripsi_singkat }}</p>
-                    <div class="flex flex-wrap items-center gap-2 sm:gap-3">
-                        <span class="text-xs sm:text-sm text-gray-400">Status:</span>
-                        @if($seller->status === 'approved')
-                            <span class="px-3 py-1.5 bg-green-500/20 text-green-400 rounded-full text-xs sm:text-sm font-semibold border border-green-500/40 shadow-lg shadow-green-500/10">
-                                <i class="uil uil-check-circle"></i> Terverifikasi
-                            </span>
-                        @elseif($seller->status === 'pending')
-                            <span class="px-3 py-1.5 bg-yellow-500/20 text-yellow-400 rounded-full text-xs sm:text-sm font-semibold border border-yellow-500/40 shadow-lg shadow-yellow-500/10">
-                                <i class="uil uil-clock"></i> Menunggu Verifikasi
-                            </span>
-                        @else
-                            <span class="px-3 py-1.5 bg-red-500/20 text-red-400 rounded-full text-xs sm:text-sm font-semibold border border-red-500/40 shadow-lg shadow-red-500/10">
-                                <i class="uil uil-times-circle"></i> Ditolak
-                            </span>
-                        @endif
-                    </div>
-                </div>
+<div class="main-container">
+    {{-- SIDEBAR --}}
+    <aside class="sidebar">
+        {{-- Shop Info --}}
+        <div class="sidebar-section">
+            <div class="shop-info-box">
+                <div class="shop-name">{{ $seller->nama_toko }}</div>
                 @if($seller->status === 'approved')
-                <a href="{{ route('seller.products.create') }}" class="px-4 sm:px-6 py-3 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 flex items-center justify-center gap-2 text-sm sm:text-base">
-                    <i class="uil uil-plus text-lg"></i>
-                    <span>Tambah Produk</span>
-                </a>
+                    <span class="shop-status approved"><i class="uil uil-check-circle"></i> Terverifikasi</span>
+                @elseif($seller->status === 'pending')
+                    <span class="shop-status pending"><i class="uil uil-clock"></i> Pending</span>
+                @else
+                    <span class="shop-status rejected"><i class="uil uil-times-circle"></i> Ditolak</span>
                 @endif
             </div>
         </div>
 
+        {{-- Menu --}}
+        <div class="sidebar-section">
+            <div class="sidebar-title">Menu</div>
+            <div class="sidebar-menu">
+                <a href="{{ route('seller.dashboard') }}" class="sidebar-link active">
+                    <i class="uil uil-dashboard"></i> Dashboard
+                </a>
+                <a href="{{ route('seller.products.index') }}" class="sidebar-link">
+                    <i class="uil uil-box"></i> Produk Saya
+                </a>
+            </div>
+        </div>
+
+        {{-- Laporan --}}
+        <div class="sidebar-section">
+            <div class="sidebar-title">Laporan</div>
+            <div class="sidebar-menu">
+                <a href="{{ route('seller.reports.stock') }}" class="sidebar-link">
+                    <i class="uil uil-chart-bar"></i> Laporan Stok
+                </a>
+                <a href="{{ route('seller.reports.rating') }}" class="sidebar-link">
+                    <i class="uil uil-star"></i> Laporan Rating
+                </a>
+                <a href="{{ route('seller.reports.restock') }}" class="sidebar-link">
+                    <i class="uil uil-exclamation-triangle"></i> Restock Alert
+                </a>
+            </div>
+        </div>
+
+        {{-- Quick Action --}}
+        @if($seller->status === 'approved')
+        <div class="sidebar-section">
+            <a href="{{ route('seller.products.create') }}" class="btn-add" style="width:100%;justify-content:center;">
+                <i class="uil uil-plus"></i> Tambah Produk
+            </a>
+        </div>
+        @endif
+    </aside>
+
+    {{-- CONTENT --}}
+    <div class="content">
+        <div class="page-header">
+            <h1 class="page-title">Dashboard</h1>
+            <p class="page-subtitle">Selamat datang kembali, {{ $seller->nama_pic }}!</p>
+        </div>
+
         @if($seller->status === 'pending')
-        {{-- NOTIFIKASI PENDING --}}
-        <div class="bg-gradient-to-r from-yellow-500/10 to-orange-500/10 border border-yellow-500/40 rounded-xl p-4 sm:p-6 mb-6 shadow-xl fade-in-up">
-            <div class="flex items-start gap-3 sm:gap-4">
-                <div class="flex-shrink-0 p-2 bg-yellow-500/20 rounded-lg">
-                    <i class="uil uil-exclamation-triangle text-2xl sm:text-3xl text-yellow-400"></i>
-                </div>
-                <div class="flex-1 min-w-0">
-                    <h3 class="text-base sm:text-lg font-semibold text-yellow-400 mb-2">Toko Menunggu Verifikasi</h3>
-                    <p class="text-gray-300 text-xs sm:text-sm leading-relaxed">
-                        Pendaftaran toko Anda sedang dalam proses verifikasi oleh admin. 
-                        Anda akan menerima email notifikasi setelah proses verifikasi selesai.
-                        Biasanya proses ini memakan waktu 1-3 hari kerja.
-                    </p>
-                </div>
+        <div class="alert alert-warning">
+            <i class="uil uil-exclamation-triangle"></i>
+            <div>
+                <div class="alert-title">Toko Menunggu Verifikasi</div>
+                <div class="alert-text">Pendaftaran toko Anda sedang dalam proses verifikasi. Biasanya memakan waktu 1-3 hari kerja.</div>
             </div>
         </div>
         @elseif($seller->status === 'rejected')
-        {{-- NOTIFIKASI REJECTED --}}
-        <div class="bg-gradient-to-r from-red-500/10 to-pink-500/10 border border-red-500/40 rounded-xl p-4 sm:p-6 mb-6 shadow-xl fade-in-up">
-            <div class="flex items-start gap-3 sm:gap-4">
-                <div class="flex-shrink-0 p-2 bg-red-500/20 rounded-lg">
-                    <i class="uil uil-times-circle text-2xl sm:text-3xl text-red-400"></i>
-                </div>
-                <div class="flex-1 min-w-0">
-                    <h3 class="text-base sm:text-lg font-semibold text-red-400 mb-2">Pendaftaran Toko Ditolak</h3>
-                    <p class="text-gray-300 text-xs sm:text-sm mb-3 leading-relaxed">{{ $seller->rejection_reason ?? 'Alasan tidak disebutkan.' }}</p>
-                    <p class="text-gray-400 text-xs">
-                        Silakan hubungi admin atau perbaiki data pendaftaran Anda.
-                    </p>
-                </div>
+        <div class="alert alert-error">
+            <i class="uil uil-times-circle"></i>
+            <div>
+                <div class="alert-title">Pendaftaran Ditolak</div>
+                <div class="alert-text">{{ $seller->rejection_reason ?? 'Alasan tidak disebutkan.' }}</div>
             </div>
         </div>
         @endif
 
         @if($seller->status === 'approved')
-        {{-- STATISTIK CARDS --}}
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6">
-            {{-- Total Produk --}}
-            <div class="bg-slate-800/50 backdrop-blur-lg rounded-xl p-6 border border-slate-700/50 card-hover fade-in-up">
-                <div class="flex items-center justify-between mb-4">
-                    <div class="p-3 bg-gradient-to-br from-blue-500/30 to-blue-600/30 rounded-lg shadow-lg">
-                        <i class="uil uil-package text-2xl text-blue-400"></i>
-                    </div>
-                    <span class="text-xs text-gray-500 uppercase tracking-wider font-semibold">Total</span>
-                </div>
-                <h3 class="text-3xl sm:text-4xl font-bold text-white mb-1">{{ $totalProducts }}</h3>
-                <p class="text-sm text-gray-400">Produk</p>
+        {{-- Stats --}}
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon blue"><i class="uil uil-package"></i></div>
+                <div class="stat-value">{{ $totalProducts }}</div>
+                <div class="stat-label">Total Produk</div>
             </div>
-
-            {{-- Total Stok --}}
-            <div class="bg-slate-800/50 backdrop-blur-lg rounded-xl p-6 border border-slate-700/50 card-hover fade-in-up" style="animation-delay: 0.1s;">
-                <div class="flex items-center justify-between mb-4">
-                    <div class="p-3 bg-gradient-to-br from-green-500/30 to-green-600/30 rounded-lg shadow-lg">
-                        <i class="uil uil-layers text-2xl text-green-400"></i>
-                    </div>
-                    <span class="text-xs text-gray-500 uppercase tracking-wider font-semibold">Total</span>
-                </div>
-                <h3 class="text-3xl sm:text-4xl font-bold text-white mb-1">{{ $totalStock }}</h3>
-                <p class="text-sm text-gray-400">Item Stok</p>
+            <div class="stat-card">
+                <div class="stat-icon green"><i class="uil uil-layers"></i></div>
+                <div class="stat-value">{{ $totalStock }}</div>
+                <div class="stat-label">Total Stok</div>
             </div>
-
-            {{-- Stok Menipis --}}
-            <div class="bg-slate-800/50 backdrop-blur-lg rounded-xl p-6 border border-slate-700/50 card-hover fade-in-up" style="animation-delay: 0.2s;">
-                <div class="flex items-center justify-between mb-4">
-                    <div class="p-3 bg-gradient-to-br from-orange-500/30 to-orange-600/30 rounded-lg shadow-lg">
-                        <i class="uil uil-exclamation-triangle text-2xl text-orange-400"></i>
-                    </div>
-                    <span class="text-xs text-gray-500 uppercase tracking-wider font-semibold">Perlu Restock</span>
-                </div>
-                <h3 class="text-3xl sm:text-4xl font-bold text-white mb-1">{{ $lowStockProducts }}</h3>
-                <p class="text-sm text-gray-400">Stok < 10</p>
+            <div class="stat-card">
+                <div class="stat-icon orange"><i class="uil uil-exclamation-triangle"></i></div>
+                <div class="stat-value">{{ $lowStockProducts }}</div>
+                <div class="stat-label">Stok &lt; 2 (Restock)</div>
             </div>
-
-            {{-- Rating Toko (placeholder) --}}
-            <div class="bg-slate-800/50 backdrop-blur-lg rounded-xl p-6 border border-slate-700/50 card-hover fade-in-up" style="animation-delay: 0.3s;">
-                <div class="flex items-center justify-between mb-4">
-                    <div class="p-3 bg-gradient-to-br from-yellow-500/30 to-yellow-600/30 rounded-lg shadow-lg">
-                        <i class="uil uil-star text-2xl text-yellow-400"></i>
-                    </div>
-                    <span class="text-xs text-gray-500 uppercase tracking-wider font-semibold">Rating</span>
-                </div>
-                <h3 class="text-3xl sm:text-4xl font-bold text-white mb-1">-</h3>
-                <p class="text-sm text-gray-400">Coming Soon</p>
+            <div class="stat-card">
+                <div class="stat-icon yellow"><i class="uil uil-star"></i></div>
+                <div class="stat-value">{{ number_format($avgRating, 1) }}</div>
+                <div class="stat-label">Rating ({{ $totalReviews }} ulasan)</div>
             </div>
         </div>
 
-        {{-- TABEL PRODUK TERBARU --}}
-        <div class="bg-slate-800/50 backdrop-blur-lg rounded-xl shadow-2xl border border-slate-700/50 p-4 sm:p-6 mb-6 fade-in-up">
-            <div class="flex items-center justify-between mb-6">
-                <h2 class="text-lg sm:text-xl font-semibold text-white">Produk Terbaru</h2>
-                <a href="{{ route('seller.products.index') }}" class="text-xs sm:text-sm text-blue-400 hover:text-blue-300 transition-colors duration-200 flex items-center gap-1">
-                    <span>Lihat Semua</span>
-                    <i class="uil uil-arrow-right"></i>
-                </a>
+        {{-- SRS-08: Charts Section --}}
+        <style>
+            .charts-grid { display:grid;grid-template-columns:repeat(auto-fit,minmax(350px,1fr));gap:24px;margin-bottom:28px; }
+            @media(max-width:800px) { .charts-grid { grid-template-columns:1fr; } }
+            .chart-card { background:var(--card-bg);border:1px solid var(--card-border);border-radius:16px;padding:24px; }
+            .chart-title { font-size:16px;font-weight:700;color:var(--text-main);margin-bottom:4px;display:flex;align-items:center;gap:8px; }
+            .chart-subtitle { font-size:12px;color:var(--text-muted);margin-bottom:20px; }
+            .bar-chart { display:flex;align-items:flex-end;justify-content:flex-start;gap:8px;height:180px;border-left:1px solid var(--card-border);border-bottom:1px solid var(--card-border);padding:16px 8px 0;overflow-x:auto; }
+            .bar-item { display:flex;flex-direction:column;align-items:center;min-width:50px;flex-shrink:0; }
+            .bar { width:40px;border-radius:6px 6px 0 0;position:relative;min-height:10px;transition:height 0.3s; }
+            .bar-value { position:absolute;top:-22px;left:50%;transform:translateX(-50%);padding:2px 6px;border-radius:4px;font-size:10px;font-weight:700;color:white;white-space:nowrap; }
+            .bar-label { font-size:9px;color:var(--text-muted);margin-top:6px;text-align:center;max-width:60px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap; }
+            .progress-list { display:flex;flex-direction:column;gap:14px;max-height:200px;overflow-y:auto; }
+            .progress-item { }
+            .progress-header { display:flex;align-items:center;justify-content:space-between;margin-bottom:6px; }
+            .progress-label { display:flex;align-items:center;gap:6px;font-size:13px;font-weight:500;color:var(--text-main); }
+            .progress-dot { width:8px;height:8px;border-radius:50%; }
+            .progress-value { font-size:12px;font-weight:600;color:var(--text-main); }
+            .progress-bar { height:6px;background:rgba(148,163,184,0.2);border-radius:50px;overflow:hidden; }
+            .progress-fill { height:100%;border-radius:50px; }
+        </style>
+
+        <div class="charts-grid">
+            {{-- SRS-08: Sebaran Stok per Produk --}}
+            <div class="chart-card">
+                <div class="chart-title"><i class="uil uil-layers"></i> Sebaran Stok per Produk</div>
+                <div class="chart-subtitle">Top 10 produk berdasarkan jumlah stok</div>
+                @if($stockByProduct->count() > 0)
+                    @php $maxStock = $stockByProduct->max('stock') ?: 1; @endphp
+                    <div class="bar-chart">
+                        @foreach($stockByProduct as $idx => $item)
+                            @php 
+                                $pct = ($item->stock / $maxStock) * 100;
+                                $colors = ['#3b82f6', '#22c55e', '#f97316', '#a855f7', '#06b6d4', '#ef4444', '#eab308', '#ec4899'];
+                                $color = $colors[$idx % count($colors)];
+                            @endphp
+                            <div class="bar-item">
+                                <div class="bar" style="height:{{ max(10, $pct) }}%; background:linear-gradient(to top, {{ $color }}, {{ $color }}99);">
+                                    <span class="bar-value" style="background:{{ $color }};">{{ $item->stock }}</span>
+                                </div>
+                                <span class="bar-label" title="{{ $item->name }}">{{ Str::limit($item->name, 8) }}</span>
+                            </div>
+                        @endforeach
+                    </div>
+                @else
+                    <div style="text-align:center;padding:30px;color:var(--text-muted);">
+                        <i class="uil uil-info-circle" style="font-size:32px;"></i>
+                        <p style="font-size:13px;">Belum ada data produk</p>
+                    </div>
+                @endif
             </div>
 
+            {{-- SRS-08: Sebaran Rating per Produk --}}
+            <div class="chart-card">
+                <div class="chart-title"><i class="uil uil-star"></i> Sebaran Rating per Produk</div>
+                <div class="chart-subtitle">Top 10 produk berdasarkan rating tertinggi</div>
+                @if($ratingByProduct->count() > 0)
+                    <div class="progress-list">
+                        @foreach($ratingByProduct as $idx => $item)
+                            @php 
+                                $ratingPct = ($item->avg_rating / 5) * 100;
+                                $colors = ['#eab308', '#f97316', '#22c55e', '#3b82f6', '#a855f7'];
+                                $color = $colors[$idx % count($colors)];
+                            @endphp
+                            <div class="progress-item">
+                                <div class="progress-header">
+                                    <span class="progress-label">
+                                        <span class="progress-dot" style="background:{{ $color }};"></span>
+                                        {{ Str::limit($item->name, 20) }}
+                                    </span>
+                                    <span class="progress-value">{{ number_format($item->avg_rating, 1) }} ★ ({{ $item->review_count }})</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width:{{ $ratingPct }}%; background:linear-gradient(to right, {{ $color }}, {{ $color }}99);"></div>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                @else
+                    <div style="text-align:center;padding:30px;color:var(--text-muted);">
+                        <i class="uil uil-info-circle" style="font-size:32px;"></i>
+                        <p style="font-size:13px;">Belum ada data rating</p>
+                    </div>
+                @endif
+            </div>
+
+            {{-- SRS-08: Sebaran Reviewer per Provinsi --}}
+            <div class="chart-card">
+                <div class="chart-title"><i class="uil uil-map-marker"></i> Pemberi Rating per Provinsi</div>
+                <div class="chart-subtitle">Distribusi pengunjung yang memberikan ulasan</div>
+                @if($reviewersByProvince->count() > 0)
+                    @php $maxReviewer = $reviewersByProvince->max('total') ?: 1; @endphp
+                    <div class="progress-list">
+                        @foreach($reviewersByProvince as $idx => $item)
+                            @php 
+                                $revPct = ($item->total / $maxReviewer) * 100;
+                                $colors = ['#06b6d4', '#22c55e', '#f97316', '#a855f7', '#3b82f6'];
+                                $color = $colors[$idx % count($colors)];
+                            @endphp
+                            <div class="progress-item">
+                                <div class="progress-header">
+                                    <span class="progress-label">
+                                        <span class="progress-dot" style="background:{{ $color }};"></span>
+                                        {{ $item->guest_province }}
+                                    </span>
+                                    <span class="progress-value">{{ $item->total }} reviewer</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width:{{ $revPct }}%; background:linear-gradient(to right, {{ $color }}, {{ $color }}99);"></div>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                @else
+                    <div style="text-align:center;padding:30px;color:var(--text-muted);">
+                        <i class="uil uil-info-circle" style="font-size:32px;"></i>
+                        <p style="font-size:13px;">Belum ada data lokasi reviewer</p>
+                        <p style="font-size:11px;color:var(--text-muted);">Data akan muncul setelah pengunjung mengisi provinsi saat memberikan ulasan</p>
+                    </div>
+                @endif
+            </div>
+        </div>
+
+        {{-- Recent Products --}}
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">Produk Terbaru</h2>
+                <a href="{{ route('seller.products.index') }}" class="card-link">Lihat Semua <i class="uil uil-arrow-right"></i></a>
+            </div>
             @if($products->count() > 0)
-            <div class="overflow-x-auto -mx-4 sm:mx-0">
-                <div class="inline-block min-w-full align-middle">
-                    <table class="min-w-full">
-                        <thead>
-                            <tr class="border-b border-slate-700">
-                                <th class="text-left py-3 px-4 text-xs sm:text-sm font-semibold text-gray-400 uppercase tracking-wider">Produk</th>
-                                <th class="text-left py-3 px-4 text-xs sm:text-sm font-semibold text-gray-400 uppercase tracking-wider hidden md:table-cell">Kategori</th>
-                                <th class="text-left py-3 px-4 text-xs sm:text-sm font-semibold text-gray-400 uppercase tracking-wider">Harga</th>
-                                <th class="text-left py-3 px-4 text-xs sm:text-sm font-semibold text-gray-400 uppercase tracking-wider">Stok</th>
-                                <th class="text-left py-3 px-4 text-xs sm:text-sm font-semibold text-gray-400 uppercase tracking-wider">Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($products as $product)
-                            <tr class="border-b border-slate-700/50 hover:bg-slate-700/30 transition-colors duration-200">
-                                <td class="py-4 px-4">
-                                    <div class="flex items-center gap-3">
-                                        @if($product->image_url)
-                                        <img src="{{ Storage::url($product->image_url) }}" alt="{{ $product->name }}" class="w-10 h-10 sm:w-12 sm:h-12 rounded-lg object-cover ring-2 ring-slate-700">
-                                        @else
-                                        <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-gradient-to-br from-slate-700 to-slate-800 flex items-center justify-center ring-2 ring-slate-700">
-                                            <i class="uil uil-image text-gray-500"></i>
-                                        </div>
-                                        @endif
-                                        <div class="min-w-0 flex-1">
-                                            <p class="text-white font-medium text-sm sm:text-base truncate">{{ $product->name }}</p>
-                                            <p class="text-xs text-gray-400 truncate hidden sm:block">{{ Str::limit($product->description, 40) }}</p>
-                                            <span class="md:hidden mt-1 inline-block px-2 py-0.5 bg-blue-500/20 text-blue-400 rounded text-xs">
-                                                {{ ucfirst(str_replace('-', ' ', $product->category_slug)) }}
-                                            </span>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="py-4 px-4 hidden md:table-cell">
-                                    <span class="px-2.5 py-1 bg-blue-500/20 text-blue-400 rounded-lg text-xs font-medium border border-blue-500/30">
-                                        {{ ucfirst(str_replace('-', ' ', $product->category_slug)) }}
-                                    </span>
-                                </td>
-                                <td class="py-4 px-4">
-                                    <span class="text-white font-semibold text-sm sm:text-base whitespace-nowrap">
-                                        Rp {{ number_format($product->price, 0, ',', '.') }}
-                                    </span>
-                                </td>
-                                <td class="py-4 px-4">
-                                    @if($product->stock < 10)
-                                    <span class="px-2 py-1 bg-orange-500/20 text-orange-400 rounded-lg text-xs sm:text-sm font-bold border border-orange-500/30">{{ $product->stock }}</span>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Produk</th>
+                            <th>Kategori</th>
+                            <th>Harga</th>
+                            <th>Stok</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($products as $product)
+                        <tr>
+                            <td>
+                                <div class="product-cell">
+                                    @if($product->image_url)
+                                    <img src="{{ Storage::url($product->image_url) }}" alt="{{ $product->name }}" class="product-img">
                                     @else
-                                    <span class="px-2 py-1 bg-green-500/20 text-green-400 rounded-lg text-xs sm:text-sm font-bold border border-green-500/30">{{ $product->stock }}</span>
+                                    <div class="product-img" style="display:flex;align-items:center;justify-content:center;"><i class="uil uil-image" style="color:var(--text-muted);"></i></div>
                                     @endif
-                                </td>
-                                <td class="py-4 px-4">
-                                    <div class="flex items-center gap-2">
-                                        <a href="{{ route('products.show', $product) }}" class="p-2 text-blue-400 hover:text-blue-300 hover:bg-blue-500/10 rounded-lg transition-all duration-200" title="Lihat">
-                                            <i class="uil uil-eye text-lg"></i>
-                                        </a>
-                                        <a href="{{ route('seller.products.edit', $product) }}" class="p-2 text-yellow-400 hover:text-yellow-300 hover:bg-yellow-500/10 rounded-lg transition-all duration-200" title="Edit">
-                                            <i class="uil uil-edit text-lg"></i>
-                                        </a>
+                                    <div>
+                                        <div class="product-name">{{ $product->name }}</div>
+                                        <div class="product-desc">{{ Str::limit($product->description, 40) }}</div>
                                     </div>
-                                </td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
+                                </div>
+                            </td>
+                            <td><span class="badge badge-blue">{{ ucfirst(str_replace('-', ' ', $product->category_slug)) }}</span></td>
+                            <td style="font-weight:600;">Rp {{ number_format($product->price, 0, ',', '.') }}</td>
+                            <td>
+                                @if($product->stock < 10)
+                                <span class="badge badge-orange">{{ $product->stock }}</span>
+                                @else
+                                <span class="badge badge-green">{{ $product->stock }}</span>
+                                @endif
+                            </td>
+                            <td>
+                                <a href="{{ route('products.show', $product) }}" class="action-btn" title="Lihat"><i class="uil uil-eye"></i></a>
+                                <a href="{{ route('seller.products.edit', $product) }}" class="action-btn" title="Edit"><i class="uil uil-edit"></i></a>
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
             </div>
             @else
-            <div class="text-center py-12">
-                <div class="mb-4">
-                    <i class="uil uil-box text-5xl sm:text-6xl text-gray-600"></i>
-                </div>
-                <p class="text-gray-400 mb-6 text-sm sm:text-base">Belum ada produk</p>
-                <a href="{{ route('seller.products.create') }}" class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
-                    <i class="uil uil-plus"></i>
-                    <span>Tambah Produk Pertama</span>
+            <div class="empty-state">
+                <i class="uil uil-box"></i>
+                <p>Belum ada produk</p>
+                <a href="{{ route('seller.products.create') }}" class="btn-add">
+                    <i class="uil uil-plus"></i> Tambah Produk Pertama
                 </a>
             </div>
             @endif
         </div>
 
-        {{-- INFORMASI TOKO --}}
-        <div class="bg-slate-800/50 backdrop-blur-lg rounded-xl shadow-2xl border border-slate-700/50 p-4 sm:p-6 fade-in-up">
-            <div class="flex items-center gap-3 mb-6">
-                <div class="p-2 bg-gradient-to-br from-blue-500/30 to-cyan-500/30 rounded-lg">
-                    <i class="uil uil-info-circle text-2xl text-blue-400"></i>
-                </div>
-                <h2 class="text-lg sm:text-xl font-semibold text-white">Informasi Toko</h2>
+        {{-- Shop Info --}}
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">Informasi Toko</h2>
             </div>
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
-                <div class="p-4 bg-slate-900/30 rounded-lg border border-slate-700/30">
-                    <p class="text-xs sm:text-sm text-gray-400 mb-2 flex items-center gap-2">
-                        <i class="uil uil-user"></i>
-                        Nama PIC
-                    </p>
-                    <p class="text-white font-medium text-sm sm:text-base">{{ $seller->nama_pic }}</p>
+            <div class="info-grid">
+                <div class="info-item">
+                    <div class="info-label"><i class="uil uil-user"></i> Nama PIC</div>
+                    <div class="info-value">{{ $seller->nama_pic }}</div>
                 </div>
-                <div class="p-4 bg-slate-900/30 rounded-lg border border-slate-700/30">
-                    <p class="text-xs sm:text-sm text-gray-400 mb-2 flex items-center gap-2">
-                        <i class="uil uil-envelope"></i>
-                        Email PIC
-                    </p>
-                    <p class="text-white font-medium text-sm sm:text-base break-all">{{ $seller->email_pic }}</p>
+                <div class="info-item">
+                    <div class="info-label"><i class="uil uil-envelope"></i> Email PIC</div>
+                    <div class="info-value">{{ $seller->email_pic }}</div>
                 </div>
-                <div class="p-4 bg-slate-900/30 rounded-lg border border-slate-700/30">
-                    <p class="text-xs sm:text-sm text-gray-400 mb-2 flex items-center gap-2">
-                        <i class="uil uil-phone"></i>
-                        No. HP PIC
-                    </p>
-                    <p class="text-white font-medium text-sm sm:text-base">{{ $seller->no_hp_pic }}</p>
+                <div class="info-item">
+                    <div class="info-label"><i class="uil uil-phone"></i> No. HP PIC</div>
+                    <div class="info-value">{{ $seller->no_hp_pic }}</div>
                 </div>
-                <div class="p-4 bg-slate-900/30 rounded-lg border border-slate-700/30">
-                    <p class="text-xs sm:text-sm text-gray-400 mb-2 flex items-center gap-2">
-                        <i class="uil uil-location-point"></i>
-                        Lokasi
-                    </p>
-                    <p class="text-white font-medium text-sm sm:text-base">{{ $seller->kota }}, {{ $seller->provinsi }}</p>
+                <div class="info-item">
+                    <div class="info-label"><i class="uil uil-location-point"></i> Lokasi</div>
+                    <div class="info-value">{{ $seller->kota }}, {{ $seller->provinsi }}</div>
                 </div>
-                <div class="sm:col-span-2 p-4 bg-slate-900/30 rounded-lg border border-slate-700/30">
-                    <p class="text-xs sm:text-sm text-gray-400 mb-2 flex items-center gap-2">
-                        <i class="uil uil-map-marker"></i>
-                        Alamat Lengkap
-                    </p>
-                    <p class="text-white font-medium text-sm sm:text-base leading-relaxed">
-                        {{ $seller->alamat_pic }}, RT {{ $seller->rt }} / RW {{ $seller->rw }}, 
-                        Kel. {{ $seller->kelurahan }}, {{ $seller->kota }}, {{ $seller->provinsi }}
-                    </p>
+                <div class="info-item info-full">
+                    <div class="info-label"><i class="uil uil-map-marker"></i> Alamat Lengkap</div>
+                    <div class="info-value">{{ $seller->alamat_pic }}, RT {{ $seller->rt }} / RW {{ $seller->rw }}, Kel. {{ $seller->kelurahan }}, {{ $seller->kota }}, {{ $seller->provinsi }}</div>
                 </div>
             </div>
         </div>
         @endif
-
     </div>
-</main>
+</div>
 
-{{-- FOOTER --}}
-<footer class="bg-slate-900/80 border-t border-slate-800 py-6 mt-auto">
-    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
-            <p class="text-gray-400 text-sm text-center sm:text-left">
-                © 2025 <span class="font-semibold text-blue-400">KampuStore</span>. All rights reserved.
-            </p>
-            <div class="flex items-center gap-6">
-                <a href="#" class="text-gray-400 hover:text-white transition-colors duration-200 text-sm">
-                    Bantuan
-                </a>
-                <a href="#" class="text-gray-400 hover:text-white transition-colors duration-200 text-sm">
-                    Kebijakan
-                </a>
-                <a href="#" class="text-gray-400 hover:text-white transition-colors duration-200 text-sm">
-                    Kontak
-                </a>
-            </div>
-        </div>
-    </div>
+<footer class="footer">
+    <p>© 2025 <span>kampuStore</span>. All rights reserved.</p>
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 @if(session('success'))
 <script>
-    Swal.fire({
-        icon: 'success',
-        title: 'Berhasil!',
-        text: '{{ session('success') }}',
-        confirmButtonColor: '#2563eb'
-    });
+    Swal.fire({ icon: 'success', title: 'Berhasil!', text: '{{ session('success') }}', confirmButtonColor: '#f97316' });
 </script>
 @endif
-
 @if(session('error'))
 <script>
-    Swal.fire({
-        icon: 'error',
-        title: 'Error!',
-        text: '{{ session('error') }}',
-        confirmButtonColor: '#2563eb'
-    });
+    Swal.fire({ icon: 'error', title: 'Error!', text: '{{ session('error') }}', confirmButtonColor: '#f97316' });
 </script>
 @endif
 
-@if(session('info'))
 <script>
-    Swal.fire({
-        icon: 'info',
-        title: 'Info',
-        text: '{{ session('info') }}',
-        confirmButtonColor: '#2563eb'
-    });
+(function(){
+    const KEY = 'kampuStoreTheme';
+    const body = document.body;
+    const toggle = document.querySelector('.js-theme-toggle');
+    function apply(mode){
+        if(mode === 'light'){ body.classList.add('theme-light'); body.classList.remove('theme-dark'); }
+        else{ body.classList.remove('theme-light'); body.classList.add('theme-dark'); }
+    }
+    const saved = localStorage.getItem(KEY) || 'dark';
+    apply(saved);
+    if(toggle){
+        toggle.checked = (saved !== 'light');
+        toggle.addEventListener('change', () => {
+            const mode = toggle.checked ? 'dark' : 'light';
+            apply(mode);
+            localStorage.setItem(KEY, mode);
+        });
+    }
+})();
 </script>
-@endif
-
-<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </body>
 </html>

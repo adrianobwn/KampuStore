@@ -18,6 +18,8 @@ class Review extends Model
         'guest_name',
         'guest_phone',
         'guest_email',
+        'guest_province',
+        'guest_city',
     ];
 
     protected $casts = [

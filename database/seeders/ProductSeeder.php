@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\Models\Product;
+use App\Models\ProductImage;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 
@@ -14,8 +15,9 @@ class ProductSeeder extends Seeder
         // matikan foreign key check sementara
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
 
-        // kosongkan dulu reviews & products biar bersih
+        // kosongkan dulu reviews, product_images & products biar bersih
         DB::table('reviews')->truncate();
+        DB::table('product_images')->truncate();
         DB::table('products')->truncate();
 
         // nyalakan lagi foreign key check
@@ -149,8 +151,18 @@ class ProductSeeder extends Seeder
     ];
 
         foreach ($items as $item) {
+            $imageUrl = $item['image_url'];
             $item['slug'] = Str::slug($item['name']).'-'.uniqid();
-            Product::create($item);
+            
+            $product = Product::create($item);
+            
+            // Buat juga ProductImage agar slider bisa jalan
+            ProductImage::create([
+                'product_id' => $product->id,
+                'image_path' => $imageUrl,
+                'is_primary' => true,
+                'sort_order' => 0,
+            ]);
         }
     }
 }

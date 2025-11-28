@@ -44,6 +44,8 @@ class ReviewController extends Controller
                 'guest_name' => ['required','string','max:255'],
                 'guest_phone' => ['required','string','max:20'],
                 'guest_email' => ['required','email','max:255'],
+                'guest_province' => ['nullable','string','max:255'],
+                'guest_city' => ['nullable','string','max:255'],
                 'rating' => ['required','integer','min:1','max:5'],
                 'body' => ['required','string','max:2000'],
             ]);
@@ -53,6 +55,8 @@ class ReviewController extends Controller
                 'guest_name' => $data['guest_name'],
                 'guest_phone' => $data['guest_phone'],
                 'guest_email' => $data['guest_email'],
+                'guest_province' => $data['guest_province'] ?? null,
+                'guest_city' => $data['guest_city'] ?? null,
                 'rating' => $data['rating'],
                 'body' => $data['body'],
             ]);

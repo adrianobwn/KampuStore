@@ -1,333 +1,1380 @@
-@php($title = 'Daftar Sebagai Penjual | KampuStore')
+@php
+    $title = 'Daftar Sebagai Penjual | kampuStore';
+@endphp
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ $title }}</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+
+    {{-- Icon Unicons --}}
     <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.8/css/line.css">
+
     <style>
-        body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        *{margin:0;padding:0;box-sizing:border-box}
+
+        /* ===================== THEME VARIABLES ===================== */
+        :root{
+          --bg-body:#050b1f;
+          --text-main:#e5e7eb;
+
+          --nav-bg:linear-gradient(90deg,#020617,#020617);
+          --nav-border-bottom:rgba(30,64,175,0.5);
+          --nav-shadow:0 14px 40px rgba(15,23,42,0.9);
+          --nav-link-color:#e5e7eb;
+
+          --market-bg:radial-gradient(circle at top left,#1f3b8a 0,#020617 52%,#020617 100%);
+
+          --page-title-color:#f9fafb;
+          --breadcrumb-color:#9ca3af;
+
+          --reset-btn-bg:#020617;
+          --reset-btn-border:#1f2937;
+
+          --toast-bg:#020617;
+
+          --accent-input:#f97316;
+          --accent-input-soft:rgba(249,115,22,0.32);
         }
-        
-        .input-field {
-            width: 100%;
-            padding: 12px 16px;
-            background: white;
-            border: 2px solid #e5e7eb;
-            border-radius: 12px;
-            color: #111827;
-            font-size: 15px;
-            transition: all 0.3s;
+
+        body.theme-light{
+          --bg-body:#eef2ff;
+          --text-main:#1a2550;
+
+          --nav-bg:#ffffff;
+          --nav-border-bottom:#d9ddf0;
+          --nav-shadow:0 4px 12px rgba(20,30,60,0.08);
+          --nav-link-color:#1a2450;
+
+          --market-bg:linear-gradient(
+              135deg,
+              #ffffff 0%,
+              #e3e8ff 40%,
+              #d5ddff 100%
+          );
+
+          --page-title-color:#1a2450;
+          --breadcrumb-color:#6b76a5;
+
+          --reset-btn-bg:#e3e6ff;
+          --reset-btn-border:#c5cdf5;
+
+          --toast-bg:#1b2652;
+          
+          --accent-input:#ea580c;
+          --accent-input-soft:rgba(234,88,12,0.35);
         }
-        
-        .input-field:focus {
-            outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+
+        /* ===================== GLOBAL ===================== */
+        body{
+            font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;
+            background:var(--bg-body);
+            color:var(--text-main);
+            min-height:100vh;
         }
-        
-        .label {
-            display: block;
-            font-size: 14px;
-            font-weight: 600;
-            color: #374151;
-            margin-bottom: 8px;
+        a{text-decoration:none;color:inherit;}
+
+        /* ===================== NAVBAR ===================== */
+        .nav{
+            position:fixed;
+            top:0;left:0;right:0;
+            z-index:50;
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            padding:18px 60px;
+            background:var(--nav-bg);
+            border-bottom:1px solid var(--nav-border-bottom);
+            box-shadow:var(--nav-shadow);
         }
-        
-        .error-msg {
-            color: #dc2626;
-            font-size: 13px;
-            margin-top: 6px;
-            display: flex;
-            align-items: center;
-            gap: 4px;
+        .nav-left{display:flex;align-items:center;gap:28px;}
+        .nav-logo{
+            display:flex;align-items:center;
+            font-weight:700;font-size:22px;
+            letter-spacing:0.04em;color:#f9fafb;
+            cursor:pointer;
+        }
+        .nav-logo img{height:40px;display:block;}
+        body.theme-light .nav-logo{color:#111827;}
+        .nav-logo:hover{opacity:.85;}
+
+        .nav-menu{
+            display:flex;align-items:center;
+            gap:28px;font-size:14px;
+        }
+        .nav-menu a{
+            color:var(--nav-link-color);
+            position:relative;
+        }
+        .nav-menu a::after{
+            content:'';
+            position:absolute;
+            left:0;bottom:-4px;
+            height:2px;width:100%;
+            background:#f97316;
+            border-radius:999px;
+            transform:scaleX(0);
+            transform-origin:left;
+            opacity:0;
+            transition:transform .25s ease-out, opacity .2s ease-out;
+        }
+        .nav-menu a:hover{color:#f97316;}
+        .nav-menu a:hover::after{
+            transform:scaleX(1);opacity:1;
+        }
+
+        .nav-actions{
+            display:flex;align-items:center;gap:12px;
+        }
+
+        /* ===================== THEME TOGGLE ===================== */
+        .theme-toggle-wrapper{display:flex;justify-content:center;align-items:center;}
+        .toggle-switch{
+            position:relative;display:inline-block;
+            width:74px;height:36px;
+            transform:scale(.95);
+            transition:transform .2s;
+        }
+        .toggle-switch:hover{transform:scale(1);}
+        .toggle-switch input{opacity:0;width:0;height:0;}
+        .slider{
+            position:absolute;cursor:pointer;inset:0;
+            background:linear-gradient(145deg,#fbbf24,#f97316);
+            transition:.4s;border-radius:34px;
+            box-shadow:0 0 12px rgba(249,115,22,0.5);
+            overflow:hidden;
+        }
+        .slider:before{
+            position:absolute;content:"☀";
+            height:28px;width:28px;left:4px;bottom:4px;
+            background:white;transition:.4s;border-radius:50%;
+            display:flex;align-items:center;justify-content:center;
+            font-size:16px;box-shadow:0 0 10px rgba(0,0,0,.15);z-index:2;
+        }
+        .clouds{position:absolute;width:100%;height:100%;overflow:hidden;pointer-events:none;}
+        .cloud{position:absolute;width:24px;height:24px;fill:rgba(255,255,255,0.9);filter:drop-shadow(0 2px 3px rgba(0,0,0,0.08));}
+        .cloud1{top:6px;left:10px;animation:floatCloud1 8s infinite linear;}
+        .cloud2{top:10px;left:38px;transform:scale(.85);animation:floatCloud2 12s infinite linear;}
+        @keyframes floatCloud1{
+            0%{transform:translateX(-20px);opacity:0;}
+            20%{opacity:1;}
+            80%{opacity:1;}
+            100%{transform:translateX(80px);opacity:0;}
+        }
+        @keyframes floatCloud2{
+            0%{transform:translateX(-20px) scale(.85);opacity:0;}
+            20%{opacity:.7;}
+            80%{opacity:.7;}
+            100%{transform:translateX(80px) scale(.85);opacity:0;}
+        }
+        input.js-theme-toggle:checked + .slider{
+            background:linear-gradient(145deg,#1f2937,#020617);
+            box-shadow:0 0 14px rgba(15,23,42,0.8);
+        }
+        input.js-theme-toggle:checked + .slider:before{
+            transform:translateX(38px);content:"🌙";
+        }
+        input.js-theme-toggle:checked + .slider .cloud{
+            opacity:0;transform:translateY(-18px);
+        }
+
+        /* ===================== AUTH BACKGROUND ===================== */
+        .auth-bg{
+            min-height:100vh;
+            padding:120px 40px 60px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            background:var(--market-bg);
+            position:relative;
+            overflow:hidden;
+        }
+        .auth-bg::before,
+        .auth-bg::after{
+            content:'';
+            position:absolute;
+            border-radius:999px;
+            filter:blur(26px);
+            opacity:.55;
+        }
+        .auth-bg::before{
+            width:360px;height:360px;
+            background:linear-gradient(135deg,#6366f1,#f97316);
+            top:-130px;left:-80px;
+        }
+        .auth-bg::after{
+            width:320px;height:320px;
+            background:linear-gradient(135deg,#0ea5e9,#22c55e);
+            bottom:-150px;right:-70px;
+        }
+        body.theme-light .auth-bg::before,
+        body.theme-light .auth-bg::after{opacity:.2;}
+
+        /* ===================== SHELL ===================== */
+        .auth-shell{
+            width:100%;max-width:1100px;
+            min-height:520px;border-radius:28px;
+            overflow:hidden;
+            background:linear-gradient(
+                135deg,
+                rgba(15,23,42,0.74),
+                rgba(15,23,42,0.94)
+            );
+            border:1px solid rgba(59,130,246,0.45);
+            box-shadow:0 22px 60px rgba(0,0,0,.9);
+            display:flex;position:relative;z-index:1;
+            backdrop-filter:blur(18px);
+        }
+        body.theme-light .auth-shell{
+            background:linear-gradient(
+                135deg,
+                rgba(255,255,255,0.88),
+                rgba(239,246,255,0.98)
+            );
+            border:1px solid rgba(148,163,184,0.6);
+            box-shadow:0 20px 50px rgba(148,163,184,0.65);
+        }
+
+        .auth-panel,.auth-visual{
+            transition:
+                transform .6s cubic-bezier(0.25,0.8,0.25,1),
+                opacity   .6s cubic-bezier(0.25,0.8,0.25,1);
+        }
+        .auth-shell.pre-enter .auth-panel{
+            transform:translate3d(60px,0,0);opacity:0;
+        }
+        .auth-shell.pre-enter .auth-visual{
+            transform:translate3d(-60px,0,0);opacity:0;
+        }
+        .auth-shell.is-visible .auth-panel,
+        .auth-shell.is-visible .auth-visual{
+            transform:translate3d(0,0,0);opacity:1;
+        }
+
+        /* ===================== VISUAL (KIRI) ===================== */
+        .auth-visual{
+            flex:1.15;
+            background:radial-gradient(circle at top,#1f3f90 0,#020617 55%,#020617 100%);
+            display:flex;justify-content:center;align-items:center;
+            padding:32px 28px;position:relative;overflow:hidden;
+        }
+        body.theme-light .auth-visual{
+            background:radial-gradient(circle at top,#dbeafe 0,#93c5fd 45%,#60a5fa 100%);
+        }
+        .auth-visual::before{
+            content:'';position:absolute;inset:0;
+            background:
+                radial-gradient(circle at 10% 10%,rgba(96,165,250,0.18),transparent 55%),
+                radial-gradient(circle at 90% 90%,rgba(248,113,22,0.18),transparent 55%);
+            opacity:.8;pointer-events:none;
+        }
+        .visual-card{
+            position:relative;width:100%;max-width:480px;
+            padding:28px 34px;border-radius:26px;
+            background:radial-gradient(
+                circle at 40% 40%,
+                rgba(255,255,255,0.97) 0,
+                rgba(248,250,252,0.92) 45%,
+                rgba(59,130,246,0.45) 100%
+            );
+            backdrop-filter:blur(26px);
+            border:1px solid rgba(191,219,254,0.95);
+            box-shadow:
+                0 20px 50px rgba(15,23,42,0.65),
+                0 0 40px rgba(96,165,250,0.4);
+            display:flex;align-items:center;justify-content:center;
+        }
+        body.theme-light .visual-card{
+            background:radial-gradient(
+                circle at 40% 40%,
+                rgba(255,255,255,1) 0,
+                rgba(239,246,255,0.98) 55%,
+                rgba(191,219,254,0.85) 100%
+            );
+            border:1px solid rgba(148,163,184,0.8);
+            box-shadow:
+                0 18px 40px rgba(148,163,184,0.65),
+                0 0 30px rgba(129,140,248,0.35);
+        }
+        .visual-card img{
+            position:relative;max-width:100%;height:auto;display:block;
+            border-radius:20px;
+            filter:drop-shadow(0 12px 24px rgba(15,23,42,0.35))
+                   brightness(1.25)contrast(1.12);
+        }
+
+        /* ===================== PANEL FORM (KANAN) ===================== */
+        .auth-panel{
+            flex:1.05;
+            padding:34px 46px 34px;
+            display:flex;flex-direction:column;
+            color:#f9fafb;
+            background:linear-gradient(
+                145deg,
+                rgba(23,37,84,0.78),
+                rgba(15,23,42,0.94),
+                rgba(30,64,175,0.86)
+            );
+            border-left:1px solid rgba(148,163,184,0.6);
+            backdrop-filter:blur(26px);
+            box-shadow:
+                inset 0 0 0 1px rgba(30,64,175,0.45),
+                0 18px 45px rgba(0,0,0,0.9),
+                0 0 35px rgba(37,99,235,0.35);
+        }
+        body.theme-light .auth-panel{
+            background:linear-gradient(
+                145deg,
+                rgba(255,255,255,0.9),
+                rgba(239,246,255,0.99)
+            );
+            color:#111827;
+            border-left:1px solid rgba(191,219,254,0.9);
+            box-shadow:
+                inset 0 0 0 1px rgba(255,255,255,0.7),
+                0 18px 40px rgba(148,163,184,0.7);
+        }
+        .auth-panel-inner{max-width:480px;margin:auto 0;}
+        .auth-eyebrow{
+            font-size:12px;letter-spacing:.18em;
+            text-transform:uppercase;color:#9ca3af;margin-bottom:4px;
+        }
+        body.theme-light .auth-eyebrow{color:#6b7280;}
+        .auth-title{
+            font-size:24px;font-weight:800;
+            margin-bottom:6px;color:var(--page-title-color);
+        }
+        .auth-subtitle{font-size:14px;color:#9ca3af;margin-bottom:18px;}
+        body.theme-light .auth-subtitle{color:#6b7280;}
+
+        .section-label{
+            font-size:12px;font-weight:700;letter-spacing:.15em;
+            color:#9ca3af;margin-top:30px;margin-bottom:20px;
+            text-transform:uppercase;
+        }
+        body.theme-light .section-label{color:#6b7280;}
+
+        .field-group{margin-bottom:20px;width:100%;}
+        .field-row{display:flex;gap:18px;margin-bottom:14px;}
+        .field-row .field-group{flex:1;margin-bottom:14px;}
+
+        .field-select-row{
+            display:flex;
+            gap:14px;
+            margin-bottom:14px;
+        }
+        .field-select-row .field-group{
+            flex:1;
+            margin-bottom:0;
+        }
+        .step-2 .field-group{
+            margin-bottom:10px;
+        }
+        .step-2 .field-select-row{
+            margin-bottom:10px;
+        }
+
+        .select-label{
+            font-size:13px;
+            font-weight:500;
+            margin-bottom:6px;
+            color:var(--text-main);
+        }
+        body.theme-light .select-label{
+            color:#111827;
+        }
+
+        /* TEXTAREA PILL */
+        .auth-textarea-box{
+            width:100%;
+            padding:10px 14px;
+            border-radius:18px;
+            border:1px solid rgba(148,163,184,0.7);
+            background:rgba(15,23,42,0.6);
+            color:#f9fafb;
+            font-size:14px;
+            outline:none;
+            resize:vertical;
+            min-height:72px;
+        }
+        .auth-textarea-box:focus{
+            border-color:#f97316;
+            box-shadow:0 0 0 1px rgba(249,115,22,0.35);
+        }
+        body.theme-light .auth-textarea-box{
+            background:#ffffff;
+            border-color:#cbd5e1;
+            color:#111827;
+        }
+
+        /* SELECT PILL */
+        .field-select{
+            position:relative;
+        }
+        .auth-select-box{
+            width:100%;
+            padding:9px 36px 9px 12px;
+            border-radius:999px;
+            border:1px solid rgba(148,163,184,0.7);
+            background:rgba(15,23,42,0.6);
+            color:#f9fafb;
+            font-size:13px;
+            outline:none;
+            -webkit-appearance:none;
+            -moz-appearance:none;
+            appearance:none;
+        }
+        body.theme-light .auth-select-box{
+            background:#ffffff;
+            border-color:#cbd5e1;
+            color:#111827;
+        }
+        .field-select::after{
+            content:"▾";
+            position:absolute;
+            right:14px;
+            top:50%;
+            transform:translateY(-50%);
+            font-size:11px;
+            color:#9ca3af;
+            pointer-events:none;
+        }
+
+        /* FILE INPUTS */
+        .file-group{margin-bottom:14px;}
+        .file-label-main{
+            font-size:13px;font-weight:500;color:var(--text-main);
+            margin-bottom:4px;
+        }
+        .file-input{
+            width:100%;padding:8px 10px;font-size:12px;
+            border-radius:999px;border:1px solid rgba(148,163,184,0.7);
+            background:rgba(15,23,42,0.7);color:var(--text-main);
+        }
+        body.theme-light .file-input{
+            background:#ffffff;border-color:#cbd5e1;color:#111827;
+        }
+        .file-help{font-size:10px;color:#9ca3af;margin-top:4px;}
+        body.theme-light .file-help{color:#6b7280;}
+
+        /* STEP NAV */
+        .step-nav{
+            display:flex;
+            align-items:center;
+            gap:10px;
+            margin-bottom:18px;
+        }
+        .step-pill{
+            display:flex;
+            align-items:center;
+            gap:8px;
+            padding:6px 12px;
+            border-radius:999px;
+            background:rgba(15,23,42,0.7);
+            border:1px solid rgba(148,163,184,0.6);
+            font-size:11px;
+            text-transform:uppercase;
+            letter-spacing:.12em;
+            color:#9ca3af;
+        }
+        .step-pill-number{
+            width:20px;
+            height:20px;
+            border-radius:4px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            font-weight:700;
+            font-size:11px;
+            background:#111827;
+            color:#f9fafb;
+        }
+        .step-pill--active{
+            border-color:#f97316;
+            color:#f97316;
+        }
+        .step-pill--active .step-pill-number{
+            background:#f97316;
+            color:#111827;
+        }
+        .step-line{
+            flex:1;
+            height:2px;
+            margin:0 10px;
+            border-radius:999px;
+            background:rgba(148,163,184,0.45);
+        }
+
+        /* === LIGHT MODE OVERRIDES === */
+        body.theme-light .step-pill{
+            background:#ffffff;
+            border-color:#e5e7eb;
+            color:#475569;
+        }
+        body.theme-light .step-pill-number{
+            background:#e5e7eb;
+            color:#111827;
+            border:1px solid #cbd5e1;
+        }
+        body.theme-light .step-pill--active{
+            border-color:#f97316;
+            background:#fff7ed;
+            color:#c2410c;
+            box-shadow:0 2px 6px rgba(249,115,22,0.25);
+        }
+        body.theme-light .step-pill--active .step-pill-number{
+            background:#f97316;
+            color:#ffffff;
+            border-color:#f97316;
+        }
+        body.theme-light .step-line{
+            height:2px;
+            background:#e5e7eb;
+            opacity:0.9;
+        }
+
+        /* Step visibility */
+        .step{display:none;}
+        .step--active{display:block;}
+
+        /* BUTTONS */
+        .step-actions{
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            gap:10px;
+            margin-top:18px;
+        }
+
+        .btn-secondary{
+            border-radius:999px;
+            padding:9px 18px;
+            font-size:13px;
+            border:1px solid rgba(148,163,184,0.7);
+            background:rgba(15,23,42,0.6);
+            color:var(--text-main);
+            cursor:pointer;
+            transition:
+                background .2s ease,
+                border-color .2s ease,
+                box-shadow .18s ease,
+                transform .18s ease;
+        }
+
+        .btn-secondary:hover,
+        .btn-secondary:focus-visible{
+            border-color:var(--accent-input);
+            background:rgba(15,23,42,0.9);
+            box-shadow:0 8px 18px var(--accent-input-soft);
+            transform:translateY(-1px);
+        }
+
+        .btn-secondary:active{
+            transform:translateY(0);
+            box-shadow:0 4px 10px var(--accent-input-soft);
+        }
+
+        body.theme-light .btn-secondary{
+            background:#e5e7eb;
+            border-color:#cbd5e1;
+            color:#111827;
+        }
+
+        body.theme-light .btn-secondary:hover,
+        body.theme-light .btn-secondary:focus-visible{
+            border-color:var(--accent-input);
+            background:#f3f4ff;
+            box-shadow:0 8px 18px var(--accent-input-soft);
+        }
+
+        .btn-secondary[disabled]{
+            opacity:.4;
+            cursor:default;
+            transform:none;
+            box-shadow:none;
+        }
+
+        /* PRIMARY BUTTON TETAP */
+        .auth-btn-primary{
+            width:100%;
+            border:none;
+            border-radius:999px;
+            padding:11px 18px;
+            font-size:14px;
+            font-weight:700;
+            cursor:pointer;
+            background:#f97316;
+            color:#111827;
+            margin-top:8px;
+            transition:background .2s ease, transform .15s ease, box-shadow .15s ease;
+            box-shadow:0 12px 25px rgba(248,113,22,.45);
+        }
+        .auth-btn-primary:hover{
+            background:#fb923c;
+            transform:translateY(-1px);
+        }
+        .auth-btn-primary:active{
+            transform:translateY(0);
+            box-shadow:0 6px 16px rgba(248,113,22,.5);
+        }
+
+        .auth-bottom-text{
+            margin-top:14px;
+            font-size:13px;
+            text-align:center;
+            color:var(--text-main);
+        }
+        .auth-bottom-text a{
+            color:#f97316;
+            font-weight:600;
+        }
+
+        /* ALERTS & ERROR */
+        .auth-error{font-size:12px;color:#fecaca;margin-top:4px;}
+
+        .auth-global-error{
+            background:rgba(185,28,28,0.18);
+            border:1px solid rgba(248,113,113,0.6);
+            color:#fecaca;border-radius:10px;
+            padding:8px 10px;font-size:12px;margin-bottom:14px;
+        }
+
+        .alert-info,
+        .alert-error{
+            border-radius:14px;padding:10px 12px;
+            font-size:13px;margin-bottom:10px;
+            display:flex;gap:8px;align-items:flex-start;
+        }
+        .alert-info{
+            background:rgba(59,130,246,0.12);
+            border:1px solid rgba(59,130,246,0.6);
+            color:#e5edff;
+        }
+        body.theme-light .alert-info{
+            background:#eff6ff;
+            border-color:#bfdbfe;
+            color:#1d4ed8;
+        }
+        .alert-error{
+            background:rgba(220,38,38,0.18);
+            border:1px solid rgba(248,113,113,0.6);
+            color:#fecaca;
+        }
+        body.theme-light .alert-error{
+            background:#fef2f2;
+            border-color:#fecaca;
+            color:#b91c1c;
+        }
+
+        /* ============== FLOAT LABEL INPUT (UNTUK SEMUA INPUT) ============== */
+        .float-group{
+            position:relative;
+            width:100%;
+        }
+
+        .float-input{
+            width:100%;
+            padding:10px 16px;
+            border-radius:999px;
+            border:1px solid rgba(148,163,184,0.7);
+            background:rgba(15,23,42,0.75);
+            color:var(--text-main);
+            font-size:14px;
+            outline:none;
+            transition:border-color .25s ease, box-shadow .25s ease;
+        }
+
+        body.theme-light .float-input{
+            background:#ffffff;
+            border-color:#cbd5e1;
+            color:#111827;
+        }
+
+        /* Fokus → border & glow ikut warna accent theme */
+        .float-input:focus{
+            border-color:var(--accent-input);
+            box-shadow:0 0 0 2px var(--accent-input-soft);
+        }
+
+        /* Label default di tengah (kayak placeholder) */
+        .float-label{
+            position:absolute;
+            left:16px;
+            top:50%;
+            transform:translateY(-50%);
+            font-size:13px;
+            color:#9ca3af;
+            pointer-events:none;
+            transition:all .2s ease;
+        }
+
+        body.theme-light .float-label{
+            color:#6b7280;
+        }
+
+        .float-input:focus + .float-label,
+        .float-input:not(:placeholder-shown) + .float-label{
+            top:-18px;
+            transform:none;
+            font-size:11px;
+            color:var(--accent-input);
+            background:transparent;
+        }
+
+        /* ===================== RESPONSIVE ===================== */
+        @media(max-width:900px){
+            .nav{padding:14px 18px;}
+            .nav-left{gap:18px;}
+            .nav-menu{
+                gap:18px;
+                font-size:13px;
+            }
+            .auth-bg{padding:110px 18px 40px;}
+            .auth-shell{
+                max-width:520px;flex-direction:column;border-radius:24px;
+            }
+            .auth-panel{padding:26px 22px 24px;}
+            .auth-panel-inner{max-width:100%;}
+            .auth-visual{padding:12px 16px 18px;}
+            .visual-card{max-width:100%;}
+            .visual-card img{border-radius:20px;}
         }
     </style>
 </head>
-<body class="min-h-screen">
+<body class="theme-dark">
 
-<nav class="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-lg border-b border-purple-200 shadow-lg">
-    <div class="container mx-auto px-6 py-4">
-        <div class="flex items-center justify-between">
-            <a href="{{ route('home') }}" class="text-2xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent flex items-center gap-2">
-                <i class="uil uil-shop"></i>
-                KampuStore
-            </a>
-            <a href="{{ route('login') }}" class="text-sm text-purple-600 hover:text-purple-700 font-semibold flex items-center gap-2 transition">
-                <i class="uil uil-signin"></i>
-                Sudah punya akun penjual? Login
-            </a>
+<nav class="nav">
+    <div class="nav-left">
+        <a href="{{ route('home') }}" class="nav-logo">
+            <img src="{{ asset('images/logo.png') }}" alt="kampuStore logo">
+            <span>kampuStore</span>
+        </a>
+
+        <div class="nav-menu">
+            <a href="{{ route('home') }}">Home</a>
+            <a href="{{ route('home') }}#features">Features</a>
+            <a href="{{ route('products.index') }}">Market</a>
+            <a href="{{ route('home') }}#about">About</a>
+            <a href="{{ route('home') }}#contact">Contact</a>
+        </div>
+    </div>
+
+    <div class="nav-actions">
+        {{-- theme toggle kamu di sini --}}
+    </div>
+
+    <div class="nav-actions">
+        <div class="theme-toggle-wrapper">
+            <label class="toggle-switch">
+                <input type="checkbox" class="js-theme-toggle" />
+                <span class="slider">
+                    <div class="clouds">
+                        <svg viewBox="0 0 100 100" class="cloud cloud1">
+                            <path d="M30,45 Q35,25 50,25 Q65,25 70,45 Q80,45 85,50 Q90,55 85,60 Q80,65 75,60 Q65,60 60,65 Q55,70 50,65 Q45,70 40,65 Q35,60 25,60 Q20,65 15,60 Q10,55 15,50 Q20,45 30,45"></path>
+                        </svg>
+                        <svg viewBox="0 0 100 100" class="cloud cloud2">
+                            <path d="M30,45 Q35,25 50,25 Q65,25 70,45 Q80,45 85,50 Q90,55 85,60 Q80,65 75,60 Q65,60 60,65 Q55,70 50,65 Q45,70 40,65 Q35,60 25,60 Q20,65 15,60 Q10,55 15,50 Q20,45 30,45"></path>
+                        </svg>
+                    </div>
+                </span>
+            </label>
         </div>
     </div>
 </nav>
 
-<main class="pt-28 pb-12 px-4">
-    <div class="container mx-auto max-w-4xl">
-        <div class="bg-white backdrop-blur-lg rounded-3xl shadow-2xl p-8 md:p-10">
-            
-            <div class="text-center mb-10">
-                <div class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-purple-100 to-indigo-100 rounded-full mb-4">
-                    <i class="uil uil-store-alt text-4xl text-purple-600"></i>
-                </div>
-                <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-3">Daftar Sebagai Penjual</h1>
-                <p class="text-gray-600 mb-3 text-lg">Lengkapi data toko dan informasi pemilik untuk verifikasi</p>
-                
+<main class="auth-bg">
+    <div class="auth-shell pre-enter">
+
+        {{-- KIRI: kartu logo --}}
+        <div class="auth-visual">
+            <div class="visual-card">
+                <img src="{{ asset('images/pc.png') }}" alt="kampuStore hero">
+            </div>
+        </div>
+
+        {{-- KANAN: form multi-step --}}
+        <div class="auth-panel">
+            <div class="auth-panel-inner">
+                <div class="auth-eyebrow">SELLER REGISTRATION</div>
+                <h1 class="auth-title">Buka Toko di kampuStore</h1>
+                <p class="auth-subtitle">
+                    Lengkapi data toko, akun, dan alamatmu. Pengajuan akan diperiksa admin sebelum toko aktif.
+                </p>
+
+                {{-- pesan global --}}
                 @if(session('error'))
-                <div class="bg-gradient-to-r from-red-50 to-pink-50 border-2 border-red-200 rounded-2xl p-5 text-sm text-red-700 max-w-2xl mx-auto mb-4">
-                    <div class="flex items-start gap-3">
-                        <i class="uil uil-exclamation-triangle text-2xl text-red-600 mt-0.5"></i>
-                        <div class="text-left">
-                            <strong class="text-red-700 block mb-1">{{ session('error') }}</strong>
-                        </div>
+                    <div class="alert-error">
+                        <strong>{{ session('error') }}</strong>
                     </div>
-                </div>
                 @endif
-                
+
                 @if(session('info'))
-                <div class="bg-gradient-to-r from-blue-50 to-cyan-50 border-2 border-blue-200 rounded-2xl p-5 text-sm text-blue-700 max-w-2xl mx-auto mb-4">
-                    <div class="flex items-start gap-3">
-                        <i class="uil uil-info-circle text-2xl text-blue-600 mt-0.5"></i>
-                        <div class="text-left">
+                    <div class="alert-info">
+                        <div>
+                            <strong>Info:</strong><br>
                             <span>{{ session('info') }}</span>
                         </div>
                     </div>
-                </div>
                 @endif
-                
-                <div class="bg-gradient-to-r from-purple-50 to-indigo-50 border-2 border-purple-200 rounded-2xl p-5 text-sm text-gray-700 max-w-2xl mx-auto">
-                    <div class="flex items-start gap-3">
-                        <i class="uil uil-shopping-cart text-2xl text-purple-600 mt-0.5"></i>
-                        <div class="text-left">
-                            <strong class="text-purple-700 block mb-1">📢 Penting untuk Pembeli:</strong>
-                            <span class="block mb-2">Jika Anda ingin <strong>berbelanja</strong>, TIDAK perlu registrasi atau login!</span>
-                            <span class="block">Langsung kunjungi <a href="{{ route('products.index') }}" class="text-purple-600 underline hover:text-purple-700 font-semibold">halaman market</a> dan belanja sebagai guest. Form ini hanya untuk <strong>penjual yang ingin buka toko</strong>.</span>
+
+                <div class="alert-info">
+                    <div>
+                        <strong><i class="uil uil-info-circle"></i>Untuk pembeli:</strong><br>
+                        Jika kamu hanya ingin berbelanja, tidak perlu registrasi atau login.
+                        Silakan langsung ke
+                        <a href="{{ route('products.index') }}" style="color:#f97316;font-weight:600;">halaman market</a>.
+                        Form ini khusus untuk penjual yang ingin buka toko.
+                    </div>
+                </div>
+
+                @if($errors->any())
+                    <div class="auth-global-error">
+                        Ada beberapa data yang belum tepat. Silakan dicek kembali formulir di bawah.
+                    </div>
+                @endif
+
+                <form method="POST"
+                      action="{{ route('register') }}"
+                      enctype="multipart/form-data"
+                      id="sellerForm">
+                    @csrf
+
+                    {{-- Step nav: 3 tahap --}}
+                    <div class="step-nav">
+                        <div class="step-pill step-pill--active" data-step="1">
+                            <span class="step-pill-number">1</span>
+                            <span class="step-pill-text">Toko & Akun</span>
+                        </div>
+                        <div class="step-line"></div>
+                        <div class="step-pill" data-step="2">
+                            <span class="step-pill-number">2</span>
+                            <span class="step-pill-text">Alamat</span>
+                        </div>
+                        <div class="step-line"></div>
+                        <div class="step-pill" data-step="3">
+                            <span class="step-pill-number">3</span>
+                            <span class="step-pill-text">Verifikasi</span>
                         </div>
                     </div>
+
+                    {{-- ================== STEP 1 ================== --}}
+                    <div class="step step-1 step--active">
+                        <div class="section-label">Tahap 1 · Data Toko</div>
+
+                        {{-- Nama Toko --}}
+                        <div class="field-group">
+                            <div class="float-group">
+                                <input
+                                    id="nama_toko"
+                                    type="text"
+                                    name="nama_toko"
+                                    class="float-input"
+                                    value="{{ old('nama_toko') }}"
+                                    placeholder=" "
+                                    required
+                                >
+                                <label for="nama_toko" class="float-label">Nama Toko *</label>
+                            </div>
+                            @error('nama_toko')
+                                <div class="auth-error">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        {{-- Deskripsi singkat --}}
+                        <div class="field-group">
+                            <label for="deskripsi_singkat" class="select-label">
+                                Deskripsi singkat toko
+                            </label>
+                            <textarea
+                                id="deskripsi_singkat"
+                                name="deskripsi_singkat"
+                                class="auth-textarea-box"
+                                required
+                            >{{ old('deskripsi_singkat') }}</textarea>
+                            @error('deskripsi_singkat')
+                                <div class="auth-error">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="section-label" style="margin-top:26px;">Data Pemilik Toko (PIC)</div>
+
+                        {{-- Nama PIC & No HP --}}
+                        <div class="field-row">
+                            <div class="field-group">
+                                <div class="float-group">
+                                    <input
+                                        id="nama_pic"
+                                        type="text"
+                                        name="nama_pic"
+                                        class="float-input"
+                                        value="{{ old('nama_pic') }}"
+                                        placeholder=" "
+                                        required
+                                    >
+                                    <label for="nama_pic" class="float-label">Nama Lengkap PIC</label>
+                                </div>
+                                @error('nama_pic')
+                                    <div class="auth-error">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div class="field-group">
+                                <div class="float-group">
+                                    <input
+                                        id="no_hp_pic"
+                                        type="text"
+                                        name="no_hp_pic"
+                                        class="float-input"
+                                        value="{{ old('no_hp_pic') }}"
+                                        placeholder=" "
+                                        required
+                                    >
+                                    <label for="no_hp_pic" class="float-label">No HP / WhatsApp</label>
+                                </div>
+                                <div class="file-help">
+                                    (Format: 08xxx) atau (+628xxx)
+                                </div>
+                                @error('no_hp_pic')
+                                    <div class="auth-error">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+
+                        {{-- Email & No KTP --}}
+                        <div class="field-row">
+                            <div class="field-group">
+                                <div class="float-group">
+                                    <input
+                                        id="email_pic"
+                                        type="email"
+                                        name="email_pic"
+                                        class="float-input"
+                                        value="{{ old('email_pic') }}"
+                                        placeholder=" "
+                                        required
+                                    >
+                                    <label for="email_pic" class="float-label">Email</label>
+                                </div>
+                                <div class="file-help">
+                                    Email untuk login ke akun toko kamu.
+                                </div>
+                                @error('email_pic')
+                                    <div class="auth-error">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div class="field-group">
+                                <div class="float-group">
+                                    <input
+                                        id="no_ktp_pic"
+                                        type="text"
+                                        name="no_ktp_pic"
+                                        class="float-input"
+                                        value="{{ old('no_ktp_pic') }}"
+                                        maxlength="16"
+                                        pattern="[0-9]{16}"
+                                        inputmode="numeric"
+                                        placeholder=" "
+                                        required
+                                    >
+                                    <label for="no_ktp_pic" class="float-label">No KTP </label>
+                                </div>
+                                <div class="file-help">
+                                    Masukkan 16 digit angka.
+                                </div>
+                                @error('no_ktp_pic')
+                                    <div class="auth-error">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+
+                        {{-- Password & Konfirmasi --}}
+                        <div class="field-row">
+                            <div class="field-group">
+                                <div class="float-group">
+                                    <input
+                                        id="password"
+                                        type="password"
+                                        name="password"
+                                        class="float-input"
+                                        placeholder=" "
+                                        required
+                                    >
+                                    <label for="password" class="float-label">Password </label>
+                                </div>
+                                <div class="file-help">
+                                    Minimal 8 karakter.
+                                </div>
+                                @error('password')
+                                    <div class="auth-error">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div class="field-group">
+                                <div class="float-group">
+                                    <input
+                                        id="password_confirmation"
+                                        type="password"
+                                        name="password_confirmation"
+                                        class="float-input"
+                                        placeholder=" "
+                                        required
+                                    >
+                                    <label for="password_confirmation" class="float-label">Konfirmasi Password</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- ================== STEP 2 ================== --}}
+                    <div class="step step-2">
+                        <div class="section-label">Tahap 2 · Alamat Lengkap</div>
+
+                        {{-- Alamat jalan --}}
+                        <div class="field-group">
+                            <div class="float-group">
+                                <input
+                                    id="alamat_pic"
+                                    type="text"
+                                    name="alamat_pic"
+                                    class="float-input"
+                                    value="{{ old('alamat_pic') }}"
+                                    placeholder=" "
+                                    required
+                                >
+                                <label for="alamat_pic" class="float-label">
+                                    Alamat (Nama Jalan, No. Rumah) *
+                                </label>
+                            </div>
+                            @error('alamat_pic')
+                                <div class="auth-error">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        {{-- Provinsi & Kota --}}
+                        <div class="field-select-row">
+                            <div class="field-group">
+                                <label for="provinsi" class="select-label">Provinsi *</label>
+                                <div class="field-select">
+                                    <select
+                                        id="provinsi"
+                                        name="provinsi"
+                                        class="auth-select-box"
+                                        required
+                                    >
+                                        <option value="">Pilih Provinsi</option>
+                                        {{-- diisi via JS --}}
+                                    </select>
+                                </div>
+                                @error('provinsi')
+                                    <div class="auth-error">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div class="field-group">
+                                <label for="kota" class="select-label">Kota / Kabupaten *</label>
+                                <div class="field-select">
+                                    <select
+                                        id="kota"
+                                        name="kota"
+                                        class="auth-select-box"
+                                        required
+                                    >
+                                        <option value="">Pilih kota/kabupaten</option>
+                                    </select>
+                                </div>
+                                @error('kota')
+                                    <div class="auth-error">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+
+                        {{-- Kecamatan & Kelurahan --}}
+                        <div class="field-select-row">
+                            <div class="field-group">
+                                <label for="kecamatan" class="select-label">Kecamatan *</label>
+                                <div class="field-select">
+                                    <select
+                                        id="kecamatan"
+                                        name="kecamatan"
+                                        class="auth-select-box"
+                                        required
+                                    >
+                                        <option value="">Pilih kecamatan</option>
+                                    </select>
+                                </div>
+                                @error('kecamatan')
+                                    <div class="auth-error">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div class="field-group">
+                                <label for="kelurahan" class="select-label">Kelurahan / Desa *</label>
+                                <div class="field-select">
+                                    <select
+                                        id="kelurahan"
+                                        name="kelurahan"
+                                        class="auth-select-box"
+                                        required
+                                    >
+                                        <option value="">Pilih kelurahan/desa</option>
+                                    </select>
+                                </div>
+                                @error('kelurahan')
+                                    <div class="auth-error">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+
+                        {{-- RT / RW --}}
+                        <div class="field-select-row">
+                            <div class="field-group">
+                                <div class="float-group">
+                                    <input
+                                        id="rt"
+                                        type="text"
+                                        name="rt"
+                                        class="float-input"
+                                        value="{{ old('rt') }}"
+                                        placeholder=" "
+                                        required
+                                    >
+                                    <label for="rt" class="float-label">RT</label>
+                                </div>
+                                @error('rt')
+                                    <div class="auth-error">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div class="field-group">
+                                <div class="float-group">
+                                    <input
+                                        id="rw"
+                                        type="text"
+                                        name="rw"
+                                        class="float-input"
+                                        value="{{ old('rw') }}"
+                                        placeholder=" "
+                                        required
+                                    >
+                                    <label for="rw" class="float-label">RW</label>
+                                </div>
+                                @error('rw')
+                                    <div class="auth-error">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+
+                        {{-- Kode Pos --}}
+                        <div class="field-group">
+                            <div class="float-group">
+                                <input
+                                    id="kode_pos"
+                                    type="text"
+                                    name="kode_pos"
+                                    class="float-input"
+                                    value="{{ old('kode_pos') }}"
+                                    placeholder=" "
+                                    required
+                                    maxlength="5"
+                                    pattern="[0-9]{5}"
+                                >
+                                <label for="kode_pos" class="float-label">Kode Pos</label>
+                            </div>
+                            <div class="file-help">
+                                5 digit.                                
+                            </div>
+                            @error('kode_pos')
+                                <div class="auth-error">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+
+                    {{-- ================== STEP 3 ================== --}}
+                    <div class="step step-3">
+                        <div class="section-label">Tahap 3 · Dokumen Verifikasi</div>
+
+                        <div class="file-group">
+                            <div class="file-label-main">Foto Anda (Selfie) *</div>
+                            <input
+                                type="file"
+                                name="foto_pic"
+                                class="file-input"
+                                required
+                                accept="image/jpeg,image/jpg,image/png"
+                            >
+                            <div class="file-help">
+                                Foto wajah jelas. Format JPG/JPEG/PNG, maks 2 MB.
+                            </div>
+                            @error('foto_pic')
+                                <div class="auth-error">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="file-group">
+                            <div class="file-label-main">File Scan KTP *</div>
+                            <input
+                                type="file"
+                                name="file_ktp_pic"
+                                class="file-input"
+                                required
+                                accept="application/pdf,image/jpeg,image/jpg,image/png"
+                            >
+                            <div class="file-help">
+                                Scan/foto KTP yang jelas. Format PDF/JPG/JPEG/PNG, maks 4 MB.
+                            </div>
+                            @error('file_ktp_pic')
+                                <div class="auth-error">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+
+                    {{-- BUTTONS --}}
+                    <div class="step-actions">
+                        <button type="button" class="btn-secondary" id="btnPrev">Kembali</button>
+                        <button type="button" class="btn-secondary" id="btnNext">Lanjut</button>
+                        <button type="submit" class="auth-btn-primary" id="btnSubmit">
+                            Kirim Pengajuan Buka Toko
+                        </button>
+                    </div>
+                </form>
+
+                <div class="auth-bottom-text">
+                    Already have an account?
+                    <a href="{{ route('login') }}" id="goLogin">Login</a>
                 </div>
             </div>
-
-            <form method="POST" action="{{ route('register') }}" enctype="multipart/form-data" class="space-y-6">
-                @csrf
-
-                {{-- SECTION 1: DATA TOKO --}}
-                <div class="bg-gradient-to-br from-indigo-50 to-white rounded-2xl p-6 border-2 border-indigo-100">
-                    <div class="flex items-center gap-3 mb-5">
-                        <div class="flex items-center justify-center w-10 h-10 bg-indigo-600 text-white rounded-full font-bold">1</div>
-                        <h2 class="text-xl font-bold text-gray-900">Informasi Toko</h2>
-                    </div>
-                    <div class="space-y-4">
-                        <div>
-                            <label class="label">Nama Toko *</label>
-                            <input type="text" name="nama_toko" value="{{ old('nama_toko') }}" required class="input-field" placeholder="Nama toko Anda">
-                            @error('nama_toko')<p class="error-msg"><i class="uil uil-exclamation-circle"></i>{{ $message }}</p>@enderror
-                        </div>
-                        <div>
-                            <label class="label">Deskripsi Singkat *</label>
-                            <textarea name="deskripsi_singkat" rows="3" required class="input-field" placeholder="Jelaskan tentang toko Anda">{{ old('deskripsi_singkat') }}</textarea>
-                            @error('deskripsi_singkat')<p class="error-msg"><i class="uil uil-exclamation-circle"></i>{{ $message }}</p>@enderror
-                        </div>
-                    </div>
-                </div>
-
-                {{-- SECTION 2: DATA PEMILIK TOKO (PIC) --}}
-                <div class="bg-gradient-to-br from-blue-50 to-white rounded-2xl p-6 border-2 border-blue-100">
-                    <div class="flex items-center gap-3 mb-5">
-                        <div class="flex items-center justify-center w-10 h-10 bg-blue-600 text-white rounded-full font-bold">2</div>
-                        <h2 class="text-xl font-bold text-gray-900">Data Pemilik Toko (Anda)</h2>
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label class="label">Nama Lengkap *</label>
-                            <input type="text" name="nama_pic" value="{{ old('nama_pic') }}" required class="input-field" placeholder="Nama lengkap Anda">
-                            @error('nama_pic')<p class="error-msg"><i class="uil uil-exclamation-circle"></i>{{ $message }}</p>@enderror
-                        </div>
-                        <div>
-                            <label class="label">No. Handphone / WhatsApp * <span class="text-xs text-gray-500">(format: 08xxx)</span></label>
-                            <input type="text" name="no_hp_pic" value="{{ old('no_hp_pic') }}" required pattern="(\\+62|62|0)[0-9]{9,12}" class="input-field" placeholder="081234567890">
-                            <p class="text-xs text-gray-500 mt-1">Contoh: 081234567890 atau +6281234567890</p>
-                            @error('no_hp_pic')<p class="error-msg"><i class="uil uil-exclamation-circle"></i>{{ $message }}</p>@enderror
-                        </div>
-                        <div>
-                            <label class="label">Email * <span class="text-xs text-gray-500">(gunakan untuk login)</span></label>
-                            <input type="email" name="email_pic" value="{{ old('email_pic') }}" required class="input-field" placeholder="email@example.com">
-                            @error('email_pic')<p class="error-msg"><i class="uil uil-exclamation-circle"></i>{{ $message }}</p>@enderror
-                        </div>
-                        <div>
-                            <label class="label">No. KTP (NIK) * <span class="text-xs text-gray-500">(16 digit)</span></label>
-                            <input type="text" name="no_ktp_pic" value="{{ old('no_ktp_pic') }}" required maxlength="16" pattern="[0-9]{16}" class="input-field" placeholder="3374010101010001">
-                            <p class="text-xs text-gray-500 mt-1">Harus 16 digit angka</p>
-                            @error('no_ktp_pic')<p class="error-msg"><i class="uil uil-exclamation-circle"></i>{{ $message }}</p>@enderror
-                        </div>
-                        <div>
-                            <label class="label">Password * <span class="text-xs text-gray-500">(min. 8 karakter)</span></label>
-                            <input type="password" name="password" required class="input-field" placeholder="Buat password untuk akun">
-                            @error('password')<p class="error-msg"><i class="uil uil-exclamation-circle"></i>{{ $message }}</p>@enderror
-                        </div>
-                        <div>
-                            <label class="label">Konfirmasi Password *</label>
-                            <input type="password" name="password_confirmation" required class="input-field" placeholder="Ulangi password">
-                        </div>
-                    </div>
-                </div>
-
-                {{-- SECTION 3: ALAMAT --}}
-                <div class="bg-gradient-to-br from-teal-50 to-white rounded-2xl p-6 border-2 border-teal-100">
-                    <div class="flex items-center gap-3 mb-5">
-                        <div class="flex items-center justify-center w-10 h-10 bg-teal-600 text-white rounded-full font-bold">3</div>
-                        <h2 class="text-xl font-bold text-gray-900">Alamat Lengkap</h2>
-                    </div>
-                    <div class="space-y-4">
-                        <div>
-                            <label class="label">Alamat (Nama Jalan) *</label>
-                            <input type="text" name="alamat_pic" value="{{ old('alamat_pic') }}" required class="input-field" placeholder="Jl. Contoh No. 123">
-                            @error('alamat_pic')<p class="error-msg"><i class="uil uil-exclamation-circle"></i>{{ $message }}</p>@enderror
-                        </div>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <label class="label">Provinsi *</label>
-                                <select name="provinsi" id="provinsi" required class="input-field">
-                                    <option value="">Pilih Provinsi</option>
-                                    <option value="Aceh" {{ old('provinsi') == 'Aceh' ? 'selected' : '' }}>Aceh</option>
-                                    <option value="Sumatera Utara" {{ old('provinsi') == 'Sumatera Utara' ? 'selected' : '' }}>Sumatera Utara</option>
-                                    <option value="Sumatera Barat" {{ old('provinsi') == 'Sumatera Barat' ? 'selected' : '' }}>Sumatera Barat</option>
-                                    <option value="Riau" {{ old('provinsi') == 'Riau' ? 'selected' : '' }}>Riau</option>
-                                    <option value="Kepulauan Riau" {{ old('provinsi') == 'Kepulauan Riau' ? 'selected' : '' }}>Kepulauan Riau</option>
-                                    <option value="Jambi" {{ old('provinsi') == 'Jambi' ? 'selected' : '' }}>Jambi</option>
-                                    <option value="Sumatera Selatan" {{ old('provinsi') == 'Sumatera Selatan' ? 'selected' : '' }}>Sumatera Selatan</option>
-                                    <option value="Kepulauan Bangka Belitung" {{ old('provinsi') == 'Kepulauan Bangka Belitung' ? 'selected' : '' }}>Kepulauan Bangka Belitung</option>
-                                    <option value="Bengkulu" {{ old('provinsi') == 'Bengkulu' ? 'selected' : '' }}>Bengkulu</option>
-                                    <option value="Lampung" {{ old('provinsi') == 'Lampung' ? 'selected' : '' }}>Lampung</option>
-                                    <option value="DKI Jakarta" {{ old('provinsi') == 'DKI Jakarta' ? 'selected' : '' }}>DKI Jakarta</option>
-                                    <option value="Banten" {{ old('provinsi') == 'Banten' ? 'selected' : '' }}>Banten</option>
-                                    <option value="Jawa Barat" {{ old('provinsi') == 'Jawa Barat' ? 'selected' : '' }}>Jawa Barat</option>
-                                    <option value="Jawa Tengah" {{ old('provinsi') == 'Jawa Tengah' ? 'selected' : '' }}>Jawa Tengah</option>
-                                    <option value="DI Yogyakarta" {{ old('provinsi') == 'DI Yogyakarta' ? 'selected' : '' }}>DI Yogyakarta</option>
-                                    <option value="Jawa Timur" {{ old('provinsi') == 'Jawa Timur' ? 'selected' : '' }}>Jawa Timur</option>
-                                    <option value="Bali" {{ old('provinsi') == 'Bali' ? 'selected' : '' }}>Bali</option>
-                                    <option value="Nusa Tenggara Barat" {{ old('provinsi') == 'Nusa Tenggara Barat' ? 'selected' : '' }}>Nusa Tenggara Barat</option>
-                                    <option value="Nusa Tenggara Timur" {{ old('provinsi') == 'Nusa Tenggara Timur' ? 'selected' : '' }}>Nusa Tenggara Timur</option>
-                                    <option value="Kalimantan Barat" {{ old('provinsi') == 'Kalimantan Barat' ? 'selected' : '' }}>Kalimantan Barat</option>
-                                    <option value="Kalimantan Tengah" {{ old('provinsi') == 'Kalimantan Tengah' ? 'selected' : '' }}>Kalimantan Tengah</option>
-                                    <option value="Kalimantan Selatan" {{ old('provinsi') == 'Kalimantan Selatan' ? 'selected' : '' }}>Kalimantan Selatan</option>
-                                    <option value="Kalimantan Timur" {{ old('provinsi') == 'Kalimantan Timur' ? 'selected' : '' }}>Kalimantan Timur</option>
-                                    <option value="Kalimantan Utara" {{ old('provinsi') == 'Kalimantan Utara' ? 'selected' : '' }}>Kalimantan Utara</option>
-                                    <option value="Sulawesi Utara" {{ old('provinsi') == 'Sulawesi Utara' ? 'selected' : '' }}>Sulawesi Utara</option>
-                                    <option value="Gorontalo" {{ old('provinsi') == 'Gorontalo' ? 'selected' : '' }}>Gorontalo</option>
-                                    <option value="Sulawesi Tengah" {{ old('provinsi') == 'Sulawesi Tengah' ? 'selected' : '' }}>Sulawesi Tengah</option>
-                                    <option value="Sulawesi Barat" {{ old('provinsi') == 'Sulawesi Barat' ? 'selected' : '' }}>Sulawesi Barat</option>
-                                    <option value="Sulawesi Selatan" {{ old('provinsi') == 'Sulawesi Selatan' ? 'selected' : '' }}>Sulawesi Selatan</option>
-                                    <option value="Sulawesi Tenggara" {{ old('provinsi') == 'Sulawesi Tenggara' ? 'selected' : '' }}>Sulawesi Tenggara</option>
-                                    <option value="Maluku" {{ old('provinsi') == 'Maluku' ? 'selected' : '' }}>Maluku</option>
-                                    <option value="Maluku Utara" {{ old('provinsi') == 'Maluku Utara' ? 'selected' : '' }}>Maluku Utara</option>
-                                    <option value="Papua" {{ old('provinsi') == 'Papua' ? 'selected' : '' }}>Papua</option>
-                                    <option value="Papua Barat" {{ old('provinsi') == 'Papua Barat' ? 'selected' : '' }}>Papua Barat</option>
-                                    <option value="Papua Tengah" {{ old('provinsi') == 'Papua Tengah' ? 'selected' : '' }}>Papua Tengah</option>
-                                    <option value="Papua Pegunungan" {{ old('provinsi') == 'Papua Pegunungan' ? 'selected' : '' }}>Papua Pegunungan</option>
-                                    <option value="Papua Selatan" {{ old('provinsi') == 'Papua Selatan' ? 'selected' : '' }}>Papua Selatan</option>
-                                    <option value="Papua Barat Daya" {{ old('provinsi') == 'Papua Barat Daya' ? 'selected' : '' }}>Papua Barat Daya</option>
-                                </select>
-                                @error('provinsi')<p class="error-msg"><i class="uil uil-exclamation-circle"></i>{{ $message }}</p>@enderror
-                            </div>
-                            <div>
-                                <label class="label">Kota/Kabupaten *</label>
-                                <select name="kota" id="kota" required class="input-field">
-                                    <option value="">Pilih kota/kabupaten</option>
-                                </select>
-                                @error('kota')<p class="error-msg"><i class="uil uil-exclamation-circle"></i>{{ $message }}</p>@enderror
-                            </div>
-                        </div>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <label class="label">Kecamatan *</label>
-                                <select name="kecamatan" id="kecamatan" required class="input-field">
-                                    <option value="">Pilih kecamatan</option>
-                                </select>
-                                @error('kecamatan')<p class="error-msg"><i class="uil uil-exclamation-circle"></i>{{ $message }}</p>@enderror
-                            </div>
-                            <div>
-                                <label class="label">Kelurahan/Desa *</label>
-                                <select name="kelurahan" id="kelurahan" required class="input-field">
-                                    <option value="">Pilih kelurahan/desa</option>
-                                </select>
-                                @error('kelurahan')<p class="error-msg"><i class="uil uil-exclamation-circle"></i>{{ $message }}</p>@enderror
-                            </div>
-                        </div>
-                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                            <div>
-                                <label class="label">RT *</label>
-                                <input type="text" name="rt" value="{{ old('rt') }}" required class="input-field" placeholder="001">
-                                @error('rt')<p class="error-msg"><i class="uil uil-exclamation-circle"></i>{{ $message }}</p>@enderror
-                            </div>
-                            <div>
-                                <label class="label">RW *</label>
-                                <input type="text" name="rw" value="{{ old('rw') }}" required class="input-field" placeholder="002">
-                                @error('rw')<p class="error-msg"><i class="uil uil-exclamation-circle"></i>{{ $message }}</p>@enderror
-                            </div>
-                            <div class="col-span-2">
-                                <label class="label">Kode Pos *</label>
-                                <input type="text" name="kode_pos" value="{{ old('kode_pos') }}" required maxlength="5" pattern="[0-9]{5}" class="input-field" placeholder="50275">
-                                <p class="text-xs text-gray-500 mt-1">5 digit angka</p>
-                                @error('kode_pos')<p class="error-msg"><i class="uil uil-exclamation-circle"></i>{{ $message }}</p>@enderror
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-
-                {{-- SECTION 4: DOKUMEN --}}
-                <div class="bg-gradient-to-br from-orange-50 to-white rounded-2xl p-6 border-2 border-orange-100">
-                    <div class="flex items-center gap-3 mb-5">
-                        <div class="flex items-center justify-center w-10 h-10 bg-orange-600 text-white rounded-full font-bold">4</div>
-                        <h2 class="text-xl font-bold text-gray-900">Dokumen Verifikasi</h2>
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label class="label">Foto Anda (Selfie) *</label>
-                            <input type="file" name="foto_pic" required accept="image/jpeg,image/jpg,image/png" 
-                                class="w-full px-4 py-3 bg-white border-2 border-gray-200 rounded-xl text-gray-900 focus:border-orange-500 focus:ring-4 focus:ring-orange-100 transition file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-orange-50 file:text-orange-700 hover:file:bg-orange-100">
-                            <p class="text-xs text-gray-500 mt-2">Foto wajah jelas, Format: JPG, JPEG, PNG (Max. 2MB)</p>
-                            @error('foto_pic')<p class="error-msg"><i class="uil uil-exclamation-circle"></i>{{ $message }}</p>@enderror
-                        </div>
-                        <div>
-                            <label class="label">File Scan KTP *</label>
-                            <input type="file" name="file_ktp_pic" required accept="application/pdf,image/jpeg,image/jpg,image/png"
-                                class="w-full px-4 py-3 bg-white border-2 border-gray-200 rounded-xl text-gray-900 focus:border-orange-500 focus:ring-4 focus:ring-orange-100 transition file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-orange-50 file:text-orange-700 hover:file:bg-orange-100">
-                            <p class="text-xs text-gray-500 mt-2">Scan atau foto KTP yang jelas, Format: PDF, JPG, JPEG, PNG (Max. 4MB)</p>
-                            @error('file_ktp_pic')<p class="error-msg"><i class="uil uil-exclamation-circle"></i>{{ $message }}</p>@enderror
-                        </div>
-                    </div>
-                </div>
-
-                <button type="submit" class="w-full px-6 py-4 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-bold rounded-xl shadow-2xl transition duration-300 transform hover:scale-105 flex items-center justify-center gap-3 text-lg">
-                    <i class="uil uil-check-circle text-2xl"></i>
-                    Daftar Sekarang
-                </button>
-                
-                <p class="text-center text-sm text-gray-600">
-                    Dengan mendaftar, Anda menyetujui syarat & ketentuan KampuStore
-                </p>
-            </form>
-
         </div>
     </div>
 </main>
 
-<footer class="bg-white/95 backdrop-filter backdrop-blur-lg border-t border-purple-200 py-6 mt-12">
-    <div class="container mx-auto px-4 text-center">
-        <p class="text-gray-600 text-sm">
-            &copy; {{ date('Y') }} <strong class="bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">KampuStore</strong> - Marketplace Mahasiswa UNDIP
-        </p>
-    </div>
-</footer>
+<script>
+    // ===== THEME TOGGLE =====
+    (function(){
+        const KEY = 'kampuStoreTheme';
+        const body = document.body;
+        const toggle = document.querySelector('.js-theme-toggle');
+
+        function apply(mode){
+            if(mode === 'light'){
+                body.classList.add('theme-light');
+            }else{
+                body.classList.remove('theme-light');
+            }
+        }
+
+        const saved = localStorage.getItem(KEY) || 'dark';
+        apply(saved);
+
+        if(toggle){
+            toggle.checked = (saved !== 'light');
+            toggle.addEventListener('change', () => {
+                const mode = toggle.checked ? 'dark' : 'light';
+                apply(mode);
+                localStorage.setItem(KEY, mode);
+            });
+        }
+    })();
+
+    // ===== ANIMASI SHELL + MULTI STEP =====
+    document.addEventListener('DOMContentLoaded', function () {
+        const shell = document.querySelector('.auth-shell');
+        if(shell){
+            requestAnimationFrame(() => {
+                shell.classList.remove('pre-enter');
+                shell.classList.add('is-visible');
+            });
+        }
+
+        const steps  = document.querySelectorAll('.step');
+        const pills  = document.querySelectorAll('.step-pill');
+        const btnPrev   = document.getElementById('btnPrev');
+        const btnNext   = document.getElementById('btnNext');
+        const btnSubmit = document.getElementById('btnSubmit');
+
+        let currentStep = 1;
+
+        function setStep(step){
+            currentStep = step;
+            steps.forEach((s, idx) => {
+                s.classList.toggle('step--active', idx === step - 1);
+            });
+            pills.forEach(p => {
+                p.classList.toggle('step-pill--active', Number(p.dataset.step) === step);
+            });
+
+            btnPrev.disabled       = (step === 1);
+            btnNext.style.display  = (step < 3) ? 'inline-block' : 'none';
+            btnSubmit.style.display= (step === 3) ? 'inline-block' : 'none';
+        }
+
+        function validateStep1(){
+            const requiredNames = [
+                'nama_toko','deskripsi_singkat',
+                'nama_pic','no_hp_pic','email_pic','no_ktp_pic',
+                'password','password_confirmation'
+            ];
+            for(const name of requiredNames){
+                const el = document.querySelector('[name="'+name+'"]');
+                if(!el) continue;
+                if(!el.value || el.value.trim() === ''){
+                    el.focus();
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        function validateStep2(){
+            const requiredNames = [
+                'alamat_pic','provinsi','kota','kecamatan','kelurahan',
+                'rt','rw','kode_pos'
+            ];
+            for(const name of requiredNames){
+                const el = document.querySelector('[name="'+name+'"]');
+                if(!el) continue;
+                if(!el.value || el.value.trim() === ''){
+                    el.focus();
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        btnPrev.addEventListener('click', () => {
+            if(currentStep > 1){
+                setStep(currentStep - 1);
+            }
+        });
+
+        btnNext.addEventListener('click', () => {
+            if(currentStep === 1){
+                if(!validateStep1()) return;
+                setStep(2);
+            }else if(currentStep === 2){
+                if(!validateStep2()) return;
+                setStep(3);
+            }
+        });
+
+        setStep(1);
+    });
+</script>
 
 <script>
-// API Wilayah Indonesia - wilayah.id (Data Lengkap 2025)
+document.getElementById('no_ktp_pic').addEventListener('input', function() {
+    this.value = this.value.replace(/\D/g, "");
+
+    if (this.value.length > 16) {
+        this.value = this.value.slice(0, 16);
+    }
+});
+</script>
+
+<script>
 const API_BASE = 'https://www.emsifa.com/api-wilayah-indonesia/api';
 
-// Cache untuk menyimpan data yang sudah di-fetch (agar tidak fetch ulang)
 const dataCache = {
     provinces: null,
     regencies: {},
@@ -335,7 +1382,6 @@ const dataCache = {
     villages: {}
 };
 
-// Helper function untuk fetch data dari API
 async function fetchWilayahData(url) {
     try {
         const response = await fetch(url);
@@ -347,418 +1393,19 @@ async function fetchWilayahData(url) {
     }
 }
 
-// Fallback data untuk offline mode (data minimal)
-const wilayahData = {
-    "DKI Jakarta": {
-        "Jakarta Pusat": {
-            "Menteng": ["Menteng", "Pegangsaan", "Cikini", "Kebon Sirih", "Gondangdia"],
-            "Tanah Abang": ["Tanah Abang", "Bendungan Hilir", "Karet Tengsin", "Petamburan", "Kebon Melati"],
-            "Gambir": ["Gambir", "Cideng", "Petojo Utara", "Petojo Selatan", "Duri Pulo"],
-            "Kemayoran": ["Kemayoran", "Gunung Sahari Selatan", "Serdang", "Cempaka Putih Timur"],
-            "Sawah Besar": ["Pasar Baru", "Karang Anyar", "Kartini", "Gunung Sahari"],
-            "Cempaka Putih": ["Cempaka Putih Barat", "Cempaka Putih Timur", "Rawasari"],
-            "Johar Baru": ["Johar Baru", "Kampung Rawa", "Galur", "Tanah Tinggi"],
-            "Senen": ["Senen", "Kramat", "Bungur", "Paseban", "Kwitang"]
-        },
-        "Jakarta Utara": {
-            "Koja": ["Koja", "Tugu Utara", "Tugu Selatan", "Lagoa", "Rawa Badak"],
-            "Kelapa Gading": ["Kelapa Gading Barat", "Kelapa Gading Timur", "Pegangsaan Dua"],
-            "Tanjung Priok": ["Tanjung Priok", "Sunter Agung", "Sunter Jaya", "Papanggo"],
-            "Pademangan": ["Pademangan Barat", "Pademangan Timur", "Ancol"],
-            "Penjaringan": ["Penjaringan", "Pluit", "Pejagalan", "Kamal Muara"],
-            "Cilincing": ["Cilincing", "Kalibaru", "Semper", "Sukapura", "Marunda"]
-        },
-        "Jakarta Barat": {
-            "Kebon Jeruk": ["Kebon Jeruk", "Sukabumi Utara", "Kelapa Dua", "Duri Kepa"],
-            "Tambora": ["Tambora", "Roa Malaka", "Pekojan", "Jembatan Lima"],
-            "Taman Sari": ["Taman Sari", "Krukut", "Maphar", "Tangki"],
-            "Grogol Petamburan": ["Grogol", "Tomang", "Wijaya Kusuma", "Jelambar"],
-            "Cengkareng": ["Cengkareng Barat", "Cengkareng Timur", "Kapuk", "Kedaung Kaliangke"],
-            "Kalideres": ["Kalideres", "Semanan", "Tegal Alur", "Pegadungan", "Kamal"],
-            "Palmerah": ["Palmerah", "Slipi", "Kota Bambu", "Jatipulo"],
-            "Kembangan": ["Kembangan Utara", "Kembangan Selatan", "Meruya Utara", "Meruya Selatan"]
-        },
-        "Jakarta Selatan": {
-            "Kebayoran Baru": ["Selong", "Gunung", "Kramat Pela", "Gandaria Utara", "Cipete Utara"],
-            "Kebayoran Lama": ["Kebayoran Lama Utara", "Kebayoran Lama Selatan", "Pondok Pinang", "Cipulir"],
-            "Cilandak": ["Cilandak", "Lebak Bulus", "Pondok Labu", "Cipete Selatan"],
-            "Jagakarsa": ["Jagakarsa", "Lenteng Agung", "Tanjung Barat", "Ciganjur"],
-            "Mampang Prapatan": ["Mampang Prapatan", "Bangka", "Pela Mampang", "Kuningan Barat"],
-            "Pancoran": ["Pancoran", "Kalibata", "Rawa Jati", "Duren Tiga", "Cikoko"],
-            "Pasar Minggu": ["Pasar Minggu", "Jati Padang", "Ragunan", "Cilandak Timur"],
-            "Pesanggrahan": ["Pesanggrahan", "Bintaro", "Petukangan Utara", "Ulujami"],
-            "Setiabudi": ["Setiabudi", "Kuningan Timur", "Karet", "Karet Semanggi"],
-            "Tebet": ["Tebet Barat", "Tebet Timur", "Kebon Baru", "Bukit Duri", "Manggarai"]
-        },
-        "Jakarta Timur": {
-            "Matraman": ["Matraman", "Palmeriam", "Kebon Manggis", "Utan Kayu"],
-            "Pulo Gadung": ["Pulo Gadung", "Pisangan Timur", "Rawamangun", "Jati"],
-            "Jatinegara": ["Jatinegara", "Kampung Melayu", "Bidaracina", "Cipinang"],
-            "Kramat Jati": ["Kramat Jati", "Batu Ampar", "Balekambang", "Cawang"],
-            "Pasar Rebo": ["Pasar Rebo", "Cijantung", "Gedong", "Baru"],
-            "Cakung": ["Cakung Barat", "Cakung Timur", "Pulo Gebang", "Ujung Menteng"],
-            "Cipayung": ["Cipayung", "Bambu Apus", "Cilangkap", "Pondok Ranggon"],
-            "Ciracas": ["Ciracas", "Susukan", "Cibubur", "Kelapa Dua Wetan"],
-            "Duren Sawit": ["Duren Sawit", "Pondok Bambu", "Pondok Kelapa", "Malaka Jaya"],
-            "Makasar": ["Makasar", "Pinang Ranti", "Kebon Pala", "Halim Perdana Kusuma"]
-        },
-        "Kepulauan Seribu": {
-            "Pulau Tidung": ["Tidung Besar", "Tidung Kecil"],
-            "Pulau Pramuka": ["Pramuka", "Panggang"],
-            "Pulau Harapan": ["Harapan", "Kelapa"],
-            "Pulau Untung Jawa": ["Untung Jawa"]
-        }
-    },
-    "Jawa Barat": {
-        "Kota Bandung": ["Cibeunying Kidul", "Cibeunying Kaler", "Coblong", "Sukasari", "Sukajadi", "Cicendo", "Andir", "Bandung Kulon", "Bandung Wetan", "Sumur Bandung", "Regol", "Batununggal", "Lengkong", "Buah Batu", "Cidadap", "Antapani", "Arcamanik", "Cibiru"],
-        "Kota Bogor": ["Bogor Selatan", "Bogor Timur", "Bogor Utara", "Bogor Tengah", "Bogor Barat", "Tanah Sareal"],
-        "Kota Depok": ["Beji", "Cimanggis", "Limo", "Pancoran Mas", "Sawangan", "Sukmajaya", "Cinere", "Cilodong", "Cipayung", "Tapos"],
-        "Kota Bekasi": ["Bekasi Timur", "Bekasi Barat", "Bekasi Selatan", "Bekasi Utara", "Medan Satria", "Pondok Gede", "Jatiasih", "Jatisampurna", "Bantargebang", "Mustika Jaya", "Rawalumbu"],
-        "Kota Cirebon": ["Kejaksan", "Lemahwungkuk", "Harjamukti", "Pekalipan", "Kesambi"],
-        "Kota Sukabumi": ["Baros", "Cikole", "Citamiang", "Gunung Puyuh", "Lembursitu", "Warudoyong"],
-        "Kabupaten Bandung": ["Soreang", "Baleendah", "Majalaya", "Ciparay", "Cicalengka", "Rancaekek", "Banjaran"],
-        "Kabupaten Bogor": ["Cibinong", "Cileungsi", "Gunung Putri", "Ciawi", "Cariu", "Jonggol", "Parung"],
-        "Kabupaten Bekasi": ["Cikarang Pusat", "Cikarang Utara", "Cikarang Selatan", "Tambun Selatan", "Tambun Utara", "Cibitung"],
-        "Kabupaten Karawang": ["Karawang Barat", "Karawang Timur", "Klari", "Telukjambe", "Cikampek"],
-        "Kabupaten Garut": ["Garut Kota", "Tarogong Kidul", "Tarogong Kaler", "Leles", "Karangpawitan"],
-        "Kabupaten Cianjur": ["Cianjur", "Warungkondang", "Mande", "Cibeber", "Cipanas"]
-    },
-    "Jawa Tengah": {
-        "Kota Semarang": {
-            "Semarang Tengah": ["Purwodinatan", "Kauman", "Pekunden", "Miroto", "Brumbungan", "Pandansari", "Pindrikan Kidul", "Pindrikan Lor", "Kranggan", "Gabahan", "Jagalan", "Karangkidul", "Kembangsari", "Bangunharjo"],
-            "Semarang Utara": ["Kuningan", "Bandarharjo", "Tanjung Mas", "Panggung Lor", "Plombokan", "Purwosari", "Dadapsari", "Bulu Lor"],
-            "Semarang Timur": ["Mlatibaru", "Mlatiharjo", "Karangtempel", "Kemijen", "Bugangan", "Rejomulyo", "Rejosari", "Sarirejo", "Kebonagung", "Karangturi"],
-            "Semarang Selatan": ["Lamper Lor", "Lamper Kidul", "Lamper Tengah", "Randusari", "Barusari", "Bulustalan", "Pleburan", "Wonodri", "Peterongan", "Mugassari"],
-            "Semarang Barat": ["Ngemplak Simongan", "Tambakharjo", "Karangayu", "Bongsari", "Gisikdrono", "Manyaran", "Cabean", "Salaman Mloyo", "Krapyak", "Krobokan", "Bojong Salaman"],
-            "Gayamsari": ["Kaligawe", "Sambirejo", "Sawah Besar", "Gayamsari", "Siwalan", "Pandean Lamper", "Tambakrejo"],
-            "Candisari": ["Candi", "Jomblang", "Jatingaleh", "Wonotingal", "Karanganyar Gunung", "Kaliwiru", "Tegalsari"],
-            "Gajahmungkur": ["Gajahmungkur", "Bendungan", "Lempongsari", "Sampangan", "Petompon", "Karangkidul", "Sari Rejo"],
-            "Tembalang": ["Tembalang", "Bulusan", "Mangunharjo", "Meteseh", "Sendangmulyo", "Kramas", "Tandang", "Rowosari", "Sendangguwo", "Sambiroto", "Jangli"],
-            "Banyumanik": ["Banyumanik", "Srondol Kulon", "Srondol Wetan", "Tinjomoyo", "Ngesrep", "Sumurboto", "Padangsari", "Pedalangan", "Pudakpayung", "Gedawang"],
-            "Gunungpati": ["Gunungpati", "Sadeng", "Pongangan", "Pakintelan", "Nongkosawit", "Sukorejo", "Kandri", "Ngijo", "Sekaran", "Mangunsari", "Plalangan", "Patemon"],
-            "Pedurungan": ["Pedurungan Tengah", "Pedurungan Lor", "Pedurungan Kidul", "Kalicari", "Tlogomulyo", "Palebon", "Penggaron Lor", "Plamongan Sari", "Muktiharjo Lor", "Gemah"],
-            "Genuk": ["Genuksari", "Banjardowo", "Trimulyo", "Bangetayu Kulon", "Bangetayu Wetan", "Gebangsari", "Muktiharjo Kidul", "Kudu", "Terboyo Kulon", "Terboyo Wetan"],
-            "Tugu": ["Randugarut", "Tugurejo", "Jrakah", "Karanganyar", "Mangkang Kulon", "Mangkang Wetan"],
-            "Ngaliyan": ["Ngaliyan", "Podorejo", "Purwoyoso", "Kalipancur", "Gondoriyo", "Tambakaji", "Wonosari", "Beringin", "Bambankerep"],
-            "Mijen": ["Mijen", "Jatibarang", "Ngadirgo", "Bubakan", "Kedungpane", "Cangkiran", "Wonoplumbon", "Wonolopo", "Jatisari", "Polaman"]
-        },
-        "Kota Surakarta": ["Laweyan", "Serengan", "Pasar Kliwon", "Jebres", "Banjarsari"],
-        "Kota Magelang": ["Magelang Utara", "Magelang Tengah", "Magelang Selatan"],
-        "Kota Salatiga": ["Sidorejo", "Argomulyo", "Tingkir", "Sidomukti"],
-        "Kota Pekalongan": ["Pekalongan Barat", "Pekalongan Timur", "Pekalongan Utara", "Pekalongan Selatan"],
-        "Kota Tegal": ["Tegal Barat", "Tegal Timur", "Tegal Selatan", "Margadana"],
-        "Kabupaten Semarang": ["Ungaran", "Bergas", "Bawen", "Ambarawa", "Bandungan", "Sumowono"],
-        "Kabupaten Kendal": ["Kendal", "Kaliwungu", "Cepiring", "Pegandon", "Weleri"],
-        "Kabupaten Demak": ["Demak", "Mranggen", "Sayung", "Karangtengah", "Bonang"],
-        "Kabupaten Kudus": ["Kudus", "Jati", "Bae", "Gebog", "Dawe"],
-        "Kabupaten Jepara": ["Jepara", "Tahunan", "Pecangaan", "Kalinyamatan", "Mayong"],
-        "Kabupaten Pati": ["Pati", "Juwana", "Tayu", "Batangan", "Margoyoso"],
-        "Kabupaten Rembang": ["Rembang", "Lasem", "Pamotan", "Kragan", "Sluke"],
-        "Kabupaten Blora": ["Blora", "Cepu", "Jiken", "Randublatung", "Kunduran"],
-        "Kabupaten Grobogan": ["Purwodadi", "Godong", "Wirosari", "Gubug", "Karangrayung"],
-        "Kabupaten Boyolali": ["Boyolali", "Mojosongo", "Ampel", "Banyudono", "Sawit"],
-        "Kabupaten Klaten": ["Klaten Utara", "Klaten Tengah", "Klaten Selatan", "Ceper", "Pedan", "Trucuk"],
-        "Kabupaten Sukoharjo": ["Sukoharjo", "Kartasura", "Grogol", "Bendosari", "Weru"],
-        "Kabupaten Wonogiri": ["Wonogiri", "Pracimantoro", "Girimarto", "Purwantoro", "Selogiri"],
-        "Kabupaten Karanganyar": ["Karanganyar", "Jaten", "Colomadu", "Kebakkramat", "Tasikmadu"],
-        "Kabupaten Sragen": ["Sragen", "Masaran", "Gemolong", "Tanon", "Sidoharjo"]
-    },
-    "DI Yogyakarta": {
-        "Kota Yogyakarta": ["Mantrijeron", "Kraton", "Mergangsan", "Umbulharjo", "Kotagede", "Gondokusuman", "Danurejan", "Pakualaman", "Gondomanan", "Ngampilan", "Wirobrajan", "Gedongtengen", "Jetis", "Tegalrejo"],
-        "Kabupaten Sleman": ["Sleman", "Depok", "Gamping", "Godean", "Mlati", "Ngaglik", "Ngemplak", "Kalasan", "Prambanan", "Berbah"],
-        "Kabupaten Bantul": ["Bantul", "Sewon", "Kasihan", "Pandak", "Piyungan", "Pleret", "Imogiri", "Sedayu"],
-        "Kabupaten Gunung Kidul": ["Wonosari", "Playen", "Semanu", "Karangmojo", "Panggang"],
-        "Kabupaten Kulon Progo": ["Wates", "Pengasih", "Sentolo", "Lendah", "Galur"]
-    },
-    "Jawa Timur": {
-        "Kota Surabaya": ["Asemrowo", "Benowo", "Bubutan", "Bulak", "Dukuh Pakis", "Gayungan", "Genteng", "Gubeng", "Gunung Anyar", "Jambangan", "Karang Pilang", "Kenjeran", "Krembangan", "Lakarsantri", "Mulyorejo", "Pabean Cantian", "Pakal", "Rungkut", "Sambikerep", "Sawahan", "Semampir", "Simokerto", "Sukolilo", "Sukomanunggal", "Tambaksari", "Tandes", "Tegalsari", "Tenggilis Mejoyo", "Wiyung", "Wonocolo", "Wonokromo"],
-        "Kota Malang": ["Blimbing", "Kedungkandang", "Klojen", "Lowokwaru", "Sukun"],
-        "Kota Kediri": ["Mojoroto", "Kota Kediri", "Pesantren"],
-        "Kota Blitar": ["Kepanjenkidul", "Sananwetan", "Sukorejo"],
-        "Kota Madiun": ["Manguharjo", "Taman", "Kartoharjo"],
-        "Kota Mojokerto": ["Magersari", "Prajurit Kulon"],
-        "Kota Pasuruan": ["Bugulkidul", "Gadingrejo", "Panggungrejo"],
-        "Kota Probolinggo": ["Kademangan", "Kanigaran", "Kedopok", "Mayangan", "Wonoasih"],
-        "Kota Batu": ["Batu", "Junrejo", "Bumiaji"],
-        "Kabupaten Sidoarjo": ["Sidoarjo", "Waru", "Gedangan", "Taman", "Krian", "Buduran"],
-        "Kabupaten Gresik": ["Gresik", "Kebomas", "Manyar", "Cerme", "Driyorejo"],
-        "Kabupaten Mojokerto": ["Mojokerto", "Sooko", "Trowulan", "Jatirejo", "Jetis"],
-        "Kabupaten Jombang": ["Jombang", "Mojoagung", "Ploso", "Tembelang", "Perak"],
-        "Kabupaten Pasuruan": ["Pasuruan", "Pandaan", "Prigen", "Bangil", "Grati"],
-        "Kabupaten Malang": ["Kepanjen", "Singosari", "Lawang", "Turen", "Batu"]
-    },
-    "Banten": {
-        "Kota Tangerang": ["Ciledug", "Larangan", "Karang Tengah", "Cipondoh", "Pinang", "Tangerang"],
-        "Kota Tangerang Selatan": ["Serpong", "Pondok Aren", "Ciputat", "Ciputat Timur", "Pamulang", "Setu", "Serpong Utara"],
-        "Kota Serang": ["Serang", "Kasemen", "Cipocok Jaya", "Taktakan", "Curug", "Walantaka"],
-        "Kota Cilegon": ["Cilegon", "Cibeber", "Ciwandan", "Jombang", "Pulomerak"],
-        "Kabupaten Tangerang": ["Tigaraksa", "Cisauk", "Serpong", "Cikupa", "Pasar Kemis", "Balaraja"],
-        "Kabupaten Serang": ["Ciruas", "Kramatwatu", "Waringinkurung", "Pontang", "Tirtayasa"],
-        "Kabupaten Lebak": ["Rangkasbitung", "Maja", "Warunggunung", "Cibadak", "Malingping"],
-        "Kabupaten Pandeglang": ["Pandeglang", "Labuan", "Carita", "Sumur", "Munjul"]
-    },
-    "Bali": {
-        "Kota Denpasar": ["Denpasar Barat", "Denpasar Selatan", "Denpasar Timur", "Denpasar Utara"],
-        "Kabupaten Badung": ["Kuta", "Mengwi", "Abiansemal", "Petang", "Kuta Selatan", "Kuta Utara"],
-        "Kabupaten Gianyar": ["Gianyar", "Blahbatuh", "Sukawati", "Ubud", "Tampaksiring", "Tegallalang", "Payangan"],
-        "Kabupaten Tabanan": ["Tabanan", "Kediri", "Kerambitan", "Marga", "Penebel", "Selemadeg"],
-        "Kabupaten Buleleng": ["Singaraja", "Buleleng", "Sukasada", "Sawan", "Kubutambahan", "Tejakula"],
-        "Kabupaten Karangasem": ["Karangasem", "Abang", "Rendang", "Sidemen", "Selat", "Bebandem"],
-        "Kabupaten Klungkung": ["Semarapura", "Banjarangkan", "Dawan", "Nusa Penida"],
-        "Kabupaten Jembrana": ["Negara", "Mendoyo", "Pekutatan", "Melaya", "Jembrana"]
-    },
-    "Sumatera Utara": {
-        "Kota Medan": ["Medan Kota", "Medan Barat", "Medan Timur", "Medan Utara", "Medan Selatan", "Medan Area", "Medan Denai", "Medan Tembung", "Medan Helvetia", "Medan Petisah", "Medan Selayang", "Medan Sunggal"],
-        "Kota Binjai": ["Binjai Kota", "Binjai Utara", "Binjai Selatan", "Binjai Timur", "Binjai Barat"],
-        "Kota Tebing Tinggi": ["Tebing Tinggi Kota", "Padang Hilir", "Rambutan", "Bajenis"],
-        "Kota Pematang Siantar": ["Siantar Barat", "Siantar Timur", "Siantar Utara", "Siantar Selatan"],
-        "Kabupaten Deli Serdang": ["Lubuk Pakam", "Sunggal", "Patumbak", "Percut Sei Tuan", "Labuhan Deli"],
-        "Kabupaten Langkat": ["Stabat", "Binjai", "Kuala", "Sei Lepan", "Bahorok"]
-    },
-    "Sumatera Barat": {
-        "Kota Padang": ["Padang Utara", "Padang Timur", "Padang Barat", "Padang Selatan", "Koto Tangah", "Lubuk Begalung", "Kuranji", "Nanggalo"],
-        "Kota Bukittinggi": ["Guguk Panjang", "Mandiangin Koto Selayan", "Aur Birugo Tigo Baleh"],
-        "Kota Payakumbuh": ["Payakumbuh Barat", "Payakumbuh Timur", "Payakumbuh Utara", "Payakumbuh Selatan"],
-        "Kabupaten Padang Pariaman": ["Parit Malintang", "Lubuk Alung", "Batang Anai", "Nan Sabaris"],
-        "Kabupaten Agam": ["Lubuk Basung", "Ampek Angkek", "Candung", "Banuhampu"]
-    },
-    "Aceh": {
-        "Kota Banda Aceh": ["Banda Raya", "Baiturrahman", "Jaya Baru", "Kuta Alam", "Kuta Raja", "Lueng Bata", "Meuraxa", "Syiah Kuala", "Ulee Kareng"],
-        "Kota Lhokseumawe": ["Banda Sakti", "Blang Mangat", "Muara Dua", "Muara Satu"],
-        "Kabupaten Aceh Besar": ["Jantho", "Indrapuri", "Kuta Baro", "Lembah Seulawah", "Leupung"]
-    },
-    "Sulawesi Selatan": {
-        "Kota Makassar": ["Makassar", "Mariso", "Mamajang", "Tamalate", "Rappocini", "Panakkukang", "Manggala", "Biringkanaya", "Tamalanrea", "Tallo", "Ujung Pandang", "Wajo", "Bontoala", "Ujung Tanah"],
-        "Kabupaten Gowa": ["Sungguminasa", "Somba Opu", "Bontomarannu", "Pallangga", "Barombong"]
-    },
-    "Kalimantan Timur": {
-        "Kota Samarinda": ["Samarinda Ulu", "Samarinda Ilir", "Samarinda Utara", "Samarinda Seberang", "Palaran", "Sambutan"],
-        "Kota Balikpapan": ["Balikpapan Utara", "Balikpapan Timur", "Balikpapan Barat", "Balikpapan Selatan", "Balikpapan Tengah", "Balikpapan Kota"],
-        "Kota Bontang": ["Bontang Utara", "Bontang Selatan", "Bontang Barat"],
-        "Kabupaten Kutai Kartanegara": ["Tenggarong", "Loa Janan", "Loa Kulu", "Samboja", "Muara Jawa"],
-        "Kabupaten Paser": ["Tanah Grogot", "Kuaro", "Long Ikis", "Muara Samu"]
-    },
-    "Kalimantan Barat": {
-        "Kota Pontianak": ["Pontianak Kota", "Pontianak Timur", "Pontianak Barat", "Pontianak Selatan", "Pontianak Utara", "Pontianak Tenggara"],
-        "Kota Singkawang": ["Singkawang Barat", "Singkawang Tengah", "Singkawang Timur", "Singkawang Utara", "Singkawang Selatan"],
-        "Kabupaten Kubu Raya": ["Sungai Raya", "Rasau Jaya", "Teluk Pakedai", "Batu Ampar"],
-        "Kabupaten Mempawah": ["Mempawah Hilir", "Mempawah Timur", "Sungai Kunyit", "Sungai Pinyuh"],
-        "Kabupaten Sanggau": ["Sanggau Kapuas", "Sanggau Ledo", "Tayan Hilir", "Bonti"]
-    },
-    "Kalimantan Tengah": {
-        "Kota Palangka Raya": ["Pahandut", "Sabangau", "Jekan Raya", "Bukit Batu", "Rakumpit"],
-        "Kabupaten Kotawaringin Barat": ["Arut Selatan", "Pangkalan Banteng", "Kotawaringin Lama", "Arut Utara"],
-        "Kabupaten Kapuas": ["Kuala Kapuas", "Selat", "Basarang", "Mantangai"],
-        "Kabupaten Barito Selatan": ["Buntok", "Dusun Selatan", "Dusun Utara", "Jenamas"],
-        "Kabupaten Pulang Pisau": ["Kahayan Hilir", "Kahayan Tengah", "Jabiren Raya", "Maliku"]
-    },
-    "Kalimantan Selatan": {
-        "Kota Banjarmasin": ["Banjarmasin Tengah", "Banjarmasin Barat", "Banjarmasin Timur", "Banjarmasin Selatan", "Banjarmasin Utara"],
-        "Kota Banjarbaru": ["Banjarbaru Utara", "Banjarbaru Selatan", "Cempaka", "Landasan Ulin", "Liang Anggang"],
-        "Kabupaten Banjar": ["Martapura", "Pengaron", "Sungai Tabuk", "Kertak Hanyar", "Gambut"],
-        "Kabupaten Tanah Laut": ["Pelaihari", "Jorong", "Panyipatan", "Takisung", "Kintap"],
-        "Kabupaten Barito Kuala": ["Marabahan", "Tabukan", "Anjir Muara", "Belawang", "Mandastana"]
-    },
-    "Kalimantan Utara": {
-        "Kota Tarakan": ["Tarakan Barat", "Tarakan Tengah", "Tarakan Timur", "Tarakan Utara"],
-        "Kabupaten Bulungan": ["Tanjung Selor", "Tanjung Palas", "Tanjung Palas Barat", "Peso", "Peso Hilir"],
-        "Kabupaten Malinau": ["Malinau Kota", "Malinau Barat", "Malinau Selatan", "Malinau Utara"],
-        "Kabupaten Nunukan": ["Nunukan", "Sebatik", "Lumbis", "Sembakung", "Krayan"]
-    },
-    "Riau": {
-        "Kota Pekanbaru": ["Sukajadi", "Pekanbaru Kota", "Sail", "Lima Puluh", "Senapelan", "Rumbai", "Bukit Raya", "Marpoyan Damai"],
-        "Kota Dumai": ["Dumai Barat", "Dumai Timur", "Dumai Kota", "Bukit Kapur", "Medang Kampai"],
-        "Kabupaten Kampar": ["Bangkinang", "Bangkinang Seberang", "Tapung", "Kampar", "Siak Hulu"],
-        "Kabupaten Pelalawan": ["Pangkalan Kerinci", "Langgam", "Pangkalan Kuras", "Ukui"],
-        "Kabupaten Siak": ["Siak Sri Indrapura", "Minas", "Tualang", "Sungai Apit", "Kerinci Kanan"]
-    },
-    "Kepulauan Riau": {
-        "Kota Batam": ["Batam Kota", "Sekupang", "Sei Beduk", "Lubuk Baja", "Batu Aji", "Nongsa", "Bengkong", "Sagulung"],
-        "Kota Tanjung Pinang": ["Tanjungpinang Kota", "Tanjungpinang Timur", "Tanjungpinang Barat", "Bukit Bestari"],
-        "Kabupaten Bintan": ["Bintan Timur", "Bintan Utara", "Gunung Kijang", "Tanjung Uban"],
-        "Kabupaten Karimun": ["Tanjung Balai Karimun", "Moro", "Kundur", "Karimun"],
-        "Kabupaten Natuna": ["Ranai", "Bunguran Timur", "Bunguran Barat", "Serasan"]
-    },
-    "Jambi": {
-        "Kota Jambi": {
-            "Telanaipura": ["Telanaipura", "Tambak Sari", "Buluran Kenali", "Sungai Asam", "Eka Jaya"],
-            "Jambi Selatan": ["Pasir Putih", "Kenali Besar", "Kenali Asam Bawah", "Payo Lebar"],
-            "Kotabaru": ["Ulu Gedong", "Sijinjang", "Kebun Handil", "Sungai Putri"],
-            "Jelutung": ["Jelutung", "Handil Jaya", "Cempaka Putih", "Payo Selincah"],
-            "Pasar Jambi": ["Pasar Jambi", "Talang Banjar", "Beringin", "Sungai Hitam"],
-            "Pelayangan": ["Pelayangan", "Talang Jauh", "Mudung Laut", "Kasang"],
-            "Danau Teluk": ["Olak Kemang", "Lanjut", "Danau Teluk", "Penyengat Olak"],
-            "Jambi Timur": ["The Hok", "Sulanjana", "Tambak Sari", "Pakuan Baru"]
-        },
-        "Kota Sungai Penuh": {
-            "Sungai Penuh": ["Sungai Penuh", "Pasar Sungai Penuh", "Koto Renah", "Tanah Kampung"],
-            "Pesisir Bukit": ["Pesisir Bukit", "Dusun Baru", "Sumur Anyir", "Koto Tinggi"],
-            "Kumun Debai": ["Kumun Debai", "Kumun Mudik", "Dusun Tengah", "Koto Beringin"],
-            "Tanah Kampung": ["Tanah Kampung", "Pasar Tanah Kampung", "Pelayang Raya", "Dusun Dalam"]
-        },
-        "Kabupaten Batang Hari": {
-            "Muara Bulian": ["Muara Bulian", "Sengeti", "Pulau Pauh", "Teratai"],
-            "Maro Sebo": ["Maro Sebo Ilir", "Maro Sebo Ulu", "Sungai Baung", "Bulian Jaya"],
-            "Mersam": ["Mersam", "Rantau Gedang", "Sungai Landai", "Terusan"],
-            "Bajubang": ["Bajubang", "Simpang", "Olak", "Limbur Tembesi"]
-        },
-        "Kabupaten Muaro Jambi": {
-            "Sengeti": ["Sengeti", "Bukit Baling", "Sungai Baung", "Simpang Sungai Duren"],
-            "Mestong": ["Mestong", "Aur Gading", "Kebon IX", "Pematang Gajah"],
-            "Jambi Luar Kota": ["Pijoan", "Simpang Sei Duren", "Kasang Pudak", "Muara Kumpeh"],
-            "Sekernan": ["Sekernan", "Pudak", "Olak Besar", "Sungai Gelam"]
-        },
-        "Kabupaten Bungo": {
-            "Muara Bungo": ["Bungo Dani", "Jujun", "Pasir Putih", "Bungo Tanjung"],
-            "Pelepat": ["Pelepat", "Batu Kerbau", "Pelepat Ilir", "Jangkat"],
-            "Jujuhan": ["Jujuhan", "Jujuhan Ilir", "Tanah Tumbuh", "Sako"],
-            "Tanah Sepenggal": ["Tanah Sepenggal", "Pelayang", "Tanah Periuk", "Renah Kayu Embun"]
-        }
-    },
-    "Sumatera Selatan": {
-        "Kota Palembang": ["Ilir Barat I", "Ilir Timur I", "Seberang Ulu I", "Kertapati", "Plaju", "Sako", "Sukarami", "Alang-Alang Lebar"],
-        "Kota Prabumulih": ["Prabumulih Barat", "Prabumulih Timur", "Prabumulih Utara", "Prabumulih Selatan"],
-        "Kota Lubuk Linggau": ["Lubuklinggau Barat I", "Lubuklinggau Timur I", "Lubuklinggau Selatan I", "Lubuklinggau Utara I"],
-        "Kabupaten Ogan Ilir": ["Indralaya", "Tanjung Batu", "Rantau Alai", "Payaraman"],
-        "Kabupaten Muara Enim": ["Muara Enim", "Lawang Kidul", "Gelumbang", "Talang Ubi"]
-    },
-    "Kepulauan Bangka Belitung": {
-        "Kota Pangkal Pinang": ["Pangkalpinang Barat", "Pangkalpinang Timur", "Rangkui", "Bukit Intan", "Taman Sari"],
-        "Kabupaten Bangka": ["Sungailiat", "Belinyu", "Merawang", "Bakam", "Pemali"],
-        "Kabupaten Bangka Barat": ["Muntok", "Simpang Teritip", "Tempilang", "Kelapa"],
-        "Kabupaten Bangka Tengah": ["Koba", "Simpang Katis", "Namang", "Pangkalan Baru"],
-        "Kabupaten Belitung": ["Tanjung Pandan", "Badau", "Membalong", "Sijuk"]
-    },
-    "Bengkulu": {
-        "Kota Bengkulu": ["Gading Cempaka", "Muara Bangkahulu", "Ratu Agung", "Ratu Samban", "Teluk Segara"],
-        "Kabupaten Bengkulu Tengah": ["Karang Tinggi", "Talang Empat", "Pondok Kelapa", "Pematang Tiga"],
-        "Kabupaten Bengkulu Utara": ["Arga Makmur", "Air Besi", "Air Napal", "Hulu Palik"],
-        "Kabupaten Rejang Lebong": ["Curup", "Sindang Kelingi", "Bermani Ilir", "Selupu Rejang"],
-        "Kabupaten Seluma": ["Tais", "Semidang Alas", "Seluma", "Sukaraja"]
-    },
-    "Lampung": {
-        "Kota Bandar Lampung": ["Telukbetung Barat", "Telukbetung Timur", "Tanjung Karang Barat", "Tanjung Karang Timur", "Kedaton", "Rajabasa"],
-        "Kota Metro": ["Metro Pusat", "Metro Barat", "Metro Timur", "Metro Selatan", "Metro Utara"],
-        "Kabupaten Lampung Selatan": ["Kalianda", "Sidomulyo", "Katibung", "Candipuro", "Rajabasa"],
-        "Kabupaten Lampung Tengah": ["Gunung Sugih", "Trimurjo", "Punggur", "Seputih Banyak"],
-        "Kabupaten Lampung Utara": ["Kotabumi", "Abung Selatan", "Tanjung Raja", "Bukit Kemuning"]
-    },
-    "Nusa Tenggara Barat": {
-        "Kota Mataram": ["Ampenan", "Cakranegara", "Mataram", "Sekarbela", "Selaparang", "Sandubaya"],
-        "Kota Bima": ["Raba", "Asakota", "Rasanae Barat", "Rasanae Timur", "Mpunda"],
-        "Kabupaten Lombok Barat": ["Gerung", "Labuapi", "Narmada", "Kediri", "Kuripan"],
-        "Kabupaten Lombok Tengah": ["Praya", "Pujut", "Jonggat", "Batukliang", "Kopang"],
-        "Kabupaten Lombok Timur": ["Selong", "Masbagik", "Aikmel", "Suralaga", "Pringgabaya"]
-    },
-    "Nusa Tenggara Timur": {
-        "Kota Kupang": ["Oebobo", "Kelapa Lima", "Maulafa", "Alak", "Kota Lama", "Kota Raja"],
-        "Kabupaten Kupang": ["Kupang Tengah", "Kupang Barat", "Kupang Timur", "Sulamu", "Amarasi"],
-        "Kabupaten Manggarai": ["Ruteng", "Langke Rembong", "Cibal", "Reok", "Satar Mese"],
-        "Kabupaten Ende": ["Ende", "Ende Selatan", "Ende Timur", "Ndona", "Nangapanda"],
-        "Kabupaten Flores Timur": ["Larantuka", "Ile Mandiri", "Tanjung Bunga", "Solor Timur"]
-    },
-    "Sulawesi Utara": {
-        "Kota Manado": ["Malalayang", "Sario", "Wenang", "Tikala", "Paal Dua", "Singkil", "Tuminting", "Bunaken"],
-        "Kota Bitung": ["Matuari", "Maesa", "Ranowulu", "Girian", "Lembeh Selatan"],
-        "Kota Tomohon": ["Tomohon Barat", "Tomohon Tengah", "Tomohon Timur", "Tomohon Utara", "Tomohon Selatan"],
-        "Kabupaten Minahasa": ["Tondano", "Eris", "Kombi", "Tompaso", "Remboken"],
-        "Kabupaten Minahasa Utara": ["Airmadidi", "Kauditan", "Kalawat", "Wori", "Dimembe"]
-    },
-    "Gorontalo": {
-        "Kota Gorontalo": ["Kota Barat", "Kota Selatan", "Kota Timur", "Kota Tengah", "Kota Utara", "Dungingi", "Hulonthalangi"],
-        "Kabupaten Gorontalo": ["Limboto", "Telaga", "Tibawa", "Boliyohuto", "Batudaa"],
-        "Kabupaten Gorontalo Utara": ["Kwandang", "Anggrek", "Sumalata", "Tolinggula"],
-        "Kabupaten Bone Bolango": ["Suwawa", "Bone", "Bone Raya", "Kabila", "Tapa"],
-        "Kabupaten Pohuwato": ["Marisa", "Paguat", "Randangan", "Dengilo"]
-    },
-    "Sulawesi Tengah": {
-        "Kota Palu": ["Palu Barat", "Palu Timur", "Palu Selatan", "Palu Utara", "Tatanga", "Ulujadi", "Mantikulore", "Tawaeli"],
-        "Kabupaten Donggala": ["Banawa", "Tanantovea", "Rio Pakava", "Sindue", "Labuan"],
-        "Kabupaten Poso": ["Poso Kota", "Poso Pesisir", "Lage", "Pamona Selatan", "Tentena"],
-        "Kabupaten Parigi Moutong": ["Parigi", "Tinombo", "Sausu", "Ampibabo", "Balinggi"],
-        "Kabupaten Tojo Una-Una": ["Ampana", "Ulubongka", "Tojo", "Tojo Barat"]
-    },
-    "Sulawesi Barat": {
-        "Kabupaten Mamuju": ["Mamuju", "Simboro", "Tapalang", "Kalukku", "Papalang"],
-        "Kabupaten Mamuju Utara": ["Pasangkayu", "Bambalamotu", "Duripoku", "Tikke Raya"],
-        "Kabupaten Majene": ["Banggae", "Pamboang", "Sendana", "Malunda", "Ulumanda"],
-        "Kabupaten Polewali Mandar": ["Polewali", "Binuang", "Campalagian", "Wonomulyo", "Mapilli"],
-        "Kabupaten Mamasa": ["Mamasa", "Pana", "Tabulahan", "Messawa"]
-    },
-    "Sulawesi Tenggara": {
-        "Kota Kendari": ["Kendari", "Kendari Barat", "Kadia", "Wua-Wua", "Poasia", "Baruga", "Puuwatu", "Kambu"],
-        "Kota Bau-Bau": ["Murhum", "Batupoaro", "Kokalukuna", "Wolio", "Sorawolio"],
-        "Kabupaten Konawe": ["Unaaha", "Pondidaha", "Wawotobi", "Sampara", "Uepai"],
-        "Kabupaten Kolaka": ["Kolaka", "Wundulako", "Pomalaa", "Watubangga", "Toari"],
-        "Kabupaten Muna": ["Raha", "Katobu", "Lawa", "Parigi", "Kontunaga"]
-    },
-    "Maluku": {
-        "Kota Ambon": ["Nusaniwe", "Sirimau", "Baguala", "Teluk Ambon", "Leitimur Selatan"],
-        "Kota Tual": ["Dullah Selatan", "Dullah Utara", "Tayando Tam", "Pulau Dullah"],
-        "Kabupaten Maluku Tengah": ["Masohi", "Amahai", "Tehoru", "Teluk Elpaputih", "Saparua"],
-        "Kabupaten Buru": ["Namlea", "Air Buaya", "Waplau", "Batabual", "Lolong Guba"],
-        "Kabupaten Seram Bagian Barat": ["Piru", "Kairatu", "Taniwel", "Huamual"]
-    },
-    "Maluku Utara": {
-        "Kota Ternate": ["Ternate Selatan", "Ternate Tengah", "Ternate Utara", "Ternate Barat", "Pulau Ternate"],
-        "Kota Tidore Kepulauan": ["Tidore", "Tidore Selatan", "Tidore Utara", "Tidore Timur", "Oba"],
-        "Kabupaten Halmahera Barat": ["Jailolo", "Sahu", "Jailolo Selatan", "Ibu", "Sahu Timur"],
-        "Kabupaten Halmahera Tengah": ["Weda", "Patani", "Pulau Gebe", "Gane Barat"],
-        "Kabupaten Halmahera Timur": ["Maba", "Wasile", "Maba Selatan", "Wasile Timur"]
-    },
-    "Papua": {
-        "Kota Jayapura": ["Jayapura Selatan", "Jayapura Utara", "Abepura", "Muara Tami", "Heram"],
-        "Kabupaten Jayapura": ["Sentani", "Sentani Timur", "Sentani Barat", "Depapre", "Kaureh"],
-        "Kabupaten Jayawijaya": ["Wamena", "Asologaima", "Hubikosi", "Walelagama", "Wouma"],
-        "Kabupaten Merauke": ["Merauke", "Semangga", "Tanah Miring", "Jagebob", "Kurik"],
-        "Kabupaten Biak Numfor": ["Biak Kota", "Biak Utara", "Numfor Barat", "Samofa", "Yendidori"]
-    },
-    "Papua Barat": {
-        "Kota Sorong": ["Sorong", "Sorong Timur", "Sorong Barat", "Sorong Kepulauan", "Sorong Utara"],
-        "Kabupaten Sorong": ["Aimas", "Klasaman", "Makbon", "Beraur", "Salawati Utara"],
-        "Kabupaten Manokwari": ["Manokwari Barat", "Manokwari Timur", "Manokwari Utara", "Warmare", "Prafi"],
-        "Kabupaten Fakfak": ["Fakfak", "Karas", "Bomberay", "Fakfak Tengah", "Kokas"],
-        "Kabupaten Raja Ampat": ["Waigeo Selatan", "Waigeo Barat", "Waigeo Utara", "Misool", "Salawati"]
-    },
-    "Papua Tengah": {
-        "Kabupaten Nabire": ["Nabire", "Napan", "Yaur", "Uwapa", "Makimi"],
-        "Kabupaten Paniai": ["Enarotali", "Aradide", "Bogabaida", "Dumadama", "Muye"],
-        "Kabupaten Dogiyai": ["Kigamani", "Sukikai Selatan", "Mapia", "Piyaiye"],
-        "Kabupaten Deiyai": ["Tigi", "Bowobado", "Kapiraya", "Tigi Timur"]
-    },
-    "Papua Pegunungan": {
-        "Kabupaten Jayawijaya": ["Wamena", "Asologaima", "Hubikosi", "Walelagama", "Wouma"],
-        "Kabupaten Lanny Jaya": ["Tiom", "Balingga", "Makki", "Pisugi", "Niname"],
-        "Kabupaten Tolikara": ["Karubaga", "Tagineri", "Numba", "Wunim", "Air Garam"],
-        "Kabupaten Yalimo": ["Elelim", "Apalapsili", "Abenaho", "Benawa", "Welarek"]
-    },
-    "Papua Selatan": {
-        "Kabupaten Merauke": ["Merauke", "Semangga", "Tanah Miring", "Jagebob", "Kurik"],
-        "Kabupaten Asmat": ["Agats", "Atsj", "Fayit", "Sawa Erma", "Unir Sirau"],
-        "Kabupaten Mappi": ["Kepi", "Obaa", "Edera", "Passue", "Haju"],
-        "Kabupaten Boven Digoel": ["Tanah Merah", "Mindiptana", "Waropko", "Jair", "Kouh"]
-    },
-    "Papua Barat Daya": {
-        "Kabupaten Sorong Selatan": ["Teminabuan", "Inanwatan", "Kokoda", "Kais", "Moraid"],
-        "Kabupaten Maybrat": ["Kumurkek", "Ayamaru", "Aitinyo", "Aifat", "Mare"],
-        "Kabupaten Tambrauw": ["Fef", "Miyah", "Senopi", "Sausapor", "Abun"],
-        "Kabupaten Raja Ampat": ["Waigeo Selatan", "Waigeo Barat", "Waigeo Utara", "Misool", "Salawati"]
-    }
-};
+// Fallback (jika mau, isi sendiri data hardcoded)
+const wilayahData = {}; 
 
-// Inisialisasi Dropdown
 const provinsiSelect = document.getElementById('provinsi');
 const kotaSelect = document.getElementById('kota');
 const kecamatanSelect = document.getElementById('kecamatan');
 const kelurahanSelect = document.getElementById('kelurahan');
 
-// Simpan nilai old() jika ada error validasi
 const oldProvinsi = "{{ old('provinsi') }}";
 const oldKota = "{{ old('kota') }}";
 const oldKecamatan = "{{ old('kecamatan') }}";
 const oldKelurahan = "{{ old('kelurahan') }}";
 
-// Loading state
 function setLoading(selectElement, isLoading) {
     if (isLoading) {
         selectElement.innerHTML = '<option value="">Loading...</option>';
@@ -768,21 +1415,19 @@ function setLoading(selectElement, isLoading) {
     }
 }
 
-// Load Provinsi dari API saat halaman load
 async function loadProvinsi() {
     if (dataCache.provinces) {
         populateProvinsiDropdown(dataCache.provinces);
         return;
     }
-    
+
     try {
         const provinces = await fetchWilayahData(`${API_BASE}/provinces.json`);
         dataCache.provinces = provinces;
         populateProvinsiDropdown(provinces);
     } catch (error) {
-        console.error('Gagal load provinsi, menggunakan fallback data');
-        // Fallback ke data hardcoded
-        const provinsiList = Object.keys(wilayahData);
+        console.error('Gagal load provinsi, fallback');
+        const provinsiList = Object.keys(wilayahData || {});
         provinsiSelect.innerHTML = '<option value="">Pilih Provinsi</option>';
         provinsiList.forEach(prov => {
             const option = document.createElement('option');
@@ -797,40 +1442,36 @@ function populateProvinsiDropdown(provinces) {
     provinsiSelect.innerHTML = '<option value="">Pilih Provinsi</option>';
     provinces.forEach(prov => {
         const option = document.createElement('option');
-        option.value = prov.name; // Simpan nama untuk submit form
+        option.value = prov.name;
         option.textContent = prov.name;
-        option.dataset.id = prov.id; // Simpan ID untuk fetch data berikutnya
+        option.dataset.id = prov.id;
         provinsiSelect.appendChild(option);
     });
 }
 
-// Event listener untuk Provinsi
+// event provinsi
 provinsiSelect.addEventListener('change', async function() {
     const selectedProvinsiId = this.options[this.selectedIndex]?.dataset?.id;
     const selectedProvinsiName = this.value;
-    
-    // Reset dropdown
+
     kotaSelect.innerHTML = '<option value="">Pilih kota/kabupaten</option>';
     kecamatanSelect.innerHTML = '<option value="">Pilih kecamatan</option>';
     kelurahanSelect.innerHTML = '<option value="">Pilih kelurahan/desa</option>';
-    
+
     if (!selectedProvinsiId) return;
-    
-    // Cek cache
+
     if (dataCache.regencies[selectedProvinsiId]) {
         populateKotaDropdown(dataCache.regencies[selectedProvinsiId]);
         return;
     }
-    
-    // Load dari API
+
     setLoading(kotaSelect, true);
     try {
         const regencies = await fetchWilayahData(`${API_BASE}/regencies/${selectedProvinsiId}.json`);
         dataCache.regencies[selectedProvinsiId] = regencies;
         populateKotaDropdown(regencies);
     } catch (error) {
-        console.error('Gagal load kota, menggunakan fallback');
-        // Fallback ke hardcoded data
+        console.error('Gagal load kota');
         if (wilayahData[selectedProvinsiName]) {
             const kotaList = Object.keys(wilayahData[selectedProvinsiName]);
             kotaSelect.innerHTML = '<option value="">Pilih kota/kabupaten</option>';
@@ -850,37 +1491,32 @@ function populateKotaDropdown(regencies) {
     kotaSelect.innerHTML = '<option value="">Pilih kota/kabupaten</option>';
     regencies.forEach(reg => {
         const option = document.createElement('option');
-        option.value = reg.name; // Simpan nama untuk submit form
+        option.value = reg.name;
         option.textContent = reg.name;
-        option.dataset.id = reg.id; // Simpan ID untuk fetch data berikutnya
+        option.dataset.id = reg.id;
         kotaSelect.appendChild(option);
     });
 }
 
-// Event listener untuk Kota
 kotaSelect.addEventListener('change', async function() {
     const selectedKotaId = this.options[this.selectedIndex]?.dataset?.id;
-    
-    // Reset dropdown
     kecamatanSelect.innerHTML = '<option value="">Pilih kecamatan</option>';
     kelurahanSelect.innerHTML = '<option value="">Pilih kelurahan/desa</option>';
-    
+
     if (!selectedKotaId) return;
-    
-    // Cek cache
+
     if (dataCache.districts[selectedKotaId]) {
         populateKecamatanDropdown(dataCache.districts[selectedKotaId]);
         return;
     }
-    
-    // Load dari API
+
     setLoading(kecamatanSelect, true);
     try {
         const districts = await fetchWilayahData(`${API_BASE}/districts/${selectedKotaId}.json`);
         dataCache.districts[selectedKotaId] = districts;
         populateKecamatanDropdown(districts);
     } catch (error) {
-        console.error('Gagal load kecamatan:', error);
+        console.error('Gagal load kecamatan');
         kecamatanSelect.innerHTML = '<option value="">Data tidak tersedia</option>';
     } finally {
         setLoading(kecamatanSelect, false);
@@ -891,36 +1527,31 @@ function populateKecamatanDropdown(districts) {
     kecamatanSelect.innerHTML = '<option value="">Pilih kecamatan</option>';
     districts.forEach(dist => {
         const option = document.createElement('option');
-        option.value = dist.name; // Simpan nama untuk submit form
+        option.value = dist.name;
         option.textContent = dist.name;
         option.dataset.id = dist.id;
         kecamatanSelect.appendChild(option);
     });
 }
 
-// Event listener untuk Kecamatan
 kecamatanSelect.addEventListener('change', async function() {
     const selectedKecamatanId = this.options[this.selectedIndex]?.dataset?.id;
-    
-    // Reset dropdown kelurahan
     kelurahanSelect.innerHTML = '<option value="">Pilih kelurahan/desa</option>';
-    
+
     if (!selectedKecamatanId) return;
-    
-    // Cek cache
+
     if (dataCache.villages[selectedKecamatanId]) {
         populateKelurahanDropdown(dataCache.villages[selectedKecamatanId]);
         return;
     }
-    
-    // Load dari API
+
     setLoading(kelurahanSelect, true);
     try {
         const villages = await fetchWilayahData(`${API_BASE}/villages/${selectedKecamatanId}.json`);
         dataCache.villages[selectedKecamatanId] = villages;
         populateKelurahanDropdown(villages);
     } catch (error) {
-        console.error('Gagal load kelurahan:', error);
+        console.error('Gagal load kelurahan');
         kelurahanSelect.innerHTML = '<option value="">Data tidak tersedia</option>';
     } finally {
         setLoading(kelurahanSelect, false);
@@ -931,46 +1562,42 @@ function populateKelurahanDropdown(villages) {
     kelurahanSelect.innerHTML = '<option value="">Pilih kelurahan/desa</option>';
     villages.forEach(vill => {
         const option = document.createElement('option');
-        option.value = vill.name; // Simpan nama asli untuk submit form
+        option.value = vill.name;
         option.textContent = vill.name;
         kelurahanSelect.appendChild(option);
     });
 }
 
-// Load provinsi saat halaman dimuat
 window.addEventListener('DOMContentLoaded', async function() {
     await loadProvinsi();
-    
-    // Restore nilai old() setelah provinsi ter-load (jika ada error validasi)
+
     if (oldProvinsi) {
         provinsiSelect.value = oldProvinsi;
-        await provinsiSelect.dispatchEvent(new Event('change'));
-        
-        // Tunggu sebentar agar kota ter-populate
+        provinsiSelect.dispatchEvent(new Event('change'));
+
         setTimeout(async () => {
             if (oldKota) {
                 kotaSelect.value = oldKota;
-                await kotaSelect.dispatchEvent(new Event('change'));
-                
-                // Tunggu sebentar agar kecamatan ter-populate
+                kotaSelect.dispatchEvent(new Event('change'));
+
                 setTimeout(async () => {
                     if (oldKecamatan) {
                         kecamatanSelect.value = oldKecamatan;
-                        await kecamatanSelect.dispatchEvent(new Event('change'));
-                        
-                        // Tunggu sebentar agar kelurahan ter-populate
+                        kecamatanSelect.dispatchEvent(new Event('change'));
+
                         setTimeout(() => {
                             if (oldKelurahan) {
                                 kelurahanSelect.value = oldKelurahan;
                             }
-                        }, 500);
+                        }, 400);
                     }
-                }, 500);
+                }, 400);
             }
-        }, 500);
+        }, 400);
     }
 });
 </script>
+
 
 </body>
 </html>

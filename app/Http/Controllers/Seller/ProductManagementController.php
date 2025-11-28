@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Seller;
 
 use App\Http\Controllers\Controller;
 use App\Models\Product;
+use App\Models\ProductImage;
 use App\Models\Seller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -21,7 +22,7 @@ class ProductManagementController extends Controller
                 ->with('error', 'Anda harus memiliki toko yang sudah diverifikasi untuk mengelola produk.');
         }
 
-        $products = $seller->products()->latest()->paginate(10);
+        $products = $seller->products()->with('images')->latest()->paginate(10);
 
         return view('seller.products.index', compact('products', 'seller'));
     }
@@ -62,17 +63,25 @@ class ProductManagementController extends Controller
             'price' => 'required|numeric|min:0',
             'stock' => 'required|integer|min:0',
             'description' => 'required|string',
-            'image' => 'required|image|mimes:jpg,jpeg,png|max:2048',
+            'images' => 'required|array|min:1|max:5',
+            'images.*' => 'image|mimes:jpg,jpeg,png|max:2048',
+            'primary_image' => 'nullable|integer|min:0',
         ]);
 
         $slug = Str::slug($validated['name']) . '-' . Str::random(6);
         
-        $imagePath = null;
-        if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('products', 'public');
+        $primaryImagePath = null;
+        if ($request->hasFile('images') && count($request->file('images')) > 0) {
+            $primaryIndex = $request->input('primary_image', 0);
+            $files = $request->file('images');
+            if (isset($files[$primaryIndex])) {
+                $primaryImagePath = $files[$primaryIndex]->store('products', 'public');
+            } else {
+                $primaryImagePath = $files[0]->store('products', 'public');
+            }
         }
 
-        Product::create([
+        $product = Product::create([
             'seller_id' => $seller->id,
             'name' => $validated['name'],
             'slug' => $slug,
@@ -82,11 +91,24 @@ class ProductManagementController extends Controller
             'price' => $validated['price'],
             'stock' => $validated['stock'],
             'description' => $validated['description'],
-            'image_url' => $imagePath,
+            'image_url' => $primaryImagePath,
             'seller_name' => $seller->nama_toko,
             'seller_province' => 'Jawa Tengah',
             'seller_city' => $seller->kota,
         ]);
+
+        if ($request->hasFile('images')) {
+            $primaryIndex = (int) $request->input('primary_image', 0);
+            foreach ($request->file('images') as $index => $image) {
+                $path = $image->store('products', 'public');
+                ProductImage::create([
+                    'product_id' => $product->id,
+                    'image_path' => $path,
+                    'is_primary' => $index === $primaryIndex,
+                    'sort_order' => $index,
+                ]);
+            }
+        }
 
         return redirect()->route('seller.products.index')
             ->with('success', 'Produk berhasil ditambahkan!');
@@ -108,6 +130,8 @@ class ProductManagementController extends Controller
             ['name' => 'Elektronik', 'slug' => 'elektronik'],
         ];
 
+        $product->load('images');
+
         return view('seller.products.edit', compact('product', 'categories', 'seller'));
     }
 
@@ -128,15 +152,12 @@ class ProductManagementController extends Controller
             'price' => 'required|numeric|min:0',
             'stock' => 'required|integer|min:0',
             'description' => 'required|string',
-            'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'images' => 'nullable|array|max:5',
+            'images.*' => 'image|mimes:jpg,jpeg,png|max:2048',
+            'delete_images' => 'nullable|array',
+            'delete_images.*' => 'integer|exists:product_images,id',
+            'primary_image' => 'nullable|integer',
         ]);
-
-        if ($request->hasFile('image')) {
-            if ($product->image_url) {
-                Storage::disk('public')->delete($product->image_url);
-            }
-            $validated['image_url'] = $request->file('image')->store('products', 'public');
-        }
 
         $product->update([
             'name' => $validated['name'],
@@ -146,8 +167,46 @@ class ProductManagementController extends Controller
             'price' => $validated['price'],
             'stock' => $validated['stock'],
             'description' => $validated['description'],
-            'image_url' => $validated['image_url'] ?? $product->image_url,
         ]);
+
+        if ($request->has('delete_images')) {
+            foreach ($request->input('delete_images') as $imageId) {
+                $image = ProductImage::where('id', $imageId)->where('product_id', $product->id)->first();
+                if ($image) {
+                    Storage::disk('public')->delete($image->image_path);
+                    $image->delete();
+                }
+            }
+        }
+
+        if ($request->hasFile('images')) {
+            $existingCount = $product->images()->count();
+            foreach ($request->file('images') as $index => $image) {
+                $path = $image->store('products', 'public');
+                ProductImage::create([
+                    'product_id' => $product->id,
+                    'image_path' => $path,
+                    'is_primary' => false,
+                    'sort_order' => $existingCount + $index,
+                ]);
+            }
+        }
+
+        if ($request->has('primary_image')) {
+            $primaryId = (int) $request->input('primary_image');
+            $product->images()->update(['is_primary' => false]);
+            $primaryImage = $product->images()->where('id', $primaryId)->first();
+            if ($primaryImage) {
+                $primaryImage->update(['is_primary' => true]);
+                $product->update(['image_url' => $primaryImage->image_path]);
+            }
+        } else {
+            $firstImage = $product->images()->orderBy('sort_order')->first();
+            if ($firstImage && !$product->images()->where('is_primary', true)->exists()) {
+                $firstImage->update(['is_primary' => true]);
+                $product->update(['image_url' => $firstImage->image_path]);
+            }
+        }
 
         return redirect()->route('seller.products.index')
             ->with('success', 'Produk berhasil diupdate!');
@@ -160,6 +219,10 @@ class ProductManagementController extends Controller
         if (!$seller || $product->seller_id !== $seller->id) {
             return redirect()->route('seller.products.index')
                 ->with('error', 'Anda tidak memiliki akses untuk menghapus produk ini.');
+        }
+
+        foreach ($product->images as $image) {
+            Storage::disk('public')->delete($image->image_path);
         }
 
         if ($product->image_url) {

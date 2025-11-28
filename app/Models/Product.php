@@ -41,6 +41,16 @@ class Product extends Model
         return $this->hasMany(Review::class);
     }
 
+    public function images(): HasMany
+    {
+        return $this->hasMany(ProductImage::class)->orderBy('sort_order');
+    }
+
+    public function primaryImage()
+    {
+        return $this->hasOne(ProductImage::class)->where('is_primary', true);
+    }
+
     public function averageRating(): float
     {
         $avg = (float) $this->reviews()->avg('rating');
@@ -51,9 +61,20 @@ class Product extends Model
     {
         return (int) $this->reviews()->count();
     }
+
     public function seller()
     {
         return $this->belongsTo(Seller::class);
+    }
+
+    public function getPrimaryImageUrl(): ?string
+    {
+        $primary = $this->images()->where('is_primary', true)->first();
+        if ($primary) {
+            return $primary->image_path;
+        }
+        $first = $this->images()->first();
+        return $first ? $first->image_path : $this->image_url;
     }
 }
 

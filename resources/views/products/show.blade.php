@@ -1,22 +1,136 @@
-@php($title = $product->name)
+@php
+    $title = $product->name . ' | kampuStore';
+@endphp
 @extends('layouts.app')
 
 @section('content')
 <style>
   .product-container {
-    background: white;
+    background: var(--card-bg);
     border-radius: 24px;
     padding: 40px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+    border: 1px solid var(--card-border);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
     margin-bottom: 40px;
   }
   
   .product-image {
     border-radius: 16px;
     overflow: hidden;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25);
     aspect-ratio: 1;
     object-fit: cover;
+  }
+
+  .image-slider {
+    position: relative;
+    width: 100%;
+  }
+
+  .slider-main {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25);
+  }
+
+  .slider-main img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: opacity 0.3s ease;
+  }
+
+  .slider-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 40px;
+    height: 40px;
+    background: rgba(0, 0, 0, 0.6);
+    border: none;
+    border-radius: 50%;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+    z-index: 10;
+  }
+
+  .slider-nav:hover {
+    background: #f97316;
+    transform: translateY(-50%) scale(1.1);
+  }
+
+  .slider-nav.prev { left: 10px; }
+  .slider-nav.next { right: 10px; }
+
+  .slider-thumbnails {
+    display: flex;
+    gap: 10px;
+    margin-top: 16px;
+    overflow-x: auto;
+    padding-bottom: 8px;
+  }
+
+  .slider-thumbnails::-webkit-scrollbar {
+    height: 6px;
+  }
+
+  .slider-thumbnails::-webkit-scrollbar-track {
+    background: var(--card-border);
+    border-radius: 3px;
+  }
+
+  .slider-thumbnails::-webkit-scrollbar-thumb {
+    background: #f97316;
+    border-radius: 3px;
+  }
+
+  .slider-thumb {
+    flex-shrink: 0;
+    width: 70px;
+    height: 70px;
+    border-radius: 10px;
+    overflow: hidden;
+    cursor: pointer;
+    border: 2px solid var(--card-border);
+    transition: all 0.3s;
+    opacity: 0.6;
+  }
+
+  .slider-thumb.active {
+    border-color: #f97316;
+    opacity: 1;
+    box-shadow: 0 4px 12px rgba(249, 115, 22, 0.4);
+  }
+
+  .slider-thumb:hover {
+    opacity: 1;
+    border-color: #fb923c;
+  }
+
+  .slider-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .slider-counter {
+    position: absolute;
+    bottom: 12px;
+    right: 12px;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
   }
   
   .badge {
@@ -30,13 +144,15 @@
   }
   
   .badge-success {
-    background: #d1fae5;
-    color: #065f46;
+    background: rgba(34,197,94,0.15);
+    color: #22c55e;
+    border: 1px solid rgba(34,197,94,0.3);
   }
   
   .badge-warning {
-    background: #fef3c7;
-    color: #92400e;
+    background: rgba(245,158,11,0.15);
+    color: #f59e0b;
+    border: 1px solid rgba(245,158,11,0.3);
   }
   
   .rating-stars {
@@ -51,21 +167,18 @@
   }
   
   .star.empty {
-    color: #d1d5db;
+    color: #4b5563;
   }
   
   .price-tag {
     font-size: 36px;
     font-weight: 800;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: #f97316;
   }
   
   .btn-primary {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
+    background: #f97316;
+    color: #111827;
     padding: 14px 32px;
     border-radius: 50px;
     font-weight: 600;
@@ -75,34 +188,35 @@
     border: none;
     cursor: pointer;
     transition: all 0.3s;
-    box-shadow: 0 4px 14px rgba(102, 126, 234, 0.4);
+    box-shadow: 0 4px 14px rgba(249,115,22,0.4);
   }
   
   .btn-primary:hover {
+    background: #fb923c;
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+    box-shadow: 0 6px 20px rgba(249,115,22,0.5);
   }
   
   .review-card {
-    background: #f9fafb;
+    background: var(--card-bg);
     border-radius: 16px;
     padding: 24px;
     margin-bottom: 16px;
-    border: 1px solid #e5e7eb;
+    border: 1px solid var(--card-border);
     transition: all 0.3s;
   }
   
   .review-card:hover {
-    border-color: #667eea;
-    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.1);
+    border-color: #f97316;
+    box-shadow: 0 4px 12px rgba(249,115,22,0.15);
   }
   
   .form-card {
-    background: white;
+    background: var(--card-bg);
     border-radius: 16px;
     padding: 28px;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
-    border: 1px solid #e5e7eb;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--card-border);
   }
   
   .form-group {
@@ -113,28 +227,30 @@
     display: block;
     font-size: 14px;
     font-weight: 600;
-    color: #374151;
+    color: var(--page-title-color);
     margin-bottom: 8px;
   }
   
   .form-input, .form-textarea, .form-select {
     width: 100%;
     padding: 12px 16px;
-    border: 2px solid #e5e7eb;
+    border: 1px solid var(--card-border);
     border-radius: 12px;
     font-size: 14px;
     transition: all 0.3s;
     font-family: inherit;
+    background: var(--card-bg);
+    color: var(--text-main);
   }
   
   .form-input:focus, .form-textarea:focus, .form-select:focus {
     outline: none;
-    border-color: #667eea;
-    box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+    border-color: #f97316;
+    box-shadow: 0 0 0 2px rgba(249,115,22,0.2);
   }
   
   .error-text {
-    color: #dc2626;
+    color: #ef4444;
     font-size: 13px;
     margin-top: 6px;
   }
@@ -147,15 +263,15 @@
   }
   
   .info-item {
-    background: #f9fafb;
+    background: rgba(249,115,22,0.05);
     padding: 16px;
     border-radius: 12px;
-    border: 1px solid #e5e7eb;
+    border: 1px solid rgba(249,115,22,0.2);
   }
   
   .info-label {
     font-size: 12px;
-    color: #6b7280;
+    color: var(--section-text);
     text-transform: uppercase;
     letter-spacing: 0.5px;
     font-weight: 600;
@@ -164,8 +280,66 @@
   
   .info-value {
     font-size: 16px;
-    color: #111827;
+    color: var(--page-title-color);
     font-weight: 600;
+  }
+
+  .product-title {
+    font-size: 32px;
+    font-weight: 800;
+    color: var(--page-title-color);
+    margin-bottom: 16px;
+    line-height: 1.2;
+  }
+
+  .product-text {
+    color: var(--section-text);
+  }
+
+  .section-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--page-title-color);
+    margin-bottom: 12px;
+  }
+
+  .seller-box {
+    background: rgba(249,115,22,0.05);
+    padding: 16px;
+    border-radius: 12px;
+    border: 1px solid rgba(249,115,22,0.2);
+  }
+
+  .reviews-title {
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--page-title-color);
+    margin-bottom: 24px;
+  }
+
+  .review-author {
+    font-weight: 700;
+    color: var(--page-title-color);
+    margin-bottom: 4px;
+  }
+
+  .review-time {
+    font-size: 12px;
+    color: var(--section-text);
+  }
+
+  .review-body {
+    color: var(--section-text);
+    line-height: 1.6;
+    white-space: pre-wrap;
+  }
+
+  .empty-reviews {
+    text-align: center;
+    padding: 60px 20px;
+    background: var(--card-bg);
+    border-radius: 16px;
+    border: 2px dashed var(--card-border);
   }
   
   @media (max-width: 768px) {
@@ -181,11 +355,83 @@
 
 <div class="product-container">
   <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px;">
-    <!-- Product Image -->
+    <!-- Product Image Slider -->
     <div>
-      @if($product->image_url)
-        <img src="{{ Storage::url($product->image_url) }}" alt="{{ $product->name }}" class="product-image" style="width: 100%;">
-      @else
+      @if($showImages)
+        @php
+          $firstImgPath = $images->first()->image_path;
+          $firstImgSrc = ($firstImgPath && str_starts_with($firstImgPath, '/images/')) ? asset($firstImgPath) : asset('storage/' . $firstImgPath);
+        @endphp
+        <div class="image-slider" id="imageSlider">
+          <div class="slider-main">
+            <img id="mainImage" src="{{ $firstImgSrc }}" alt="{{ $product->name }}" onerror="this.src='{{ asset('images/no-image.png') }}';">
+            @if($hasMultipleImages)
+              <button class="slider-nav prev" onclick="changeSlide(-1)"><i class="uil uil-angle-left-b"></i></button>
+              <button class="slider-nav next" onclick="changeSlide(1)"><i class="uil uil-angle-right-b"></i></button>
+              <div class="slider-counter"><span id="currentSlide">1</span> / {{ $images->count() }}</div>
+            @endif
+          </div>
+          @if($hasMultipleImages)
+            <div class="slider-thumbnails">
+              @foreach($images as $index => $image)
+                @php
+                  $thumbPath = $image->image_path;
+                  $thumbSrc = ($thumbPath && str_starts_with($thumbPath, '/images/')) ? asset($thumbPath) : asset('storage/' . $thumbPath);
+                @endphp
+                <div class="slider-thumb {{ $index === 0 ? 'active' : '' }}" onclick="goToSlide({{ $index }})" data-index="{{ $index }}">
+                  <img src="{{ $thumbSrc }}" alt="{{ $product->name }}" onerror="this.src='{{ asset('images/no-image.png') }}';">
+                </div>
+              @endforeach
+            </div>
+          @endif
+        </div>
+        <script>
+          const productImages = [
+            @foreach($images as $image)
+              @php
+                $imgPath = $image->image_path;
+                $imgSrc = ($imgPath && str_starts_with($imgPath, '/images/')) ? asset($imgPath) : asset('storage/' . $imgPath);
+              @endphp
+              "{{ $imgSrc }}",
+            @endforeach
+          ];
+          let currentIndex = 0;
+
+          function changeSlide(direction) {
+            currentIndex += direction;
+            if (currentIndex < 0) currentIndex = productImages.length - 1;
+            if (currentIndex >= productImages.length) currentIndex = 0;
+            updateSlider();
+          }
+
+          function goToSlide(index) {
+            currentIndex = index;
+            updateSlider();
+          }
+
+          function updateSlider() {
+            document.getElementById('mainImage').src = productImages[currentIndex];
+            document.getElementById('currentSlide').textContent = currentIndex + 1;
+            
+            document.querySelectorAll('.slider-thumb').forEach((thumb, idx) => {
+              thumb.classList.toggle('active', idx === currentIndex);
+            });
+          }
+        </script>
+      @endif
+
+      @if($showFallback)
+        @php
+          $prodImgPath = $product->image_url;
+          $prodImgSrc = ($prodImgPath && str_starts_with($prodImgPath, '/images/')) ? asset($prodImgPath) : asset('storage/' . $prodImgPath);
+        @endphp
+        <img src="{{ $prodImgSrc }}" alt="{{ $product->name }}" class="product-image" style="width: 100%;" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+        <div class="product-image" style="width: 100%; background: linear-gradient(135deg, #667eea 20%, #764ba2 100%); display: none; align-items: center; justify-content: center;">
+          <i class="uil uil-image" style="font-size: 80px; color: rgba(255,255,255,0.5);"></i>
+        </div>
+      @endif
+
+      @if($showPlaceholder)
         <div class="product-image" style="width: 100%; background: linear-gradient(135deg, #667eea 20%, #764ba2 100%); display: flex; align-items: center; justify-content: center;">
           <i class="uil uil-image" style="font-size: 80px; color: rgba(255,255,255,0.5);"></i>
         </div>
@@ -220,7 +466,7 @@
         @endif
       </div>
       
-      <h1 style="font-size: 32px; font-weight: 800; color: #111827; margin-bottom: 16px; line-height: 1.2;">
+      <h1 class="product-title">
         {{ $product->name }}
       </h1>
       
@@ -231,7 +477,7 @@
             <span class="star {{ $i <= floor($avg) ? '' : 'empty' }}">★</span>
           @endfor
         </div>
-        <span style="color: #6b7280; font-size: 14px; font-weight: 500;">
+        <span class="product-text" style="font-size: 14px; font-weight: 500;">
           {{ $avg }} dari 5 · {{ $count }} ulasan
         </span>
       </div>
@@ -241,34 +487,34 @@
         Rp {{ number_format($product->price, 0, ',', '.') }}
       </div>
       
-      <div style="color: #6b7280; font-size: 14px; margin-bottom: 28px;">
+      <div class="product-text" style="font-size: 14px; margin-bottom: 28px;">
         <i class="uil uil-layers"></i>
-        Stok: <strong style="color: #111827;">{{ $product->stock }}</strong> unit
+        Stok: <strong style="color: var(--page-title-color);">{{ $product->stock }}</strong> unit
       </div>
       
-      <hr style="border: none; height: 1px; background: #e5e7eb; margin: 28px 0;">
+      <hr style="border: none; height: 1px; background: var(--card-border); margin: 28px 0;">
       
       <!-- Description -->
       <div>
-        <h3 style="font-size: 18px; font-weight: 700; color: #111827; margin-bottom: 12px;">
+        <h3 class="section-title">
           <i class="uil uil-file-alt"></i> Deskripsi Produk
         </h3>
-        <p style="color: #4b5563; line-height: 1.7; white-space: pre-wrap;">{{ $product->description }}</p>
+        <p class="product-text" style="line-height: 1.7; white-space: pre-wrap;">{{ $product->description }}</p>
       </div>
       
-      <hr style="border: none; height: 1px; background: #e5e7eb; margin: 28px 0;">
+      <hr style="border: none; height: 1px; background: var(--card-border); margin: 28px 0;">
       
       <!-- Seller Info -->
       <div>
-        <h3 style="font-size: 18px; font-weight: 700; color: #111827; margin-bottom: 12px;">
+        <h3 class="section-title">
           <i class="uil uil-shop"></i> Informasi Penjual
         </h3>
-        <div style="background: #f9fafb; padding: 16px; border-radius: 12px; border: 1px solid #e5e7eb;">
-          <div style="font-weight: 600; color: #111827; margin-bottom: 4px;">
+        <div class="seller-box">
+          <div style="font-weight: 600; color: var(--page-title-color); margin-bottom: 4px;">
             {{ $product->seller_name ?? $product->seller->nama_toko ?? 'Penjual' }}
           </div>
           @if($product->seller)
-            <div style="font-size: 13px; color: #6b7280;">
+            <div class="product-text" style="font-size: 13px;">
               <i class="uil uil-map-marker"></i>
               {{ $product->seller->kota ?? 'Semarang' }}, {{ $product->seller->provinsi ?? 'Jawa Tengah' }}
             </div>
@@ -292,7 +538,7 @@
 <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 32px; align-items: start;">
   <!-- Reviews List -->
   <div>
-    <h2 style="font-size: 24px; font-weight: 800; color: #111827; margin-bottom: 24px;">
+    <h2 class="reviews-title">
       <i class="uil uil-comment-alt-lines"></i>
       Ulasan Pembeli
     </h2>
@@ -301,11 +547,11 @@
       <div class="review-card">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
           <div>
-            <div style="font-weight: 700; color: #111827; margin-bottom: 4px;">
+            <div class="review-author">
               <i class="uil uil-user-circle"></i>
               {{ $r->user ? $r->user->name : $r->guest_name }}
             </div>
-            <div style="font-size: 12px; color: #6b7280;">
+            <div class="review-time">
               <i class="uil uil-clock"></i>
               {{ $r->created_at->diffForHumans() }}
             </div>
@@ -316,13 +562,13 @@
             @endfor
           </div>
         </div>
-        <p style="color: #4b5563; line-height: 1.6; white-space: pre-wrap;">{{ $r->body }}</p>
+        <p class="review-body">{{ $r->body }}</p>
       </div>
     @empty
-      <div style="text-align: center; padding: 60px 20px; background: white; border-radius: 16px; border: 2px dashed #e5e7eb;">
-        <i class="uil uil-comment-alt-slash" style="font-size: 60px; color: #d1d5db; margin-bottom: 16px;"></i>
-        <p style="color: #9ca3af; font-size: 15px;">Belum ada ulasan untuk produk ini</p>
-        <p style="color: #d1d5db; font-size: 13px; margin-top: 8px;">Jadilah yang pertama memberikan ulasan!</p>
+      <div class="empty-reviews">
+        <i class="uil uil-comment-alt-slash" style="font-size: 60px; color: #4b5563; margin-bottom: 16px;"></i>
+        <p class="product-text" style="font-size: 15px;">Belum ada ulasan untuk produk ini</p>
+        <p class="product-text" style="font-size: 13px; margin-top: 8px; opacity: 0.7;">Jadilah yang pertama memberikan ulasan!</p>
       </div>
     @endforelse
   </div>
@@ -330,20 +576,20 @@
   <!-- Review Form -->
   <div style="position: sticky; top: 120px;">
     @if($isSeller)
-      <div class="form-card" style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border: 2px solid #f59e0b;">
+      <div class="form-card" style="background: rgba(245,158,11,0.1); border: 2px solid rgba(245,158,11,0.5);">
         <div style="text-align: center; padding: 20px;">
-          <i class="uil uil-info-circle" style="font-size: 48px; color: #d97706; margin-bottom: 12px;"></i>
-          <h3 style="font-size: 18px; font-weight: 700; color: #92400e; margin-bottom: 8px;">
+          <i class="uil uil-info-circle" style="font-size: 48px; color: #f59e0b; margin-bottom: 12px;"></i>
+          <h3 style="font-size: 18px; font-weight: 700; color: #f59e0b; margin-bottom: 8px;">
             Ini Produk Anda
           </h3>
-          <p style="color: #78350f; font-size: 14px; line-height: 1.6;">
+          <p class="product-text" style="font-size: 14px; line-height: 1.6;">
             Anda tidak dapat memberikan ulasan pada produk Anda sendiri. Hanya pembeli yang dapat memberikan ulasan.
           </p>
         </div>
       </div>
     @else
     <div id="review-form" class="form-card">
-      <h3 style="font-size: 20px; font-weight: 700; color: #111827; margin-bottom: 20px;">
+      <h3 class="section-title" style="font-size: 20px; margin-bottom: 20px;">
         <i class="uil uil-pen"></i>
         Tulis Ulasan
       </h3>
@@ -368,6 +614,49 @@
           <label class="form-label">Email</label>
           <input type="email" name="guest_email" value="{{ old('guest_email') }}" class="form-input" placeholder="email@example.com" required>
           @error('guest_email')<p class="error-text">{{ $message }}</p>@enderror
+        </div>
+        
+        {{-- SRS-08: Field Provinsi untuk tracking lokasi reviewer --}}
+        <div class="form-group">
+          <label class="form-label">Provinsi <span style="font-weight:400;color:var(--section-text);">(opsional)</span></label>
+          <select name="guest_province" class="form-select">
+            <option value="">Pilih provinsi...</option>
+            <option value="Aceh">Aceh</option>
+            <option value="Sumatera Utara">Sumatera Utara</option>
+            <option value="Sumatera Barat">Sumatera Barat</option>
+            <option value="Riau">Riau</option>
+            <option value="Jambi">Jambi</option>
+            <option value="Sumatera Selatan">Sumatera Selatan</option>
+            <option value="Bengkulu">Bengkulu</option>
+            <option value="Lampung">Lampung</option>
+            <option value="Kepulauan Bangka Belitung">Kepulauan Bangka Belitung</option>
+            <option value="Kepulauan Riau">Kepulauan Riau</option>
+            <option value="DKI Jakarta">DKI Jakarta</option>
+            <option value="Jawa Barat">Jawa Barat</option>
+            <option value="Jawa Tengah">Jawa Tengah</option>
+            <option value="DI Yogyakarta">DI Yogyakarta</option>
+            <option value="Jawa Timur">Jawa Timur</option>
+            <option value="Banten">Banten</option>
+            <option value="Bali">Bali</option>
+            <option value="Nusa Tenggara Barat">Nusa Tenggara Barat</option>
+            <option value="Nusa Tenggara Timur">Nusa Tenggara Timur</option>
+            <option value="Kalimantan Barat">Kalimantan Barat</option>
+            <option value="Kalimantan Tengah">Kalimantan Tengah</option>
+            <option value="Kalimantan Selatan">Kalimantan Selatan</option>
+            <option value="Kalimantan Timur">Kalimantan Timur</option>
+            <option value="Kalimantan Utara">Kalimantan Utara</option>
+            <option value="Sulawesi Utara">Sulawesi Utara</option>
+            <option value="Sulawesi Tengah">Sulawesi Tengah</option>
+            <option value="Sulawesi Selatan">Sulawesi Selatan</option>
+            <option value="Sulawesi Tenggara">Sulawesi Tenggara</option>
+            <option value="Gorontalo">Gorontalo</option>
+            <option value="Sulawesi Barat">Sulawesi Barat</option>
+            <option value="Maluku">Maluku</option>
+            <option value="Maluku Utara">Maluku Utara</option>
+            <option value="Papua Barat">Papua Barat</option>
+            <option value="Papua">Papua</option>
+          </select>
+          @error('guest_province')<p class="error-text">{{ $message }}</p>@enderror
         </div>
         @endguest
         

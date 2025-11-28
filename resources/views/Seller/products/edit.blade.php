@@ -7,19 +7,54 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.8/css/line.css">
     <style>
+        :root {
+            --bg-main: radial-gradient(circle at top left,#1f3b8a 0,#020617 52%,#020617 100%);
+            --nav-bg: rgba(2,6,23,0.95);
+            --card-bg: rgba(15,23,42,0.96);
+            --card-border: rgba(148,163,184,0.2);
+            --text-main: #f9fafb;
+            --text-muted: #9ca3af;
+            --accent: #f97316;
+        }
+        body.theme-light {
+            --bg-main: linear-gradient(135deg, #ffffff 0%, #e3e8ff 40%, #d5ddff 100%);
+            --nav-bg: rgba(255,255,255,0.95);
+            --card-bg: rgba(255,255,255,0.96);
+            --card-border: #e5e7eb;
+            --text-main: #111827;
+            --text-muted: #6b7280;
+        }
+        body { background: var(--bg-main); }
+        body.theme-light .bg-slate-900\/95 { background: var(--nav-bg) !important; }
+        body.theme-light .bg-slate-800\/50 { background: rgba(255,255,255,0.8) !important; }
+        body.theme-light .bg-slate-900\/50 { background: rgba(255,255,255,0.9) !important; }
+        body.theme-light .border-blue-500\/30 { border-color: #e5e7eb !important; }
+        body.theme-light .border-slate-700 { border-color: #d1d5db !important; }
+        body.theme-light .text-white { color: var(--text-main) !important; }
+        body.theme-light .text-gray-300 { color: var(--text-muted) !important; }
+        body.theme-light .text-gray-400 { color: #6b7280 !important; }
+
         @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-        .fade-in-up {
-            animation: fadeInUp 0.6s ease-out forwards;
-        }
+        .fade-in-up { animation: fadeInUp 0.6s ease-out forwards; }
+
+        .theme-toggle-wrapper{display:flex;justify-content:center;align-items:center;}
+        .toggle-switch{position:relative;display:inline-block;width:74px;height:36px;transform:scale(.95);transition:transform .2s;}
+        .toggle-switch:hover{transform:scale(1);}
+        .toggle-switch input{opacity:0;width:0;height:0;}
+        .slider{position:absolute;cursor:pointer;inset:0;background:linear-gradient(145deg,#fbbf24,#f97316);transition:.4s;border-radius:34px;box-shadow:0 0 12px rgba(249,115,22,0.5);overflow:hidden;}
+        .slider:before{position:absolute;content:"☀";height:28px;width:28px;left:4px;bottom:4px;background:white;transition:.4s;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;box-shadow:0 0 10px rgba(0,0,0,.15);z-index:2;}
+        .clouds{position:absolute;width:100%;height:100%;overflow:hidden;pointer-events:none;}
+        .cloud{position:absolute;width:24px;height:24px;fill:rgba(255,255,255,0.9);filter:drop-shadow(0 2px 3px rgba(0,0,0,0.08));}
+        .cloud1{top:6px;left:10px;animation:floatCloud1 8s infinite linear;}
+        .cloud2{top:10px;left:38px;transform:scale(.85);animation:floatCloud2 12s infinite linear;}
+        @keyframes floatCloud1{0%{transform:translateX(-20px);opacity:0;}20%{opacity:1;}80%{opacity:1;}100%{transform:translateX(80px);opacity:0;}}
+        @keyframes floatCloud2{0%{transform:translateX(-20px) scale(.85);opacity:0;}20%{opacity:.7;}80%{opacity:.7;}100%{transform:translateX(80px) scale(.85);opacity:0;}}
+        input.js-theme-toggle:checked + .slider{background:linear-gradient(145deg,#1f2937,#020617);box-shadow:0 0 14px rgba(15,23,42,0.8);}
+        input.js-theme-toggle:checked + .slider:before{transform:translateX(38px);content:"🌙";}
+        input.js-theme-toggle:checked + .slider .cloud{opacity:0;transform:translateY(-18px);}
     </style>
 </head>
 <body class="bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 min-h-screen flex flex-col">
@@ -81,6 +116,19 @@
 
             {{-- Right Menu --}}
             <div class="flex items-center gap-3">
+                {{-- Theme Toggle --}}
+                <div class="theme-toggle-wrapper">
+                    <label class="toggle-switch">
+                        <input type="checkbox" class="js-theme-toggle" />
+                        <span class="slider">
+                            <div class="clouds">
+                                <svg viewBox="0 0 100 100" class="cloud cloud1"><path d="M30,45 Q35,25 50,25 Q65,25 70,45 Q80,45 85,50 Q90,55 85,60 Q80,65 75,60 Q65,60 60,65 Q55,70 50,65 Q45,70 40,65 Q35,60 25,60 Q20,65 15,60 Q10,55 15,50 Q20,45 30,45"></path></svg>
+                                <svg viewBox="0 0 100 100" class="cloud cloud2"><path d="M30,45 Q35,25 50,25 Q65,25 70,45 Q80,45 85,50 Q90,55 85,60 Q80,65 75,60 Q65,60 60,65 Q55,70 50,65 Q45,70 40,65 Q35,60 25,60 Q20,65 15,60 Q10,55 15,50 Q20,45 30,45"></path></svg>
+                            </div>
+                        </span>
+                    </label>
+                </div>
+
                 {{-- User Info --}}
                 <div class="hidden sm:flex items-center gap-2 px-3 py-2 bg-slate-800/50 rounded-lg border border-slate-700/50">
                     <i class="uil uil-shop text-blue-400"></i>
@@ -280,38 +328,65 @@
                     @enderror
                 </div>
 
-                {{-- Current Image --}}
-                @if($product->image_url)
+                {{-- Current Images --}}
+                @if($product->images->count() > 0)
+                <div>
+                    <label class="block text-sm font-medium text-gray-300 mb-2">Foto Saat Ini (Klik untuk pilih foto utama, centang untuk hapus)</label>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4" id="existingImagesGrid">
+                        @foreach($product->images as $image)
+                        <div class="relative group">
+                            <img src="{{ asset('storage/' . $image->image_path) }}" alt="{{ $product->name }}" 
+                                class="w-full h-32 object-cover rounded-lg border-2 cursor-pointer transition-all duration-200 existing-image {{ $image->is_primary ? 'border-blue-500' : 'border-slate-700' }}"
+                                data-id="{{ $image->id }}"
+                                onclick="setPrimaryImage({{ $image->id }})"
+                                onerror="this.src='{{ asset('images/no-image.png') }}';">
+                            <span class="primary-badge absolute top-1 left-1 text-xs px-2 py-1 rounded-full font-semibold {{ $image->is_primary ? 'bg-blue-500 text-white' : 'bg-black/60 text-white' }}">
+                                {{ $image->is_primary ? 'Utama' : $loop->iteration }}
+                            </span>
+                            <label class="absolute top-1 right-1 bg-red-500/80 hover:bg-red-500 text-white p-1 rounded cursor-pointer">
+                                <input type="checkbox" name="delete_images[]" value="{{ $image->id }}" class="hidden delete-checkbox" onchange="toggleDeleteMark(this)">
+                                <i class="uil uil-trash-alt text-sm"></i>
+                            </label>
+                        </div>
+                        @endforeach
+                    </div>
+                    <input type="hidden" name="primary_image" id="primary_image" value="{{ $product->images->where('is_primary', true)->first()?->id }}">
+                </div>
+                @elseif($product->image_url)
                 <div>
                     <label class="block text-sm font-medium text-gray-300 mb-2">Foto Saat Ini</label>
-                    <img src="{{ Storage::url($product->image_url) }}" alt="{{ $product->name }}" class="w-48 h-48 object-cover rounded-lg border-2 border-slate-700">
+                    <img src="{{ asset('storage/' . $product->image_url) }}" alt="{{ $product->name }}" class="w-48 h-48 object-cover rounded-lg border-2 border-slate-700" onerror="this.src='{{ asset('images/no-image.png') }}';">
                 </div>
                 @endif
 
                 {{-- Upload Gambar Baru --}}
                 <div>
-                    <label for="image" class="block text-sm font-medium text-gray-300 mb-2">
-                        Foto Produk Baru (Opsional)
+                    <label for="images" class="block text-sm font-medium text-gray-300 mb-2">
+                        Tambah Foto Baru (Opsional, maksimal 5 gambar total)
                     </label>
                     <div class="relative">
                         <input 
                             type="file" 
-                            id="image" 
-                            name="image" 
+                            id="images" 
+                            name="images[]" 
                             accept=".jpg,.jpeg,.png"
+                            multiple
                             class="w-full px-4 py-3 bg-slate-900/50 border border-slate-700 rounded-lg text-white file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-500 file:text-white hover:file:bg-blue-600 file:cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                         >
                     </div>
-                    <p class="mt-2 text-xs text-gray-500">Format: JPG, JPEG, PNG. Maksimal 2MB. Kosongkan jika tidak ingin mengubah foto.</p>
-                    @error('image')
+                    <p class="mt-2 text-xs text-gray-500">Format: JPG, JPEG, PNG. Maksimal 2MB per gambar.</p>
+                    @error('images')
+                        <p class="mt-1 text-sm text-red-400">{{ $message }}</p>
+                    @enderror
+                    @error('images.*')
                         <p class="mt-1 text-sm text-red-400">{{ $message }}</p>
                     @enderror
                 </div>
 
-                {{-- Preview Image --}}
-                <div id="imagePreview" class="hidden">
+                {{-- Preview New Images --}}
+                <div id="newImagePreview" class="hidden">
                     <label class="block text-sm font-medium text-gray-300 mb-2">Preview Foto Baru</label>
-                    <img id="previewImg" src="" alt="Preview" class="w-48 h-48 object-cover rounded-lg border-2 border-slate-700">
+                    <div id="newPreviewGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4"></div>
                 </div>
 
                 {{-- Buttons --}}
@@ -349,36 +424,86 @@
 </footer>
 
 <script>
+function setPrimaryImage(imageId) {
+    document.getElementById('primary_image').value = imageId;
+    
+    document.querySelectorAll('.existing-image').forEach(img => {
+        img.classList.remove('border-blue-500');
+        img.classList.add('border-slate-700');
+    });
+    document.querySelectorAll('.primary-badge').forEach((badge, idx) => {
+        badge.classList.remove('bg-blue-500');
+        badge.classList.add('bg-black/60');
+        badge.textContent = idx + 1;
+    });
+    
+    const selectedImg = document.querySelector(`.existing-image[data-id="${imageId}"]`);
+    if (selectedImg) {
+        selectedImg.classList.remove('border-slate-700');
+        selectedImg.classList.add('border-blue-500');
+        const badge = selectedImg.parentElement.querySelector('.primary-badge');
+        if (badge) {
+            badge.classList.remove('bg-black/60');
+            badge.classList.add('bg-blue-500');
+            badge.textContent = 'Utama';
+        }
+    }
+}
+
+function toggleDeleteMark(checkbox) {
+    const img = checkbox.closest('.relative').querySelector('img');
+    if (checkbox.checked) {
+        img.style.opacity = '0.3';
+        img.style.filter = 'grayscale(100%)';
+    } else {
+        img.style.opacity = '1';
+        img.style.filter = 'none';
+    }
+}
+
 document.addEventListener('DOMContentLoaded', function() {
-    // Image preview functionality
-    const imageInput = document.getElementById('image');
+    const imageInput = document.getElementById('images');
+    const previewContainer = document.getElementById('newImagePreview');
+    const previewGrid = document.getElementById('newPreviewGrid');
+
     if (imageInput) {
         imageInput.addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    document.getElementById('previewImg').src = e.target.result;
-                    document.getElementById('imagePreview').classList.remove('hidden');
+            const files = e.target.files;
+            previewGrid.innerHTML = '';
+            
+            if (files.length > 0) {
+                previewContainer.classList.remove('hidden');
+                
+                const maxFiles = Math.min(files.length, 5);
+                for (let i = 0; i < maxFiles; i++) {
+                    const file = files[i];
+                    const reader = new FileReader();
+                    
+                    reader.onload = function(e) {
+                        const imgContainer = document.createElement('div');
+                        imgContainer.className = 'relative';
+                        imgContainer.innerHTML = `
+                            <img src="${e.target.result}" class="w-full h-32 object-cover rounded-lg border-2 border-slate-700">
+                            <span class="absolute top-1 left-1 bg-green-500 text-white text-xs px-2 py-1 rounded-full font-semibold">Baru</span>
+                        `;
+                        previewGrid.appendChild(imgContainer);
+                    };
+                    
+                    reader.readAsDataURL(file);
                 }
-                reader.readAsDataURL(file);
+            } else {
+                previewContainer.classList.add('hidden');
             }
         });
     }
 
-    // Price formatting with thousand separator
     const priceDisplay = document.getElementById('price_display');
     const priceHidden = document.getElementById('price');
 
     if (priceDisplay && priceHidden) {
         priceDisplay.addEventListener('input', function(e) {
-            // Remove non-numeric characters
             let value = e.target.value.replace(/[^\d]/g, '');
-            
-            // Update hidden field with raw number
             priceHidden.value = value;
-            
-            // Format display with thousand separator
             if (value) {
                 e.target.value = parseInt(value).toLocaleString('id-ID');
             } else {
@@ -386,7 +511,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
 
-        // Format on page load if there's a value
         if (priceDisplay.value) {
             let value = priceDisplay.value.replace(/[^\d]/g, '');
             if (value) {
@@ -398,6 +522,27 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<script>
+(function(){
+    const KEY = 'kampuStoreTheme';
+    const body = document.body;
+    const toggle = document.querySelector('.js-theme-toggle');
+    function apply(mode){
+        if(mode === 'light'){ body.classList.add('theme-light'); body.classList.remove('theme-dark'); }
+        else{ body.classList.remove('theme-light'); body.classList.add('theme-dark'); }
+    }
+    const saved = localStorage.getItem(KEY) || 'dark';
+    apply(saved);
+    if(toggle){
+        toggle.checked = (saved !== 'light');
+        toggle.addEventListener('change', () => {
+            const mode = toggle.checked ? 'dark' : 'light';
+            apply(mode);
+            localStorage.setItem(KEY, mode);
+        });
+    }
+})();
+</script>
 
 </body>
 </html>
