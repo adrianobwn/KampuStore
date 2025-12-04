@@ -1,5 +1,13 @@
 @extends('layouts.admin')
 
+@push('styles')
+<style>
+/* Ensure all elements are properly styled */
+.badge { display: inline-flex; align-items: center; padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 500; }
+.btn { display: inline-flex; align-items: center; gap: 0.25rem; padding: 0.375rem 0.75rem; border-radius: 0.5rem; font-size: 0.75rem; font-weight: 500; transition: all 0.2s; }
+</style>
+@endpush
+
 @section('content')
     <!-- Header -->
     <div class="mb-6 sm:mb-8">
@@ -52,70 +60,7 @@
                     </a>
                 </div>
             </div>
-        </form> Symfony Exception
- Symfony Docs
-Error
-HTTP 500 Internal Server Error
-Call to a member function render() on null
-Error
-in /Users/adrianobawan/Study/Iyan/Semester 5/Proyek Perangkat Lunak/UAS/KampuStore/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php (line 879)
-in /Users/adrianobawan/Study/Iyan/Semester 5/Proyek Perangkat Lunak/UAS/KampuStore/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php -> renderExceptionContent (line 860)
-in /Users/adrianobawan/Study/Iyan/Semester 5/Proyek Perangkat Lunak/UAS/KampuStore/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php -> convertExceptionToResponse (line 839)
-in /Users/adrianobawan/Study/Iyan/Semester 5/Proyek Perangkat Lunak/UAS/KampuStore/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php -> prepareResponse (line 738)
-in /Users/adrianobawan/Study/Iyan/Semester 5/Proyek Perangkat Lunak/UAS/KampuStore/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php -> renderExceptionResponse (line 626)
-in /Users/adrianobawan/Study/Iyan/Semester 5/Proyek Perangkat Lunak/UAS/KampuStore/vendor/laravel/framework/src/Illuminate/Routing/Pipeline.php -> render (line 51)
-in /Users/adrianobawan/Study/Iyan/Semester 5/Proyek Perangkat Lunak/UAS/KampuStore/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php -> handleException (line 182)
-in /Users/adrianobawan/Study/Iyan/Semester 5/Proyek Perangkat Lunak/UAS/KampuStore/vendor/laravel/framework/src/Illuminate/Auth/Middleware/Authorize.php -> {closure:Illuminate\Pipeline\Pipeline::prepareDestination():178} (line 59)
-in /Users/adrianobawan/Study/Iyan/Semester 5/Proyek Perangkat Lunak/UAS/KampuStore/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php -> handle (line 219)
-in /Users/adrianobawan/Study/Iyan/Semester 5/Proyek Perangkat Lunak/UAS/KampuStore/vendor/laravel/framework/src/Illuminate/Routing/Middleware/SubstituteBindings.php -> {closure:{closure:Illuminate\Pipeline\Pipeline::carry():194}:195} (line 50)
-in /Users/adrianobawan/Study/Iyan/Semester 5/Proyek Perangkat Lunak/UAS/KampuStore/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php -> handle (line 219)
-in /Users/adrianobawan/Study/Iyan/Semester 5/Proyek Perangkat Lunak/UAS/KampuStore/vendor/laravel/framework/src/Illuminate/Auth/Middleware/Authenticate.php -> {closure:{closure:Illuminate\Pipeline\Pipeline::carry():194}:195} (line 63)
-in /Users/adrianobawan/Study/Iyan/Semester 5/Proyek Perangkat Lunak/UAS/KampuStore/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php -> handle (line 219)
-in /Users/adrianobawan/Study/Iyan/Semester 5/Proyek Perangkat Lunak/UAS/KampuStore/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/VerifyCsrfToken.php -> {closure:{closure:Illuminate\Pipeline\Pipeline::carry():194}:195} (line 87)
-in /Users/adrianobawan/Study/Iyan/Semester 5/Proyek Perangkat Lunak/UAS/KampuStore/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php -> handle (line 219)
-in /Users/adrianobawan/Study/Iyan/Semester 5/Proyek Perangkat Lunak/UAS/KampuStore/vendor/laravel/framework/src/Illuminate/View/Middleware/ShareErrorsFromSession.php -> {closure:{closure:Illuminate\Pipeline\Pipeline::carry():194}:195} (line 48)
-in /Users/adrianobawan/Study/Iyan/Semester 5/Proyek Perangkat Lunak/UAS/KampuStore/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php -> handle (line 219)
-in /Users/adrianobawan/Study/Iyan/Semester 5/Proyek Perangkat Lunak/UAS/KampuStore/vendor/laravel/framework/src/Illuminate/Session/Middleware/StartSession.php -> {closure:{closure:Illuminate\Pipeline\Pipeline::carry():194}:195} (line 120)
-in /Users/adrianobawan/Study/Iyan/Semester 5/Proyek Perangkat Lunak/UAS/KampuStore/vendor/laravel/framework/src/Illuminate/Session/Middleware/StartSession.php -> handleStatefulRequest (line 63)
-in /Users/adrianobawan/Study/Iyan/Semester 5/Proyek Perangkat Lunak/UAS/KampuStore/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php -> handle (line 219)
-in /Users/adrianobawan/Study/Iyan/Semester 5/Proyek Perangkat Lunak/UAS/KampuStore/vendor/laravel/framework/src/Illuminate/Cookie/Middleware/AddQueuedCookiesToResponse.php -> {closure:{closure:Illuminate\Pipeline\Pipeline::carry():194}:195} (line 36)
-in /Users/adrianobawan/Study/Iyan/Semester 5/Proyek Perangkat Lunak/UAS/KampuStore/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php -> handle (line 219)
-in /Users/adrianobawan/Study/Iyan/Semester 5/Proyek Perangkat Lunak/UAS/KampuStore/vendor/laravel/framework/src/Illuminate/Cookie/Middleware/EncryptCookies.php -> {closure:{closure:Illuminate\Pipeline\Pipeline::carry():194}:195} (line 74)
-in /Users/adrianobawan/Study/Iyan/Semester 5/Proyek Perangkat Lunak/UAS/KampuStore/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php -> handle (line 219)
-in /Users/adrianobawan/Study/Iyan/Semester 5/Proyek Perangkat Lunak/UAS/KampuStore/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php -> {closure:{closure:Illuminate\Pipeline\Pipeline::carry():194}:195} (line 137)
-in /Users/adrianobawan/Study/Iyan/Semester 5/Proyek Perangkat Lunak/UAS/KampuStore/vendor/laravel/framework/src/Illuminate/Routing/Router.php -> then (line 821)
-in /Users/adrianobawan/Study/Iyan/Semester 5/Proyek Perangkat Lunak/UAS/KampuStore/vendor/laravel/framework/src/Illuminate/Routing/Router.php -> runRouteWithinStack (line 800)
-in /Users/adrianobawan/Study/Iyan/Semester 5/Proyek Perangkat Lunak/UAS/KampuStore/vendor/laravel/framework/src/Illuminate/Routing/Router.php -> runRoute (line 764)
-in /Users/adrianobawan/Study/Iyan/Semester 5/Proyek Perangkat Lunak/UAS/KampuStore/vendor/laravel/framework/src/Illuminate/Routing/Router.php -> dispatchToRoute (line 753)
-in /Users/adrianobawan/Study/Iyan/Semester 5/Proyek Perangkat Lunak/UAS/KampuStore/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php -> dispatch (line 200)
-in /Users/adrianobawan/Study/Iyan/Semester 5/Proyek Perangkat Lunak/UAS/KampuStore/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php -> {closure:Illuminate\Foundation\Http\Kernel::dispatchToRouter():197} (line 180)
-in /Users/adrianobawan/Study/Iyan/Semester 5/Proyek Perangkat Lunak/UAS/KampuStore/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php -> {closure:Illuminate\Pipeline\Pipeline::prepareDestination():178} (line 21)
-in /Users/adrianobawan/Study/Iyan/Semester 5/Proyek Perangkat Lunak/UAS/KampuStore/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/ConvertEmptyStringsToNull.php -> handle (line 31)
-in /Users/adrianobawan/Study/Iyan/Semester 5/Proyek Perangkat Lunak/UAS/KampuStore/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php -> handle (line 219)
-in /Users/adrianobawan/Study/Iyan/Semester 5/Proyek Perangkat Lunak/UAS/KampuStore/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php -> {closure:{closure:Illuminate\Pipeline\Pipeline::carry():194}:195} (line 21)
-in /Users/adrianobawan/Study/Iyan/Semester 5/Proyek Perangkat Lunak/UAS/KampuStore/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TrimStrings.php -> handle (line 51)
-in /Users/adrianobawan/Study/Iyan/Semester 5/Proyek Perangkat Lunak/UAS/KampuStore/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php -> handle (line 219)
-in /Users/adrianobawan/Study/Iyan/Semester 5/Proyek Perangkat Lunak/UAS/KampuStore/vendor/laravel/framework/src/Illuminate/Http/Middleware/ValidatePostSize.php -> {closure:{closure:Illuminate\Pipeline\Pipeline::carry():194}:195} (line 27)
-in /Users/adrianobawan/Study/Iyan/Semester 5/Proyek Perangkat Lunak/UAS/KampuStore/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php -> handle (line 219)
-in /Users/adrianobawan/Study/Iyan/Semester 5/Proyek Perangkat Lunak/UAS/KampuStore/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/PreventRequestsDuringMaintenance.php -> {closure:{closure:Illuminate\Pipeline\Pipeline::carry():194}:195} (line 109)
-in /Users/adrianobawan/Study/Iyan/Semester 5/Proyek Perangkat Lunak/UAS/KampuStore/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php -> handle (line 219)
-in /Users/adrianobawan/Study/Iyan/Semester 5/Proyek Perangkat Lunak/UAS/KampuStore/vendor/laravel/framework/src/Illuminate/Http/Middleware/HandleCors.php -> {closure:{closure:Illuminate\Pipeline\Pipeline::carry():194}:195} (line 48)
-in /Users/adrianobawan/Study/Iyan/Semester 5/Proyek Perangkat Lunak/UAS/KampuStore/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php -> handle (line 219)
-in /Users/adrianobawan/Study/Iyan/Semester 5/Proyek Perangkat Lunak/UAS/KampuStore/vendor/laravel/framework/src/Illuminate/Http/Middleware/TrustProxies.php -> {closure:{closure:Illuminate\Pipeline\Pipeline::carry():194}:195} (line 58)
-in /Users/adrianobawan/Study/Iyan/Semester 5/Proyek Perangkat Lunak/UAS/KampuStore/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php -> handle (line 219)
-in /Users/adrianobawan/Study/Iyan/Semester 5/Proyek Perangkat Lunak/UAS/KampuStore/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/InvokeDeferredCallbacks.php -> {closure:{closure:Illuminate\Pipeline\Pipeline::carry():194}:195} (line 22)
-in /Users/adrianobawan/Study/Iyan/Semester 5/Proyek Perangkat Lunak/UAS/KampuStore/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php -> handle (line 219)
-in /Users/adrianobawan/Study/Iyan/Semester 5/Proyek Perangkat Lunak/UAS/KampuStore/vendor/laravel/framework/src/Illuminate/Http/Middleware/ValidatePathEncoding.php -> {closure:{closure:Illuminate\Pipeline\Pipeline::carry():194}:195} (line 26)
-in /Users/adrianobawan/Study/Iyan/Semester 5/Proyek Perangkat Lunak/UAS/KampuStore/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php -> handle (line 219)
-in /Users/adrianobawan/Study/Iyan/Semester 5/Proyek Perangkat Lunak/UAS/KampuStore/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php -> {closure:{closure:Illuminate\Pipeline\Pipeline::carry():194}:195} (line 137)
-in /Users/adrianobawan/Study/Iyan/Semester 5/Proyek Perangkat Lunak/UAS/KampuStore/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php -> then (line 175)
-in /Users/adrianobawan/Study/Iyan/Semester 5/Proyek Perangkat Lunak/UAS/KampuStore/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php -> sendRequestThroughRouter (line 144)
-in /Users/adrianobawan/Study/Iyan/Semester 5/Proyek Perangkat Lunak/UAS/KampuStore/vendor/laravel/framework/src/Illuminate/Foundation/Application.php -> handle (line 1220)
-Application->handleRequest(object(Request))
-in /Users/adrianobawan/Study/Iyan/Semester 5/Proyek Perangkat Lunak/UAS/KampuStore/public/index.php (line 20)
-// Bootstrap Laravel and handle the request.../** @var Application $app */$app = require_once __DIR__.'/../bootstrap/app.php';$app->handleRequest(Request::capture());
-in /Users/adrianobawan/Study/Iyan/Semester 5/Proyek Perangkat Lunak/UAS/KampuStore/vendor/laravel/framework/src/Illuminate/Foundation/resources/server.php require_once (line 23)
-
+        </form>
     </div>
 
     <div class="my-6 sm:my-8">
