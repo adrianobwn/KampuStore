@@ -1,5 +1,5 @@
 <nav class="fixed top-0 left-0 right-0 z-50 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md border-b border-gray-200 dark:border-gray-800 transition-all duration-300">
-    <div class="container mx-auto px-6">
+    <div class="max-w-[1400px] mx-auto px-6 sm:px-8 lg:px-12">
         <div class="flex items-center justify-between h-16">
             <!-- Logo -->
             <div class="flex items-center space-x-8">

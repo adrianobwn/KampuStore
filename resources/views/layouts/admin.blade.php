@@ -81,7 +81,7 @@
     
     <!-- Main Content -->
     <div class="pt-20 pb-8 min-h-screen">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-[1400px] mx-auto px-6 sm:px-8 lg:px-12">
             @yield('content')
         </div>
     </div>
