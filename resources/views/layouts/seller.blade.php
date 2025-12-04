@@ -98,12 +98,27 @@
         input.js-theme-toggle:checked + .slider:before{transform:translateX(38px);content:"🌙";}
         input.js-theme-toggle:checked + .slider .cloud{opacity:0;transform:translateY(-18px);}
 
+        .btn-market {
+            background:rgba(59,130,246,0.2);color:#60a5fa;cursor:pointer;
+            padding:8px 16px;border-radius:50px;font-size:13px;font-weight:600;transition:all .3s;
+            display:flex;align-items:center;gap:6px;text-decoration:none;
+            border:1px solid rgba(96,165,250,0.5);
+        }
+        body.theme-light .btn-market {
+            background:#eff6ff;color:#1d4ed8;border-color:#3b82f6;
+        }
+        .btn-market:hover{background:#3b82f6;color:white;transform:translateY(-2px);box-shadow:0 4px 12px rgba(59,130,246,0.4);border-color:#3b82f6;}
+        
         .btn-logout {
-            border:none;background:rgba(239,68,68,0.1);color:#ef4444;cursor:pointer;
+            border:none;background:rgba(239,68,68,0.15);color:#ef4444;cursor:pointer;
             padding:8px 16px;border-radius:50px;font-size:13px;font-weight:600;transition:all .3s;
             display:flex;align-items:center;gap:6px;
+            border:1px solid rgba(239,68,68,0.3);
         }
-        .btn-logout:hover{background:#ef4444;color:white;}
+        body.theme-light .btn-logout {
+            background:rgba(239,68,68,0.1);color:#dc2626;border-color:rgba(220,38,38,0.3);
+        }
+        .btn-logout:hover{background:#ef4444;color:white;border-color:#ef4444;}
 
         /* LAYOUT - FULL WIDTH */
         .main-container { max-width:1400px;margin:0 auto;padding:85px 48px 40px; }
@@ -139,12 +154,14 @@
             .nav-logo span { display:none; }
             .nav-link span { display:none; }
             .nav-link { padding:6px 8px; }
+            .btn-market span { display:none; }
             .btn-logout span { display:none; }
+            .btn-market, .btn-logout { padding:6px 10px; }
         }
     </style>
     @stack('styles')
 </head>
-<body class="theme-dark">
+<body>
 
 {{-- NAVBAR --}}
 <nav class="nav">
@@ -215,6 +232,9 @@
         @endif
     </div>
     <div class="nav-actions">
+        <a href="{{ route('home') }}" class="btn-market" target="_blank" title="Lihat Marketplace">
+            <i class="uil uil-store"></i> <span>Market</span>
+        </a>
         <div class="theme-toggle-wrapper">
             <label class="toggle-switch">
                 <input type="checkbox" class="js-theme-toggle" />
@@ -240,21 +260,26 @@
 </div>
 
 <script>
-    // Theme Toggle
-    const toggle = document.querySelector('.js-theme-toggle');
-    const body = document.body;
+    // Theme Toggle - Apply immediately on load
+    (function() {
+        const savedTheme = localStorage.getItem('kampuStoreTheme') || 'dark';
+        document.body.classList.add('theme-' + savedTheme);
+    })();
     
-    // Load saved theme
-    const savedTheme = localStorage.getItem('theme') || 'dark';
-    body.classList.remove('theme-dark', 'theme-light');
-    body.classList.add('theme-' + savedTheme);
-    toggle.checked = savedTheme === 'dark';
-    
-    toggle.addEventListener('change', function() {
-        const theme = this.checked ? 'dark' : 'light';
-        body.classList.remove('theme-dark', 'theme-light');
-        body.classList.add('theme-' + theme);
-        localStorage.setItem('theme', theme);
+    document.addEventListener('DOMContentLoaded', function() {
+        const toggle = document.querySelector('.js-theme-toggle');
+        const body = document.body;
+        
+        // Set initial toggle state
+        const savedTheme = localStorage.getItem('kampuStoreTheme') || 'dark';
+        toggle.checked = savedTheme === 'dark';
+        
+        toggle.addEventListener('change', function() {
+            const theme = this.checked ? 'dark' : 'light';
+            body.classList.remove('theme-dark', 'theme-light');
+            body.classList.add('theme-' + theme);
+            localStorage.setItem('kampuStoreTheme', theme);
+        });
     });
 
     // Dropdown Menu
