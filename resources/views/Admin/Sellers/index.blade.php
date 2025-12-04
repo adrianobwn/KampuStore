@@ -8,10 +8,10 @@
                 <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">Pengajuan Toko</h1>
                 <p class="text-gray-600 dark:text-gray-400">Kelola pengajuan pembukaan toko dari penjual</p>
             </div>
-            <div class="text-right bg-gradient-to-br from-orange-500 to-orange-600 px-6 py-4 rounded-xl shadow-lg text-white">
-                <div class="text-sm opacity-90 mb-1">{{ now()->format('d F Y') }}</div>
-                <div class="text-3xl font-bold">{{ $sellers->count() }}</div>
-                <div class="text-sm opacity-90">Total Pengajuan</div>
+            <div class="text-center sm:text-right bg-gradient-to-br from-orange-500 to-orange-600 px-4 sm:px-6 py-3 sm:py-4 rounded-xl shadow-lg text-white">
+                <div class="text-xs sm:text-sm opacity-90 mb-1">{{ now()->format('d F Y') }}</div>
+                <div class="text-2xl sm:text-3xl font-bold">{{ $sellers->count() }}</div>
+                <div class="text-xs sm:text-sm opacity-90">Total Pengajuan</div>
             </div>
         </div>
     </div>

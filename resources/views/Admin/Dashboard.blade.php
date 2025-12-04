@@ -8,7 +8,7 @@
                 <h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-2">Dashboard Admin</h1>
                 <p class="text-sm sm:text-base text-gray-600 dark:text-gray-400">Kelola pengajuan toko dan pantau aktivitas marketplace</p>
             </div>
-            <div class="bg-gradient-to-br from-orange-500 to-orange-600 px-4 sm:px-6 py-3 sm:py-4 rounded-xl shadow-lg text-white">
+            <div class="text-center sm:text-right bg-gradient-to-br from-orange-500 to-orange-600 px-4 sm:px-6 py-3 sm:py-4 rounded-xl shadow-lg text-white">
                 <div class="text-xs sm:text-sm opacity-90 mb-1">{{ now()->format('d F Y') }}</div>
                 <div class="text-2xl sm:text-3xl font-bold">{{ $total }}</div>
                 <div class="text-xs sm:text-sm opacity-90">Total Pengajuan</div>
