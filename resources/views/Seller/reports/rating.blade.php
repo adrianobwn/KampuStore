@@ -174,16 +174,14 @@
 
 <nav class="nav no-print">
     <div class="nav-left">
-        <a href="{{ route('home') }}" class="nav-logo">
+        <a href="{{ route('seller.dashboard') }}" class="nav-logo">
             <img src="{{ asset('images/logo.png') }}" alt="kampuStore">
-            <span>kampuStore</span>
+            <span>kampuStore Seller</span>
         </a>
         <div class="nav-menu">
-            <a href="{{ route('home') }}">Home</a>
-            <a href="{{ route('home') }}#features">Features</a>
-            <a href="{{ route('products.index') }}">Market</a>
-            <a href="{{ route('home') }}#about">About</a>
-            <a href="{{ route('home') }}#contact">Contact</a>
+            <a href="{{ route('seller.dashboard') }}">Dashboard</a>
+            <a href="{{ route('seller.products.index') }}">Produk Saya</a>
+            <a href="{{ route('seller.reports.stock') }}" class="active">Laporan</a>
         </div>
     </div>
     <div class="nav-actions">

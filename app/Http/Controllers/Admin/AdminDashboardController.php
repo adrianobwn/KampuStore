@@ -12,10 +12,10 @@ class AdminDashboardController extends Controller
 {
     public function index()
     {
-        // Data seller status (existing)
+        // Data seller status untuk SRS-MartPlace-07: jumlah pengguna penjual aktif dan tidak aktif
         $pending  = Seller::where('status', 'pending')->count();
-        $approved = Seller::where('status', 'approved')->count();
-        $rejected = Seller::where('status', 'rejected')->count();
+        $approved = Seller::where('status', 'approved')->count(); // Aktif
+        $rejected = Seller::where('status', 'rejected')->count(); // Tidak aktif
 
         $total = $pending + $approved + $rejected;
 
@@ -27,7 +27,7 @@ class AdminDashboardController extends Controller
             $pPct = $aPct = $rPct = 0;
         }
 
-        // SRS-07: Sebaran jumlah produk per kategori
+        // SRS-MartPlace-07: Sebaran jumlah produk per kategori
         $productsByCategory = Product::select('category_slug', DB::raw('count(*) as total'))
             ->groupBy('category_slug')
             ->orderBy('total', 'desc')
@@ -40,7 +40,7 @@ class AdminDashboardController extends Controller
                 ];
             });
 
-        // SRS-07: Sebaran jumlah toko per lokasi provinsi
+        // SRS-MartPlace-07: Sebaran jumlah toko per lokasi provinsi
         $sellersByProvince = Seller::select('provinsi', DB::raw('count(*) as total'))
             ->where('status', 'approved')
             ->whereNotNull('provinsi')
@@ -48,16 +48,20 @@ class AdminDashboardController extends Controller
             ->orderBy('total', 'desc')
             ->get();
 
-        // SRS-07: Jumlah pengunjung yang memberikan komentar/rating
+        // SRS-MartPlace-07: Jumlah pengunjung yang memberikan komentar dan rating
         $totalReviews = Review::count();
-        $uniqueReviewers = Review::distinct()
-            ->count(DB::raw('COALESCE(user_id, guest_email)'));
+
+        // Menghitung unique reviewer dengan lebih baik
         $guestReviewers = Review::whereNull('user_id')
+            ->whereNotNull('guest_email')
             ->distinct('guest_email')
             ->count('guest_email');
+
         $userReviewers = Review::whereNotNull('user_id')
             ->distinct('user_id')
             ->count('user_id');
+
+        $uniqueReviewers = $guestReviewers + $userReviewers;
 
         // Total produk
         $totalProducts = Product::count();

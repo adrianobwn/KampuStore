@@ -12,27 +12,31 @@ use Illuminate\Support\Facades\DB;
 
 class SellersByLocationExport implements FromCollection, WithHeadings, WithMapping, WithStyles
 {
-    protected $groupBy;
+    protected $request;
 
-    public function __construct($groupBy = 'kota')
+    public function __construct($request)
     {
-        $this->groupBy = $groupBy;
+        $this->request = $request;
     }
 
     public function collection()
     {
-        return Seller::select($this->groupBy, DB::raw('count(*) as total'))
+        $groupBy = $this->request->get('group_by', 'kota');
+        
+        return Seller::select($groupBy, DB::raw('count(*) as total'))
             ->where('status', 'approved')
-            ->groupBy($this->groupBy)
+            ->groupBy($groupBy)
             ->orderBy('total', 'desc')
             ->get();
     }
 
     public function headings(): array
     {
+        $groupBy = $this->request->get('group_by', 'kota');
+        
         return [
             'No',
-            ucfirst($this->groupBy),
+            ucfirst($groupBy),
             'Jumlah Penjual',
             'Persentase'
         ];
@@ -43,12 +47,13 @@ class SellersByLocationExport implements FromCollection, WithHeadings, WithMappi
         static $no = 0;
         $no++;
         
+        $groupBy = $this->request->get('group_by', 'kota');
         $totalSellers = Seller::where('status', 'approved')->count();
         $percentage = $totalSellers > 0 ? round(($location->total / $totalSellers) * 100, 2) : 0;
 
         return [
             $no,
-            $location->{$this->groupBy} ?: 'Tidak Disebutkan',
+            $location->{$groupBy} ?: 'Tidak Disebutkan',
             $location->total,
             $percentage . '%'
         ];

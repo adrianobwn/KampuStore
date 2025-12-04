@@ -183,16 +183,14 @@
 
 <nav class="nav">
     <div class="nav-left">
-        <a href="{{ route('home') }}" class="nav-logo">
+        <a href="{{ route('seller.dashboard') }}" class="nav-logo">
             <img src="{{ asset('images/logo.png') }}" alt="kampuStore">
-            <span>kampuStore</span>
+            <span>kampuStore Seller</span>
         </a>
         <div class="nav-menu">
-            <a href="{{ route('home') }}">Home</a>
-            <a href="{{ route('home') }}#features">Features</a>
-            <a href="{{ route('products.index') }}">Market</a>
-            <a href="{{ route('home') }}#about">About</a>
-            <a href="{{ route('home') }}#contact">Contact</a>
+            <a href="{{ route('seller.dashboard') }}">Dashboard</a>
+            <a href="{{ route('seller.products.index') }}">Produk Saya</a>
+            <a href="{{ route('seller.reports.stock') }}">Laporan</a>
         </div>
     </div>
     <div class="nav-actions">
@@ -278,6 +276,12 @@
             <form method="POST" action="{{ route('seller.products.store') }}" enctype="multipart/form-data">
                 @csrf
 
+                {{-- Section: Informasi Dasar --}}
+                <div style="margin-bottom:32px;">
+                    <h3 style="font-size:16px;font-weight:700;color:var(--text-main);margin-bottom:16px;padding-bottom:12px;border-bottom:2px solid var(--card-border);">
+                        <i class="uil uil-info-circle"></i> Informasi Dasar Produk
+                    </h3>
+
                 <div class="form-group">
                     <label class="form-label">Nama Produk <span class="required">*</span></label>
                     <input type="text" name="name" value="{{ old('name') }}" class="form-input" placeholder="Contoh: Buku Matematika Dasar" required>
@@ -332,18 +336,47 @@
                     <textarea name="description" class="form-textarea" placeholder="Jelaskan detail produk, kondisi, dan informasi penting lainnya..." required>{{ old('description') }}</textarea>
                     @error('description')<p class="form-error">{{ $message }}</p>@enderror
                 </div>
+                </div>
+
+                {{-- Section: Foto Produk --}}
+                <div style="margin-bottom:32px;">
+                    <h3 style="font-size:16px;font-weight:700;color:var(--text-main);margin-bottom:16px;padding-bottom:12px;border-bottom:2px solid var(--card-border);">
+                        <i class="uil uil-images"></i> Foto Produk
+                    </h3>
+
+                {{-- Image Upload Info Box --}}
+                <div style="background:rgba(249,115,22,0.1);border:1px solid rgba(249,115,22,0.3);border-radius:12px;padding:16px;margin-bottom:20px;">
+                    <div style="display:flex;align-items:start;gap:12px;">
+                        <i class="uil uil-info-circle" style="font-size:24px;color:var(--accent);margin-top:2px;"></i>
+                        <div>
+                            <h3 style="font-size:14px;font-weight:700;color:var(--text-main);margin-bottom:8px;">📸 Upload Banyak Foto Produk</h3>
+                            <ul style="font-size:12px;color:var(--text-main);line-height:1.6;list-style:none;padding:0;">
+                                <li style="margin-bottom:4px;">✓ Pilih hingga <strong>5 foto sekaligus</strong> dengan tombol di bawah</li>
+                                <li style="margin-bottom:4px;">✓ Klik pada foto untuk <strong>menentukan foto utama</strong> (yang tampil pertama)</li>
+                                <li style="margin-bottom:4px;">✓ Klik tombol <strong>×</strong> di pojok foto untuk menghapus</li>
+                                <li>✓ Format: JPG, JPEG, PNG • Maksimal 2MB per foto</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
 
                 <div class="form-group">
-                    <label class="form-label">Foto Produk <span class="required">*</span> (Maksimal 5 gambar)</label>
+                    <label class="form-label">
+                        <i class="uil uil-image"></i> Foto Produk <span class="required">*</span>
+                        <span style="font-size:12px;font-weight:400;color:var(--text-muted);margin-left:8px;">(Pilih 1-5 foto)</span>
+                    </label>
                     <input type="file" name="images[]" id="images" class="form-file" accept=".jpg,.jpeg,.png" multiple required>
-                    <p class="form-hint">Format: JPG, JPEG, PNG. Maksimal 2MB per gambar. Pilih beberapa gambar sekaligus.</p>
+                    <p class="form-hint">Pilih beberapa file sekaligus untuk upload banyak foto. Foto pertama akan jadi foto utama secara default.</p>
                     @error('images')<p class="form-error">{{ $message }}</p>@enderror
                     @error('images.*')<p class="form-error">{{ $message }}</p>@enderror
                     <div id="imagePreviewContainer" class="preview-box" style="display:none; margin-top:16px;">
-                        <p style="font-size:13px;color:var(--text-muted);margin-bottom:12px;">Klik gambar untuk memilih sebagai foto utama:</p>
+                        <p style="font-size:13px;font-weight:600;color:var(--text-main);margin-bottom:12px;">
+                            <i class="uil uil-eye"></i> Preview Foto (<span id="imageCount">0</span>/5) - Klik foto untuk jadikan foto utama
+                        </p>
                         <div id="previewGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:12px;"></div>
                         <input type="hidden" name="primary_image" id="primary_image" value="0">
                     </div>
+                </div>
                 </div>
 
                 <div class="form-actions">
@@ -387,6 +420,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function renderPreviews() {
         previewGrid.innerHTML = '';
+        const imageCount = document.getElementById('imageCount');
+        if (imageCount) imageCount.textContent = selectedFiles.length;
         
         if (selectedFiles.length > 0) {
             previewContainer.style.display = 'block';

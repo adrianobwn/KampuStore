@@ -236,11 +236,15 @@
                 <i class="uil uil-user-circle"></i>
                 <span>{{ auth()->user()->name }}</span>
             </div>
-            @if(auth()->user()->seller)
-                <a href="{{ route('seller.dashboard') }}" class="btn-auth btn-login">
-                    <i class="uil uil-dashboard"></i> Dashboard
+            @can('verify-sellers')
+                <a href="{{ route('admin.dashboard') }}" class="btn-auth btn-register" style="background: linear-gradient(135deg, #f97316 0%, #fb923c 100%); border-color: #f97316;">
+                    <i class="uil uil-shield-check"></i> Dashboard Admin
                 </a>
-            @endif
+            @elsecan('manage-products')
+                <a href="{{ route('seller.dashboard') }}" class="btn-auth btn-register" style="background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%); border-color: #3b82f6;">
+                    <i class="uil uil-store"></i> Dashboard Seller
+                </a>
+            @endcan
             <form method="POST" action="{{ route('logout') }}" style="display:inline;">
                 @csrf
                 <button type="submit" class="btn-logout">
