@@ -183,15 +183,15 @@ in /Users/adrianobawan/Study/Iyan/Semester 5/Proyek Perangkat Lunak/UAS/KampuSto
                         </td>
                         <td class="px-6 py-4 text-center">
                             @if($location->total >= 20)
-                                <span class="badge badge-success">TINGGI</span>
+                                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300">TINGGI</span>
                             @elseif($location->total >= 10)
-                                <span class="badge badge-warning">SEDANG</span>
+                                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300">SEDANG</span>
                             @else
-                                <span class="badge badge-info">RENDAH</span>
+                                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300">RENDAH</span>
                             @endif
                         </td>
                         <td class="px-6 py-4 text-center">
-                            <a href="?location={{ urlencode($location->$groupBy) }}" class="btn btn-primary text-xs">
+                            <a href="?location={{ urlencode($location->$groupBy) }}" class="inline-flex items-center gap-1 px-3 py-1.5 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all shadow-sm text-xs font-medium">
                                 <i class="uil uil-eye"></i> Detail
                             </a>
                         </td>
