@@ -182,6 +182,7 @@
         .empty-state { text-align:center;padding:48px 24px; }
         .empty-state i { font-size:64px;color:var(--text-muted);margin-bottom:16px; }
         .empty-state p { color:var(--text-muted);margin-bottom:20px; }
+        .empty-state .btn-add { padding:8px 14px;font-size:13px; }
 
         /* FOOTER */
         .footer { background:var(--nav-bg);border-top:1px solid var(--card-border);padding:20px 32px;text-align:center;margin-top:auto; }
