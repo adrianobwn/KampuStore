@@ -5,8 +5,12 @@
 @push('styles')
 <style>
         /* CONTENT */
-        .page-header { margin-bottom:24px; }
-        .page-title { font-size:28px;font-weight:800;color:var(--text-main);margin-bottom:6px; }
+        .dashboard-content {
+            padding: 0;
+            margin: 0;
+        }
+        .page-header { margin-bottom:32px; }
+        .page-title { font-size:28px;font-weight:700;color:var(--text-main);margin-bottom:6px; }
         .page-subtitle { font-size:14px;color:var(--text-muted); }
 
         /* CARDS */
@@ -83,7 +87,7 @@
 @endpush
 
 @section('content')
-<div class="main-container">
+<div class="dashboard-content">
         <div class="page-header">
             <h1 class="page-title">Dashboard</h1>
             <p class="page-subtitle">Selamat datang kembali, {{ $seller->nama_pic }}!</p>
@@ -347,8 +351,7 @@
             </div>
         </div>
         @endif
-    </div>
-}</div>
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 @if(session('success'))

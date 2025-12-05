@@ -1422,6 +1422,9 @@
                         </div>
                     </div>
                 @elseif($hasSeller)
+                    @php
+                        $seller = \App\Models\Seller::where('user_id', auth()->id())->first();
+                    @endphp
                     <div class="user-dropdown" id="userDropdown">
                         <div class="user-dropdown-toggle" onclick="toggleUserDropdown()" style="background:rgba(59,130,246,0.1);border-color:rgba(59,130,246,0.3);">
                             <div class="user-avatar" style="background:linear-gradient(135deg,#3b82f6,#60a5fa);">
@@ -1430,6 +1433,36 @@
                             <div class="user-info">
                                 <span class="user-name">{{ auth()->user()->name }}</span>
                                 <span class="user-role" style="color:#3b82f6;">Penjual</span>
+                                @if($seller)
+                                <div class="user-status" style="
+                                    display:inline-flex;
+                                    align-items:center;
+                                    gap:4px;
+                                    font-size:10px;
+                                    font-weight:600;
+                                    padding:1px 6px;
+                                    border-radius:50px;
+                                    margin-top:2px;
+                                    @if($seller->status === 'approved')
+                                        background:rgba(34,197,94,0.2);
+                                        color:#22c55e;
+                                    @elseif($seller->status === 'rejected')
+                                        background:rgba(239,68,68,0.2);
+                                        color:#ef4444;
+                                    @else
+                                        background:rgba(234,179,8,0.2);
+                                        color:#eab308;
+                                    @endif
+                                ">
+                                    @if($seller->status === 'approved')
+                                        <i class="uil uil-check-circle" style="font-size:8px;"></i> Terverifikasi
+                                    @elseif($seller->status === 'rejected')
+                                        <i class="uil uil-times-circle" style="font-size:8px;"></i> Ditolak
+                                    @else
+                                        <i class="uil uil-clock" style="font-size:8px;"></i> Menunggu
+                                    @endif
+                                </div>
+                                @endif
                             </div>
                             <i class="uil uil-angle-down dropdown-arrow"></i>
                         </div>

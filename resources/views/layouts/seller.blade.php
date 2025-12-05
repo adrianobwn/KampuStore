@@ -39,21 +39,33 @@
             border-bottom:1px solid rgba(59,130,246,0.3);
             padding:12px 48px;
         }
-        .nav-container { display:flex;align-items:center;justify-content:space-between;min-height:64px;max-width:1600px;margin:0 auto; }
-        .nav-left { display:flex;align-items:center;gap:32px; }
-        .nav-logo { display:flex;align-items:center;gap:12px;text-decoration:none;group:hover transform:scale(1.05);transition:all .3s; }
+        .nav-container {
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            min-height:64px;
+            max-width:1600px;
+            margin:0 auto;
+            gap:32px;
+        }
+        .nav-left { display:flex;align-items:center;gap:32px;flex:1; }
+        .nav-logo { display:flex;align-items:center;gap:12px;text-decoration:none;transition:all .3s; }
+        .nav-logo:hover { transform:scale(1.05); }
         .nav-logo-icon { width:40px;height:40px;background:linear-gradient(135deg,#3b82f6,#60a5fa);border-radius:8px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(59,130,246,0.3); }
         .nav-logo-icon i { color:white;font-size:20px; }
         .nav-logo img { height:36px;width:36px; }
         .nav-logo-text { font-size:20px;font-weight:700;background:linear-gradient(135deg,#3b82f6,#60a5fa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; }
+
         .nav-menu { display:flex;gap:4px;align-items:center;flex:1; }
         .nav-item { position:relative; }
-        .nav-link { 
+        .nav-link {
             display:inline-flex;align-items:center;gap:6px;color:var(--text-muted);font-size:14px;font-weight:500;
             text-decoration:none;transition:all .2s;padding:8px 14px;border-radius:8px;white-space:nowrap;
         }
         .nav-link:hover, .nav-link.active { color:var(--accent);background:rgba(249,115,22,0.1); }
         .nav-link i { font-size:16px; }
+
+        .nav-right { display:flex;align-items:center;gap:16px; }
         .dropdown { position:relative; }
         .dropdown-toggle::after { content:'▾';margin-left:4px;font-size:12px; }
         .dropdown-menu {
@@ -71,17 +83,67 @@
         }
         .dropdown-item:hover { background:rgba(249,115,22,0.1);color:var(--accent); }
         .dropdown-item i { font-size:16px;width:20px;text-align:center; }
-        .nav-center { display:flex;align-items:center;gap:20px;margin-right:24px; }
+
         .shop-badge {
-            display:flex;align-items:center;gap:10px;padding:6px 16px;border-radius:50px;
-            background:rgba(249,115,22,0.1);border:1px solid rgba(249,115,22,0.3);
+            display:flex;
+            flex-direction:column;
+            align-items:flex-end;
+            gap:2px;
+            padding:6px 12px;
+            border-radius:8px;
+            background:rgba(249,115,22,0.05);
+            border:1px solid rgba(249,115,22,0.1);
+            min-width:140px;
         }
-        .shop-badge-name { font-size:14px;font-weight:600;color:var(--text-main); }
-        .shop-badge-status { display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;padding:2px 8px;border-radius:50px; }
-        .shop-badge-status.approved { background:rgba(34,197,94,0.2);color:#22c55e; }
-        .shop-badge-status.pending { background:rgba(234,179,8,0.2);color:#eab308; }
-        .shop-badge-status.rejected { background:rgba(239,68,68,0.2);color:#ef4444; }
+        .shop-badge-name {
+            font-size:13px;
+            font-weight:600;
+            color:var(--text-main);
+            text-align:right;
+            line-height:1.2;
+        }
+        .shop-badge-status {
+            display:inline-flex;
+            align-items:center;
+            gap:4px;
+            font-size:10px;
+            font-weight:500;
+            padding:2px 8px;
+            border-radius:50px;
+            line-height:1;
+        }
+        .shop-badge-status.approved {
+            background:rgba(34,197,94,0.15);
+            color:#22c55e;
+            border:1px solid rgba(34,197,94,0.2);
+        }
+        .shop-badge-status.pending {
+            background:rgba(234,179,8,0.15);
+            color:#eab308;
+            border:1px solid rgba(234,179,8,0.2);
+        }
+        .shop-badge-status.rejected {
+            background:rgba(239,68,68,0.15);
+            color:#ef4444;
+            border:1px solid rgba(239,68,68,0.2);
+        }
+        .shop-badge-status i {
+            font-size:10px;
+        }
         .nav-actions { display:flex;align-items:center;gap:16px; }
+
+        /* Logout Button */
+        .btn-logout {
+            display:flex;align-items:center;gap:6px;
+            padding:8px 16px;border-radius:8px;
+            background:rgba(239,68,68,0.1);color:#ef4444;
+            font-size:14px;font-weight:500;cursor:pointer;
+            transition:all .2s;border:1px solid rgba(239,68,68,0.3);
+        }
+        .btn-logout:hover {
+            background:rgba(239,68,68,0.2);
+            border-color:rgba(239,68,68,0.5);
+        }
 
         /* Toggle */
         .theme-toggle-wrapper{display:flex;justify-content:center;align-items:center;}
@@ -162,7 +224,12 @@
         .user-dropdown .dropdown-item.logout:hover{background:rgba(239,68,68,0.1);color:#ef4444;}
 
         /* LAYOUT - FULL WIDTH */
-        .main-container { max-width:1400px;margin:0 auto;padding:85px 48px 40px; }
+        .main-container {
+            max-width:1400px;
+            margin:0 auto;
+            padding:75px 48px 40px;
+            min-height:calc(100vh - 75px);
+        }
         
         .btn-add {
             display:inline-flex;align-items:center;gap:6px;padding:8px 16px;
@@ -186,18 +253,24 @@
             .shop-badge-name { font-size:12px; }
         }
         @media(max-width:900px) {
-            .nav { flex-wrap:wrap;padding:10px 20px; }
-            .nav-center { order:3;width:100%;margin-top:10px;justify-content:center; }
-            .shop-badge { width:100%;justify-content:center; }
-            .dropdown-menu { right:0;left:auto; }
+            .nav { padding:10px 20px; }
+            .nav-container {
+                flex-direction:column;
+                gap:8px;
+            }
+            .nav-left { width:100%;justify-content:space-between; }
+            .nav-menu { order:2;width:100%;justify-content:center;flex-wrap:wrap; }
+            .nav-right { width:100%;justify-content:center; }
+            .shop-badge-name { display:none; }
         }
         @media(max-width:600px) {
+            .nav { padding:8px 16px; }
             .nav-logo span { display:none; }
             .nav-link span { display:none; }
             .nav-link { padding:6px 8px; }
-            .btn-market span { display:none; }
+            .shop-badge-name { display:none; }
             .btn-logout span { display:none; }
-            .btn-market, .btn-logout { padding:6px 10px; }
+            .theme-toggle-wrapper { transform: scale(0.85); }
         }
     </style>
     @stack('styles')
@@ -207,48 +280,64 @@
 {{-- NAVBAR --}}
 <nav class="nav">
     <div class="nav-container">
+        <!-- Left: Logo & Menu -->
         <div class="nav-left">
             <a href="{{ route('seller.dashboard') }}" class="nav-logo">
-                <div class="nav-logo-icon">
-                    <i class="uil uil-store"></i>
-                </div>
-                <span class="nav-logo-text">kampuStore Seller</span>
+                <img src="{{ asset('images/logo.png') }}" alt="kampuStore logo">
+                <span class="nav-logo-text">kampuStore</span>
             </a>
+
             <div class="nav-menu">
                 <div class="nav-item">
-                    <a href="{{ route('seller.dashboard') }}" class="nav-link {{ request()->routeIs('seller.*') ? 'active' : '' }}" style="color:#3b82f6;font-weight:600">
-                        <i class="uil uil-dashboard"></i> <span>Dashboard</span>
+                    <a href="{{ route('seller.dashboard') }}" class="nav-link {{ request()->routeIs('seller.dashboard') ? 'active' : '' }}">
+                        <i class="uil uil-dashboard"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="{{ route('seller.products.index') }}" class="nav-link {{ request()->routeIs('seller.products*') ? 'active' : '' }}">
+                        <i class="uil uil-box"></i>
+                        <span>Produk</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="{{ route('seller.reports.stock') }}" class="nav-link {{ request()->routeIs('seller.reports*') ? 'active' : '' }}">
+                        <i class="uil uil-chart-bar"></i>
+                        <span>Laporan</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="{{ route('seller.notifications.index') }}" class="nav-link {{ request()->routeIs('seller.notifications*') ? 'active' : '' }}">
+                        <i class="uil uil-bell"></i>
+                        <span>Notifikasi</span>
                     </a>
                 </div>
                 <div class="nav-item">
                     <a href="{{ route('home') }}" class="nav-link">
-                        <span>Home</span>
-                    </a>
-                </div>
-                <div class="nav-item">
-                    <a href="{{ route('home') }}#features" class="nav-link">
-                        <span>Features</span>
-                    </a>
-                </div>
-                <div class="nav-item">
-                    <a href="{{ route('products.index') }}" class="nav-link">
-                        <span>Market</span>
-                    </a>
-                </div>
-                <div class="nav-item">
-                    <a href="{{ route('home') }}#about" class="nav-link">
-                        <span>About</span>
-                    </a>
-                </div>
-                <div class="nav-item">
-                    <a href="{{ route('home') }}#contact" class="nav-link">
-                        <span>Contact</span>
+                        <i class="uil uil-home"></i>
+                        <span>Beranda</span>
                     </a>
                 </div>
             </div>
         </div>
-        
-        <div class="nav-actions">
+
+        <!-- Right: Actions -->
+        <div class="nav-right">
+            <!-- Shop Status -->
+            <div class="shop-badge">
+                <div class="shop-badge-name">{{ auth()->user()->seller->nama_toko ?? 'Seller' }}</div>
+                <div class="shop-badge-status {{ auth()->user()->seller->status }}">
+                    @if(auth()->user()->seller->status === 'approved')
+                        <i class="uil uil-check-circle"></i> Terverifikasi
+                    @elseif(auth()->user()->seller->status === 'rejected')
+                        <i class="uil uil-times-circle"></i> Ditolak
+                    @else
+                        <i class="uil uil-clock"></i> Menunggu
+                    @endif
+                </div>
+            </div>
+
+            <!-- Theme Toggle -->
             <div class="theme-toggle-wrapper">
                 <label class="toggle-switch">
                     <input type="checkbox" class="js-theme-toggle" />
@@ -261,47 +350,14 @@
                 </label>
             </div>
 
-            <div class="user-dropdown" id="userDropdown">
-                <div class="user-dropdown-toggle" onclick="toggleUserDropdown()">
-                    <div class="user-avatar">
-                        <i class="uil uil-store"></i>
-                    </div>
-                    <div class="user-info">
-                        <span class="user-name">{{ auth()->user()->name }}</span>
-                        <span class="user-role">Penjual</span>
-                    </div>
-                    <i class="uil uil-angle-down dropdown-arrow"></i>
-                </div>
-                <div class="user-dropdown-menu">
-                    <div class="dropdown-header">
-                        <div class="dropdown-header-name">{{ auth()->user()->name }}</div>
-                        <div class="dropdown-header-email">{{ auth()->user()->email }}</div>
-                    </div>
-                    <a href="{{ route('seller.dashboard') }}" class="dropdown-item">
-                        <i class="uil uil-dashboard"></i> Dashboard
-                    </a>
-                    <a href="{{ route('seller.products.index') }}" class="dropdown-item">
-                        <i class="uil uil-box"></i> Produk Saya
-                    </a>
-                    <a href="{{ route('seller.reports.stock') }}" class="dropdown-item">
-                        <i class="uil uil-chart-bar"></i> Laporan
-                    </a>
-                    <div class="dropdown-divider"></div>
-                    <a href="{{ route('home') }}" class="dropdown-item">
-                        <i class="uil uil-home"></i> Home
-                    </a>
-                    <a href="{{ route('products.index') }}" class="dropdown-item">
-                        <i class="uil uil-shopping-cart"></i> Market
-                    </a>
-                    <div class="dropdown-divider"></div>
-                    <form method="POST" action="{{ route('logout') }}" style="margin:0;">
-                        @csrf
-                        <button type="submit" class="dropdown-item logout" style="width:100%;border:none;background:none;">
-                            <i class="uil uil-sign-out-alt"></i> Logout
-                        </button>
-                    </form>
-                </div>
-            </div>
+            <!-- Logout Button -->
+            <form method="POST" action="{{ route('logout') }}" style="margin:0;">
+                @csrf
+                <button type="submit" class="btn-logout">
+                    <i class="uil uil-sign-out-alt"></i>
+                    <span>Logout</span>
+                </button>
+            </form>
         </div>
     </div>
 </nav>
@@ -333,44 +389,7 @@
         });
     });
 
-    // Dropdown Menu
-    document.querySelectorAll('.dropdown').forEach(dropdown => {
-        const toggle = dropdown.querySelector('.dropdown-toggle');
-        const menu = dropdown.querySelector('.dropdown-menu');
-        
-        toggle.addEventListener('click', (e) => {
-            e.preventDefault();
-            const isOpen = menu.style.display === 'block';
-            
-            // Close all dropdowns
-            document.querySelectorAll('.dropdown-menu').forEach(m => m.style.display = 'none');
-            
-            // Toggle current
-            menu.style.display = isOpen ? 'none' : 'block';
-        });
-    });
-
-    // Close dropdown when clicking outside
-    document.addEventListener('click', (e) => {
-        if (!e.target.closest('.dropdown')) {
-            document.querySelectorAll('.dropdown-menu').forEach(m => m.style.display = 'none');
-        }
-    });
-
-    // User Dropdown Toggle
-    function toggleUserDropdown() {
-        const dropdown = document.getElementById('userDropdown');
-        dropdown.classList.toggle('open');
-    }
-
-    // Close user dropdown when clicking outside
-    document.addEventListener('click', function(e) {
-        const dropdown = document.getElementById('userDropdown');
-        if (dropdown && !dropdown.contains(e.target)) {
-            dropdown.classList.remove('open');
-        }
-    });
-</script>
+    </script>
 
 @stack('scripts')
 
