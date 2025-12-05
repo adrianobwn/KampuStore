@@ -131,22 +131,25 @@
         .nav-logo img{height:36px;width:36px;display:block;}
         body.theme-light .nav-logo{color:#111827;}
 
-        .nav-menu{display:flex;gap:4px;align-items:center;flex:1;}
-        .nav-item{position:relative;}
+        .nav-menu{display:flex;gap:28px;align-items:center;font-size:14px;}
         .nav-menu a{
             color:var(--nav-link-color);
-            display:inline-flex;
-            align-items:center;
-            gap:6px;
+            position:relative;
             transition:color .3s ease;
-            padding:8px 14px;
-            border-radius:8px;
             text-decoration:none;
-            font-size:14px;
-            font-weight:500;
         }
-        .nav-menu a:hover{color:#f97316;background:rgba(249,115,22,0.1);}
+        .nav-menu a::after{
+            content:'';position:absolute;left:0;bottom:-4px;
+            height:2px;width:100%;background:#f97316;
+            border-radius:999px;transform:scaleX(0);
+            transform-origin:left;opacity:0;
+            transition:transform .25s ease-out, opacity .2s ease-out;
+        }
+        .nav-menu a:hover{color:#f97316;}
+        .nav-menu a:hover::after{transform:scaleX(1);opacity:1;}
         .nav-menu a.active{color:#f97316;font-weight:600;}
+        .nav-menu a.active::after{transform:scaleX(1);opacity:1;}
+        .nav-divider{color:var(--nav-link-color);opacity:0.3;}
         .nav-right{display:flex;align-items:center;justify-content:flex-end;gap:16px;}
         .nav-actions{display:flex;align-items:center;gap:12px;}
 
@@ -463,30 +466,32 @@
             .nav{padding:14px 24px;}
             .main-content{padding:100px 24px 32px;}
             .nav-left{gap:16px;}
-            .nav-menu{gap:2px;flex-wrap:nowrap;overflow-x:auto;}
-            .nav-menu a{padding:6px 10px;font-size:13px;white-space:nowrap;}
-            .admin-badge{padding:4px 12px;}
-            .admin-badge-name{font-size:12px;}
+            .nav-menu{gap:16px;font-size:13px;}
         }
         @media(max-width:900px){
-            .nav{padding:10px 20px;}
-            .nav-container{
-                flex-direction:column;
-                gap:8px;
-            }
+            .nav{padding:12px 18px;flex-wrap:wrap;gap:12px;}
+            .nav-container{flex-direction:column;gap:8px;}
             .nav-left{width:100%;justify-content:space-between;}
-            .nav-menu{order:2;width:100%;justify-content:center;flex-wrap:wrap;}
+            .nav-menu{
+                order:3;
+                width:100%;
+                justify-content:center;
+                gap:12px;
+                font-size:13px;
+                padding-top:8px;
+                border-top:1px solid rgba(148,163,184,0.1);
+            }
             .nav-right{width:100%;justify-content:center;}
-            .admin-badge-name{display:none;}
+            .nav-actions{gap:12px;}
+            .main-content{padding:160px 18px 32px;}
         }
         @media(max-width:640px){
-            .nav{padding:12px 16px;}
-            .main-content{padding:90px 16px 24px;}
+            .nav{padding:10px 16px;}
+            .main-content{padding:120px 16px 24px;}
+            .nav-menu{display:none;}
             .nav-logo span{display:none;}
-            .nav-menu a span{display:none;}
-            .nav-menu a{padding:6px 8px;}
-            .admin-badge-name{display:none;}
-            .btn-logout span{display:none;}
+            .user-name{display:none;}
+            .user-dropdown-toggle{padding:8px 12px;}
             .theme-toggle-wrapper{transform:scale(0.85);}
         }
 
@@ -583,41 +588,20 @@
             </a>
 
             <div class="nav-menu">
-                <div class="nav-item">
-                    <a href="{{ route('admin.dashboard') }}" class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
-                        <i class="uil uil-dashboard"></i>
-                        <span>Dashboard</span>
-                    </a>
-                </div>
-                <div class="nav-item">
-                    <a href="{{ route('admin.reports.index') }}" class="nav-link {{ request()->routeIs('admin.reports*') ? 'active' : '' }}">
-                        <i class="uil uil-chart-bar"></i>
-                        <span>Laporan</span>
-                    </a>
-                </div>
-                <div class="nav-item">
-                    <a href="{{ route('admin.sellers.index') }}" class="nav-link {{ request()->routeIs('admin.sellers*') ? 'active' : '' }}">
-                        <i class="uil uil-folder-open"></i>
-                        <span>Pengajuan Toko</span>
-                    </a>
-                </div>
-                <div class="nav-item">
-                    <a href="{{ route('home') }}" class="nav-link">
-                        <i class="uil uil-home"></i>
-                        <span>Beranda</span>
-                    </a>
-                </div>
+                <a href="{{ route('home') }}">Home</a>
+                <a href="{{ route('home') }}#features">Features</a>
+                <a href="{{ route('products.index') }}">Market</a>
+                <a href="{{ route('home') }}#about">About</a>
+                <a href="{{ route('home') }}#contact">Contact</a>
+                <span class="nav-divider">|</span>
+                <a href="{{ route('admin.dashboard') }}" class="{{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
+                    <i class="uil uil-dashboard"></i> Dashboard
+                </a>
             </div>
         </div>
 
         <!-- Right: Actions -->
         <div class="nav-right">
-            <!-- Admin Badge -->
-            <div class="admin-badge">
-                <i class="uil uil-shield-check"></i>
-                <span class="admin-badge-name">Admin</span>
-            </div>
-
             <!-- Theme Toggle -->
             <div class="theme-toggle-wrapper">
                 <label class="toggle-switch">
@@ -635,14 +619,48 @@
                 </label>
             </div>
 
-            <!-- Logout Button -->
-            <form method="POST" action="{{ route('logout') }}" style="margin:0;">
-                @csrf
-                <button type="submit" class="btn-logout">
-                    <i class="uil uil-sign-out-alt"></i>
-                    <span>Logout</span>
-                </button>
-            </form>
+            <!-- User Account Dropdown -->
+            <div class="user-dropdown" id="userDropdown">
+                <div class="user-dropdown-toggle" onclick="toggleUserDropdown()">
+                    <div class="user-avatar">
+                        <i class="uil uil-shield-check"></i>
+                    </div>
+                    <div class="user-info">
+                        <span class="user-name">{{ auth()->user()->name }}</span>
+                        <span class="user-role">Administrator</span>
+                    </div>
+                    <i class="uil uil-angle-down dropdown-arrow"></i>
+                </div>
+                <div class="user-dropdown-menu">
+                    <div class="dropdown-header">
+                        <div class="dropdown-header-name">{{ auth()->user()->name }}</div>
+                        <div class="dropdown-header-email">{{ auth()->user()->email }}</div>
+                    </div>
+                    <a href="{{ route('admin.dashboard') }}" class="dropdown-item">
+                        <i class="uil uil-dashboard"></i> Dashboard
+                    </a>
+                    <a href="{{ route('admin.sellers.index') }}" class="dropdown-item">
+                        <i class="uil uil-folder-open"></i> Pengajuan Toko
+                    </a>
+                    <a href="{{ route('admin.reports.index') }}" class="dropdown-item">
+                        <i class="uil uil-chart-bar"></i> Laporan
+                    </a>
+                    <div class="dropdown-divider"></div>
+                    <a href="{{ route('home') }}" class="dropdown-item">
+                        <i class="uil uil-home"></i> Beranda
+                    </a>
+                    <a href="{{ route('products.index') }}" class="dropdown-item">
+                        <i class="uil uil-shopping-cart"></i> Market
+                    </a>
+                    <div class="dropdown-divider"></div>
+                    <form method="POST" action="{{ route('logout') }}" style="margin:0;">
+                        @csrf
+                        <button type="submit" class="dropdown-item logout" style="width:100%;border:none;background:none;cursor:pointer;">
+                            <i class="uil uil-sign-out-alt"></i> Logout
+                        </button>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
 </nav>
@@ -689,6 +707,17 @@
         }
     })();
 
+    function toggleUserDropdown() {
+        const dropdown = document.getElementById('userDropdown');
+        if (dropdown) dropdown.classList.toggle('open');
+    }
+
+    document.addEventListener('click', function(e) {
+        const dropdown = document.getElementById('userDropdown');
+        if (dropdown && !dropdown.contains(e.target)) {
+            dropdown.classList.remove('open');
+        }
+    });
     </script>
 
 @if(session('success'))

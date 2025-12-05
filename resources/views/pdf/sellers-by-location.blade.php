@@ -37,81 +37,30 @@
     @endif
 </div>
 
-<h3 style="margin-bottom: 15px; color: #f97316;">📍 Distribusi Toko per Provinsi</h3>
 <table>
     <thead>
         <tr>
             <th style="width:5%">No</th>
-            <th style="width:25%">Provinsi</th>
-            <th style="width:15%">Jumlah Toko</th>
-            <th style="width:15%">Persentase</th>
-            <th style="width:15%">Status</th>
-            <th style="width:25%">Aksi</th>
+            <th style="width:35%">Nama Toko</th>
+            <th style="width:30%">Nama PIC</th>
+            <th style="width:30%">Propinsi</th>
         </tr>
     </thead>
     <tbody>
-        @forelse($sellersByLocation as $index => $loc)
-        <tr @if($selectedLocation === $loc->provinsi) class="highlight-row" @endif>
+        @forelse($allSellers ?? $sellersDetail ?? collect() as $index => $seller)
+        <tr>
             <td class="text-center">{{ $index + 1 }}</td>
-            <td><strong>{{ $loc->provinsi ?? '-' }}</strong></td>
-            <td class="text-center">{{ $loc->total }} toko</td>
-            <td class="text-center">{{ $totalSellers > 0 ? round(($loc->total / $totalSellers) * 100, 1) : 0 }}%</td>
-            <td class="text-center">
-                @if($loc->total >= 10)
-                    <span class="badge badge-success">Tinggi</span>
-                @elseif($loc->total >= 5)
-                    <span class="badge badge-warning">Sedang</span>
-                @else
-                    <span class="badge badge-info">Rendah</span>
-                @endif
-            </td>
-            <td class="text-center">
-                {{ number_format($loc->total / $totalSellers * 100, 1) }}% dari total
-            </td>
+            <td><strong>{{ $seller->nama_toko }}</strong></td>
+            <td>{{ $seller->nama_pic }}</td>
+            <td>{{ $seller->provinsi }}</td>
         </tr>
         @empty
         <tr>
-            <td colspan="6" class="no-data">Tidak ada data toko aktif per provinsi</td>
+            <td colspan="4" class="no-data">Tidak ada data toko aktif</td>
         </tr>
         @endforelse
     </tbody>
 </table>
-
-@if($sellersDetail && $sellersDetail->count() > 0)
-<div class="page-break"></div>
-
-<div class="info-box">
-    <p><strong>Detail Toko di Provinsi:</strong> {{ $selectedLocation }}</p>
-    <p><strong>Jumlah Toko:</strong> {{ $sellersDetail->count() }}</p>
-    <p><strong>Filter:</strong> Hanya toko dengan status AKTIF</p>
-</div>
-
-<h3 style="margin-bottom: 15px; color: #f97316;">📋 Daftar Detail Toko</h3>
-<table>
-    <thead>
-        <tr>
-            <th style="width:5%">No</th>
-            <th style="width:25%">Nama Toko</th>
-            <th style="width:18%">Nama PIC</th>
-            <th style="width:18%">Email PIC</th>
-            <th style="width:14%">No HP PIC</th>
-            <th style="width:20%">Kota</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach($sellersDetail as $index => $seller)
-        <tr class="highlight-row">
-            <td class="text-center">{{ $index + 1 }}</td>
-            <td><strong>{{ $seller->nama_toko }}</strong></td>
-            <td>{{ $seller->nama_pic }}</td>
-            <td>{{ $seller->email_pic }}</td>
-            <td class="text-center">{{ $seller->no_hp_pic }}</td>
-            <td>{{ $seller->kota }}</td>
-        </tr>
-        @endforeach
-    </tbody>
-</table>
-@endif
 
 @if($sellersByLocation->count() > 0)
 <div class="page-break"></div>

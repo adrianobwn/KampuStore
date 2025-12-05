@@ -56,10 +56,8 @@
     <div class="divider"></div>
 
     <!-- Quick Actions -->
-    <div class="card">
-        <div class="card-header">
-            <h2 class="card-title">Aksi Cepat</h2>
-        </div>
+    <div class="mb-6 sm:mb-8">
+        <h2 class="text-lg sm:text-xl font-bold mb-4" style="color:var(--text-main)">Aksi Cepat</h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             <a href="{{ route('admin.sellers.index') }}" class="action-card">
                 <div style="display:flex;align-items:center;gap:16px">
@@ -92,10 +90,8 @@
     </div>
 
     <!-- Stats Overview -->
-    <div class="card">
-        <div class="card-header">
-            <h2 class="card-title">Statistik Pengajuan</h2>
-        </div>
+    <div class="mb-6 sm:mb-8">
+        <h2 class="text-lg sm:text-xl font-bold mb-4" style="color:var(--text-main)">Statistik Pengajuan</h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             <div class="stat-card">
                 <div class="flex items-center justify-between mb-3">
@@ -136,10 +132,8 @@
     </div>
 
     <!-- Charts Row 1 -->
-    <div class="card">
-        <div class="card-header">
-            <h2 class="card-title">Statistik Pengguna</h2>
-        </div>
+    <div class="mb-6 sm:mb-8">
+        <h2 class="text-lg sm:text-xl font-bold mb-4" style="color:var(--text-main)">Statistik Pengguna</h2>
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
             <!-- Seller Statistics -->
             <div class="card p-4 sm:p-6">

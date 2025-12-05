@@ -38,28 +38,30 @@
     <thead>
         <tr>
             <th style="width:5%">No</th>
-            <th style="width:20%">Nama Toko</th>
-            <th style="width:15%">Nama PIC</th>
-            <th style="width:15%">Email PIC</th>
-            <th style="width:15%">No HP PIC</th>
-            <th style="width:15%">Kota</th>
-            <th style="width:15%">Provinsi</th>
+            <th style="width:25%">Nama User</th>
+            <th style="width:25%">Nama PIC</th>
+            <th style="width:30%">Nama Toko</th>
+            <th style="width:15%">Status</th>
         </tr>
     </thead>
     <tbody>
         @forelse($sellers as $index => $seller)
         <tr @if($seller->status === 'approved') class="highlight-row" @endif>
             <td class="text-center">{{ $index + 1 }}</td>
-            <td><strong>{{ $seller->nama_toko }}</strong></td>
+            <td>{{ $seller->user->name ?? '-' }}</td>
             <td>{{ $seller->nama_pic }}</td>
-            <td>{{ $seller->email_pic }}</td>
-            <td class="text-center">{{ $seller->no_hp_pic }}</td>
-            <td>{{ $seller->kota }}</td>
-            <td>{{ $seller->provinsi }}</td>
+            <td><strong>{{ $seller->nama_toko }}</strong></td>
+            <td class="text-center">
+                @if($seller->status === 'approved')
+                    Aktif
+                @else
+                    Tidak Aktif
+                @endif
+            </td>
         </tr>
         @empty
         <tr>
-            <td colspan="7" class="no-data">Tidak ada data penjual tersedia</td>
+            <td colspan="5" class="no-data">Tidak ada data penjual tersedia</td>
         </tr>
         @endforelse
     </tbody>

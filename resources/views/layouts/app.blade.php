@@ -270,14 +270,34 @@
         .footer strong{color:#f97316;font-weight:700;}
 
         /* ===================== RESPONSIVE ===================== */
-        @media(max-width:900px){
-            .nav{padding:14px 18px;}
-            .nav-left{gap:18px;}
-            .nav-menu{gap:18px;font-size:13px;}
+        @media(max-width:1024px){
+            .nav{padding:14px 24px;}
+            .nav-left{gap:16px;}
+            .nav-menu{gap:16px;font-size:13px;}
         }
-        @media(max-width:768px){
-            .nav{flex-wrap:wrap;gap:12px;}
-            .container{margin-top:140px;padding:0 16px;}
+        @media(max-width:900px){
+            .nav{padding:12px 18px;flex-wrap:wrap;gap:12px;}
+            .nav-left{width:100%;justify-content:space-between;}
+            .nav-menu{
+                order:3;
+                width:100%;
+                justify-content:center;
+                gap:12px;
+                font-size:13px;
+                padding-top:8px;
+                border-top:1px solid rgba(148,163,184,0.1);
+            }
+            .nav-actions{gap:12px;}
+            .container{margin-top:160px;padding:0 18px;}
+        }
+        @media(max-width:640px){
+            .nav{padding:10px 16px;}
+            .nav-menu{display:none;}
+            .nav-logo span{display:none;}
+            .user-name{display:none;}
+            .user-dropdown-toggle{padding:8px 12px;}
+            .theme-toggle-wrapper{transform:scale(0.85);}
+            .container{margin-top:120px;padding:0 16px;}
         }
     </style>
 </head>
@@ -317,7 +337,8 @@
             </div>
 
             @php
-                $hasSeller = \App\Models\Seller::where('user_id', auth()->id())->exists();
+                $seller = \App\Models\Seller::where('user_id', auth()->id())->first();
+                $hasSeller = $seller !== null;
             @endphp
 
             @if(auth()->user()->is_admin)
@@ -369,14 +390,25 @@
                             <i class="uil uil-store"></i>
                         </div>
                         <div class="user-info">
-                            <span class="user-name">{{ auth()->user()->name }}</span>
-                            <span class="user-role" style="color:#3b82f6;">Penjual</span>
+                            <span class="user-name">{{ $seller->nama_toko ?? 'Toko' }}</span>
+                            <span class="user-role" style="display:inline-flex;align-items:center;gap:4px;font-size:11px;
+                                @if($seller->status === 'approved') color:#22c55e;
+                                @elseif($seller->status === 'rejected') color:#ef4444;
+                                @else color:#eab308; @endif">
+                                @if($seller->status === 'approved')
+                                    <i class="uil uil-check-circle" style="font-size:12px;"></i> Terverifikasi
+                                @elseif($seller->status === 'rejected')
+                                    <i class="uil uil-times-circle" style="font-size:12px;"></i> Ditolak
+                                @else
+                                    <i class="uil uil-clock" style="font-size:12px;"></i> Menunggu
+                                @endif
+                            </span>
                         </div>
                         <i class="uil uil-angle-down dropdown-arrow"></i>
                     </div>
                     <div class="user-dropdown-menu">
                         <div class="dropdown-header">
-                            <div class="dropdown-header-name">{{ auth()->user()->name }}</div>
+                            <div class="dropdown-header-name">{{ $seller->nama_toko ?? 'Toko' }}</div>
                             <div class="dropdown-header-email">{{ auth()->user()->email }}</div>
                         </div>
                         <a href="{{ route('seller.dashboard') }}" class="dropdown-item">

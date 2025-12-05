@@ -56,13 +56,7 @@
             <td><strong>{{ $product->name }}</strong></td>
             <td>{{ ucfirst(str_replace('-', ' ', $product->category_slug ?? '-')) }}</td>
             <td class="text-right">Rp {{ number_format($product->price ?? 0, 0, ',', '.') }}</td>
-            <td class="text-center">
-                @if($product->stock == 0)
-                    <span class="badge badge-danger">HABIS</span>
-                @else
-                    <span class="badge badge-warning">{{ $product->stock }}</span>
-                @endif
-            </td>
+            <td class="text-center">{{ $product->stock }}</td>
         </tr>
         @empty
         <tr>

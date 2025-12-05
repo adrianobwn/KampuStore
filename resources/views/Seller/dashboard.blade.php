@@ -87,6 +87,25 @@
         .empty-state i { font-size:64px;color:var(--text-muted);margin-bottom:16px; }
         .empty-state p { color:var(--text-muted);margin-bottom:20px; }
         .empty-state .btn-add { padding:6px 12px;font-size:12px; }
+
+        .action-card {
+            background:var(--card-bg);
+            border:1px solid var(--card-border);
+            border-radius:16px;
+            padding:20px;
+            transition:all 0.3s;
+            text-decoration:none;
+            display:block;
+        }
+        .action-card:hover {
+            transform:translateY(-4px);
+            box-shadow:0 20px 40px rgba(0,0,0,0.2);
+            border-color:var(--accent);
+        }
+        .mb-6 { margin-bottom:24px; }
+        .text-lg { font-size:18px; }
+        .font-bold { font-weight:700; }
+        .mb-4 { margin-bottom:16px; }
     </style>
 @endpush
 
@@ -116,7 +135,53 @@
         @endif
 
         @if($seller->status === 'approved')
+        {{-- Aksi Cepat --}}
+        <div class="mb-6">
+            <h2 class="text-lg font-bold mb-4" style="color:var(--text-main)">Aksi Cepat</h2>
+            <div class="grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;">
+                <a href="{{ route('seller.products.create') }}" class="action-card">
+                    <div style="display:flex;align-items:center;gap:16px">
+                        <div class="stat-icon orange" style="width:48px;height:48px;font-size:20px;"><i class="uil uil-plus-circle"></i></div>
+                        <div>
+                            <h3 style="font-weight:700;font-size:14px;color:var(--text-main);margin-bottom:4px;">Tambah Produk</h3>
+                            <p style="font-size:12px;color:var(--text-muted);">Upload produk baru ke toko</p>
+                        </div>
+                    </div>
+                </a>
+                <a href="{{ route('seller.products.index') }}" class="action-card">
+                    <div style="display:flex;align-items:center;gap:16px">
+                        <div class="stat-icon blue" style="width:48px;height:48px;font-size:20px;"><i class="uil uil-box"></i></div>
+                        <div>
+                            <h3 style="font-weight:700;font-size:14px;color:var(--text-main);margin-bottom:4px;">Kelola Produk</h3>
+                            <p style="font-size:12px;color:var(--text-muted);">Edit dan atur stok produk</p>
+                        </div>
+                    </div>
+                </a>
+                <a href="{{ route('seller.reports.index') }}" class="action-card">
+                    <div style="display:flex;align-items:center;gap:16px">
+                        <div class="stat-icon green" style="width:48px;height:48px;font-size:20px;"><i class="uil uil-chart-bar"></i></div>
+                        <div>
+                            <h3 style="font-weight:700;font-size:14px;color:var(--text-main);margin-bottom:4px;">Lihat Laporan</h3>
+                            <p style="font-size:12px;color:var(--text-muted);">Statistik dan performa toko</p>
+                        </div>
+                    </div>
+                </a>
+                <a href="{{ route('products.index') }}" class="action-card">
+                    <div style="display:flex;align-items:center;gap:16px">
+                        <div class="stat-icon yellow" style="width:48px;height:48px;font-size:20px;"><i class="uil uil-shopping-cart"></i></div>
+                        <div>
+                            <h3 style="font-weight:700;font-size:14px;color:var(--text-main);margin-bottom:4px;">Lihat Market</h3>
+                            <p style="font-size:12px;color:var(--text-muted);">Jelajahi marketplace</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+
         {{-- Stats --}}
+        <div class="mb-6">
+            <h2 class="text-lg font-bold mb-4" style="color:var(--text-main)">Statistik Toko</h2>
+        </div>
         <div class="stats-grid">
             <div class="stat-card">
                 <div class="stat-icon blue"><i class="uil uil-package"></i></div>

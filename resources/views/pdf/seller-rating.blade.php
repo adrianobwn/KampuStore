@@ -1,16 +1,15 @@
 @extends('pdf.layout')
 
 @section('content')
-<h3 style="margin-bottom: 20px; color: #f97316;">Laporan Rating Produk</h3>
 <table>
     <thead>
         <tr>
             <th style="width:5%">No</th>
-            <th style="width:40%">Nama Produk</th>
-            <th style="width:18%">Kategori</th>
-            <th style="width:17%">Harga</th>
-            <th style="width:10%">Stok</th>
-            <th style="width:10%">Rating</th>
+            <th style="width:30%">Produk</th>
+            <th style="width:20%">Kategori</th>
+            <th style="width:20%">Harga</th>
+            <th style="width:12%">Stock</th>
+            <th style="width:13%">Rating</th>
         </tr>
     </thead>
     <tbody>
@@ -23,9 +22,9 @@
             <td class="text-center">{{ $product->stock }}</td>
             <td class="text-center">
                 @if($product->avg_rating > 0)
-                    {{ number_format($product->avg_rating, 1) }} ★ ({{ $product->review_count ?? 0 }})
+                    {{ number_format($product->avg_rating, 1) }}
                 @else
-                    - (0)
+                    -
                 @endif
             </td>
         </tr>
@@ -36,10 +35,4 @@
         @endforelse
     </tbody>
 </table>
-
-@if($products->count() > 0)
-<p style="margin-top: 20px; font-size: 12px; color: #6b7280;">
-    Total: {{ $products->count() }} produk | Rata-rata Rating: {{ $products->count() > 0 ? number_format($products->avg('avg_rating'), 1) : '0' }} ★
-</p>
-@endif
 @endsection

@@ -51,11 +51,9 @@
             <td><strong>{{ $seller->nama_toko }}</strong></td>
             <td class="text-center">
                 @if($seller->status == 'approved')
-                    <span class="badge badge-success">Aktif</span>
-                @elseif($seller->status == 'pending')
-                    <span class="badge badge-warning">Pending</span>
+                    Aktif
                 @else
-                    <span class="badge badge-danger">Tidak Aktif</span>
+                    Tidak Aktif
                 @endif
             </td>
         </tr>

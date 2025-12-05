@@ -1315,26 +1315,43 @@
         }
 
         /* RESPONSIVE UTAMA */
+        @media(max-width:1024px){
+            .nav{padding:14px 24px;}
+            .nav-left{gap:16px;}
+            .nav-menu{gap:16px;font-size:13px;}
+        }
         @media(max-width:900px){
-            .nav{padding:14px 18px;}
+            .nav{padding:12px 18px;}
+            .nav-container,.nav{flex-wrap:wrap;gap:12px;}
+            .nav-left{width:100%;justify-content:space-between;}
+            .nav-menu{
+                order:3;
+                width:100%;
+                justify-content:center;
+                gap:12px;
+                font-size:13px;
+                padding-top:8px;
+                border-top:1px solid rgba(148,163,184,0.1);
+            }
+            .nav-actions{gap:12px;}
             .hero{
                 flex-direction:column;
-                padding:100px 18px 60px;
+                padding:140px 18px 60px;
             }
             .hero-right{justify-content:center;}
-            .nav-left{gap:18px;}
-            .nav-menu{
-                gap:18px;
-                font-size:13px;
-            }
             .features{padding:70px 18px 80px;}
             .cta{padding:70px 18px 80px;}
             .footer{padding:40px 18px 22px;}
         }
-        @media(max-width:768px){
-            .footer-grid{
-                grid-template-columns:1fr;
-            }
+        @media(max-width:640px){
+            .nav{padding:10px 16px;}
+            .nav-menu{display:none;}
+            .nav-logo span{display:none;}
+            .user-name{display:none;}
+            .user-dropdown-toggle{padding:8px 12px;}
+            .theme-toggle-wrapper{transform:scale(0.85);}
+            .hero{padding:120px 16px 50px;}
+            .footer-grid{grid-template-columns:1fr;}
         }
     </style>
 </head>
@@ -1431,38 +1448,19 @@
                                 <i class="uil uil-store"></i>
                             </div>
                             <div class="user-info">
-                                <span class="user-name">{{ auth()->user()->name }}</span>
-                                <span class="user-role" style="color:#3b82f6;">Penjual</span>
-                                @if($seller)
-                                <div class="user-status" style="
-                                    display:inline-flex;
-                                    align-items:center;
-                                    gap:4px;
-                                    font-size:10px;
-                                    font-weight:600;
-                                    padding:1px 6px;
-                                    border-radius:50px;
-                                    margin-top:2px;
-                                    @if($seller->status === 'approved')
-                                        background:rgba(34,197,94,0.2);
-                                        color:#22c55e;
-                                    @elseif($seller->status === 'rejected')
-                                        background:rgba(239,68,68,0.2);
-                                        color:#ef4444;
+                                <span class="user-name">{{ $seller->nama_toko ?? 'Toko' }}</span>
+                                <span class="user-role" style="display:inline-flex;align-items:center;gap:4px;font-size:11px;
+                                    @if($seller && $seller->status === 'approved') color:#22c55e;
+                                    @elseif($seller && $seller->status === 'rejected') color:#ef4444;
+                                    @else color:#eab308; @endif">
+                                    @if($seller && $seller->status === 'approved')
+                                        <i class="uil uil-check-circle" style="font-size:12px;"></i> Terverifikasi
+                                    @elseif($seller && $seller->status === 'rejected')
+                                        <i class="uil uil-times-circle" style="font-size:12px;"></i> Ditolak
                                     @else
-                                        background:rgba(234,179,8,0.2);
-                                        color:#eab308;
+                                        <i class="uil uil-clock" style="font-size:12px;"></i> Menunggu
                                     @endif
-                                ">
-                                    @if($seller->status === 'approved')
-                                        <i class="uil uil-check-circle" style="font-size:8px;"></i> Terverifikasi
-                                    @elseif($seller->status === 'rejected')
-                                        <i class="uil uil-times-circle" style="font-size:8px;"></i> Ditolak
-                                    @else
-                                        <i class="uil uil-clock" style="font-size:8px;"></i> Menunggu
-                                    @endif
-                                </div>
-                                @endif
+                                </span>
                             </div>
                             <i class="uil uil-angle-down dropdown-arrow"></i>
                         </div>

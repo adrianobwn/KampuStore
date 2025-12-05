@@ -55,14 +55,6 @@
 
 @else
 {{-- Semua toko dikelompokkan per provinsi --}}
-@php
-    $allSellers = \App\Models\Seller::where('status', 'approved')
-        ->whereNotNull('provinsi')
-        ->orderBy('provinsi', 'asc')
-        ->orderBy('nama_toko', 'asc')
-        ->get();
-@endphp
-
 <table>
     <thead>
         <tr>

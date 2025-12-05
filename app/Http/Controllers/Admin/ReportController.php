@@ -98,6 +98,12 @@ class ReportController extends Controller
             ->orderBy($groupBy, 'asc')
             ->get();
 
+        // SRS-10: All sellers sorted by province for PDF table
+        $allSellers = Seller::where('status', 'approved')
+            ->whereNotNull('provinsi')
+            ->orderBy('provinsi', 'asc')
+            ->get();
+
         // Detail penjual per lokasi
         $selectedLocation = $request->get('location');
         $sellersDetail = null;
@@ -110,7 +116,7 @@ class ReportController extends Controller
 
         $totalSellers = Seller::where('status', 'approved')->count();
 
-        return view('Admin.reports.sellers-by-location', compact('sellersByLocation', 'totalSellers', 'groupBy', 'sellersDetail', 'selectedLocation'));
+        return view('Admin.reports.sellers-by-location', compact('sellersByLocation', 'totalSellers', 'groupBy', 'sellersDetail', 'selectedLocation', 'allSellers'));
     }
 
     /**
@@ -253,6 +259,12 @@ class ReportController extends Controller
             ->orderBy($groupBy, 'asc')
             ->get();
 
+        // SRS-10: All sellers sorted by province for PDF table
+        $allSellers = Seller::where('status', 'approved')
+            ->whereNotNull('provinsi')
+            ->orderBy('provinsi', 'asc')
+            ->get();
+
         $selectedLocation = $request->get('location');
         $sellersDetail = null;
         if ($selectedLocation) {
@@ -268,6 +280,7 @@ class ReportController extends Controller
         $pdf = Pdf::loadView('pdf.sellers-by-location-professional', [
             'title' => 'LAPORAN DAFTAR PENJUAL (TOKO) UNTUK SETIAP LOKASI PROVINSI',
             'sellersByLocation' => $sellersByLocation,
+            'allSellers' => $allSellers,
             'totalSellers' => $totalSellers,
             'groupBy' => $groupBy,
             'sellersDetail' => $sellersDetail,
