@@ -88,19 +88,19 @@
     </thead>
     <tbody>
         <tr class="highlight-row">
-            <td><span class="badge badge-success">Aktif</span></td>
+            <td>Aktif</td>
             <td class="text-center">{{ $sellers->where('status', 'approved')->count() }}</td>
             <td class="text-center">{{ $sellers->count() > 0 ? round(($sellers->where('status', 'approved')->count() / $sellers->count()) * 100, 1) : 0 }}%</td>
             <td>Dapat menjual produk di marketplace</td>
         </tr>
         <tr>
-            <td><span class="badge badge-warning">Pending</span></td>
+            <td>Pending</td>
             <td class="text-center">{{ $sellers->where('status', 'pending')->count() }}</td>
             <td class="text-center">{{ $sellers->count() > 0 ? round(($sellers->where('status', 'pending')->count() / $sellers->count()) * 100, 1) : 0 }}%</td>
             <td>Sedang dalam proses verifikasi</td>
         </tr>
         <tr>
-            <td><span class="badge badge-danger">Ditolak</span></td>
+            <td>Ditolak</td>
             <td class="text-center">{{ $sellers->where('status', 'rejected')->count() }}</td>
             <td class="text-center">{{ $sellers->count() > 0 ? round(($sellers->where('status', 'rejected')->count() / $sellers->count()) * 100, 1) : 0 }}%</td>
             <td>Tidak memenuhi syarat administrasi</td>

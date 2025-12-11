@@ -34,6 +34,7 @@
     border-radius: 16px;
     overflow: hidden;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25);
+    cursor: zoom-in;
   }
 
   .slider-main img {
@@ -41,6 +42,56 @@
     height: 100%;
     object-fit: cover;
     transition: opacity 0.3s ease;
+    pointer-events: none;
+  }
+
+  /* Zoom Lens */
+  .zoom-lens {
+    position: absolute;
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    border: 3px solid #f97316;
+    background-repeat: no-repeat;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    z-index: 100;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4), inset 0 0 20px rgba(0,0,0,0.1);
+  }
+
+  .slider-main:hover .zoom-lens {
+    opacity: 1;
+  }
+
+  .slider-main:hover {
+    cursor: none;
+  }
+
+  /* Zoom Result Panel (Optional - side zoom) */
+  .zoom-result {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: calc(100% + 20px);
+    width: 400px;
+    height: 400px;
+    border-radius: 16px;
+    border: 1px solid var(--card-border);
+    background-repeat: no-repeat;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    z-index: 100;
+    pointer-events: none;
+  }
+
+  .image-slider:hover .zoom-result {
+    display: block;
+  }
+
+  @media (max-width: 1200px) {
+    .zoom-result {
+      display: none !important;
+    }
   }
 
   .slider-nav {
@@ -414,14 +465,16 @@
           $firstImgSrc = ($firstImgPath && str_starts_with($firstImgPath, '/images/')) ? asset($firstImgPath) : asset('storage/' . $firstImgPath);
         @endphp
         <div class="image-slider" id="imageSlider">
-          <div class="slider-main">
+          <div class="slider-main" id="sliderMain">
             <img id="mainImage" src="{{ $firstImgSrc }}" alt="{{ $product->name }}" onerror="this.src='{{ asset('images/no-image.png') }}';">
+            <div class="zoom-lens" id="zoomLens"></div>
             @if($hasMultipleImages)
               <button class="slider-nav prev" onclick="changeSlide(-1)"><i class="uil uil-angle-left-b"></i></button>
               <button class="slider-nav next" onclick="changeSlide(1)"><i class="uil uil-angle-right-b"></i></button>
               <div class="slider-counter"><span id="currentSlide">1</span> / {{ $images->count() }}</div>
             @endif
           </div>
+          <div class="zoom-result" id="zoomResult"></div>
           @if($hasMultipleImages)
             <div class="slider-thumbnails">
               @foreach($images as $index => $image)
@@ -467,6 +520,9 @@
             document.querySelectorAll('.slider-thumb').forEach((thumb, idx) => {
               thumb.classList.toggle('active', idx === currentIndex);
             });
+            
+            // Update zoom background
+            initZoom();
           }
         </script>
       @endif
@@ -802,4 +858,91 @@ document.addEventListener('DOMContentLoaded', async function() {
 });
 </script>
 @endguest
+
+<script>
+// Image Zoom on Hover
+document.addEventListener('DOMContentLoaded', function() {
+    initZoom();
+});
+
+function initZoom() {
+    const sliderMain = document.getElementById('sliderMain');
+    const mainImage = document.getElementById('mainImage');
+    const zoomLens = document.getElementById('zoomLens');
+    const zoomResult = document.getElementById('zoomResult');
+    
+    if (!sliderMain || !mainImage || !zoomLens) return;
+    
+    const zoomLevel = 2.5; // Zoom magnification
+    
+    // Wait for image to load
+    if (mainImage.complete) {
+        setupZoom();
+    } else {
+        mainImage.onload = setupZoom;
+    }
+    
+    function setupZoom() {
+        // Set zoom lens background
+        zoomLens.style.backgroundImage = `url('${mainImage.src}')`;
+        
+        if (zoomResult) {
+            zoomResult.style.backgroundImage = `url('${mainImage.src}')`;
+        }
+        
+        sliderMain.addEventListener('mousemove', moveLens);
+        sliderMain.addEventListener('mouseleave', hideLens);
+        sliderMain.addEventListener('mouseenter', showLens);
+    }
+    
+    function moveLens(e) {
+        e.preventDefault();
+        
+        const rect = sliderMain.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        
+        // Calculate lens position (centered on cursor)
+        const lensWidth = zoomLens.offsetWidth;
+        const lensHeight = zoomLens.offsetHeight;
+        let lensX = x - lensWidth / 2;
+        let lensY = y - lensHeight / 2;
+        
+        // Keep lens within bounds
+        lensX = Math.max(0, Math.min(lensX, rect.width - lensWidth));
+        lensY = Math.max(0, Math.min(lensY, rect.height - lensHeight));
+        
+        // Position the lens
+        zoomLens.style.left = lensX + 'px';
+        zoomLens.style.top = lensY + 'px';
+        
+        // Calculate background position for zoom effect
+        const bgWidth = rect.width * zoomLevel;
+        const bgHeight = rect.height * zoomLevel;
+        
+        // Background position based on cursor
+        const bgX = -((x * zoomLevel) - lensWidth / 2);
+        const bgY = -((y * zoomLevel) - lensHeight / 2);
+        
+        zoomLens.style.backgroundSize = `${bgWidth}px ${bgHeight}px`;
+        zoomLens.style.backgroundPosition = `${bgX}px ${bgY}px`;
+        
+        // Update side panel zoom result
+        if (zoomResult) {
+            const resultBgX = -(x / rect.width) * (bgWidth - zoomResult.offsetWidth);
+            const resultBgY = -(y / rect.height) * (bgHeight - zoomResult.offsetHeight);
+            zoomResult.style.backgroundSize = `${bgWidth}px ${bgHeight}px`;
+            zoomResult.style.backgroundPosition = `${resultBgX}px ${resultBgY}px`;
+        }
+    }
+    
+    function showLens() {
+        zoomLens.style.opacity = '1';
+    }
+    
+    function hideLens() {
+        zoomLens.style.opacity = '0';
+    }
+}
+</script>
 @endsection

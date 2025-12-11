@@ -95,40 +95,32 @@ class SellerVerificationController extends Controller
     /**
      * REJECT
      */
-    public function reject(Seller $seller, Request $request)
+    public function reject(Seller $seller)
     {
-        $validated = $request->validate([
-            'rejection_reason' => 'required|string|max:1000',
-        ]);
-
-        // Get user before deleting
+        // Get user before updating
         $user = $seller->user;
         $sellerEmail = $seller->email_pic;
         $sellerName = $seller->nama_toko;
 
-        // Store data for email before deletion
-        $emailData = [
-            'nama_pic' => $seller->nama_pic,
-            'nama_toko' => $seller->nama_toko,
-            'rejectionReason' => $validated['rejection_reason'],
-        ];
+        // Send rejection email first
+        Mail::to($sellerEmail)->send(new SellerRejected($seller));
 
-        // Send rejection email first (before deleting records)
-        Mail::to($sellerEmail)->send(new SellerRejected($seller, $validated['rejection_reason']));
+        // Update seller status to rejected and remove user association
+        // Keep seller record for reporting purposes
+        $seller->update([
+            'status' => 'rejected',
+            'user_id' => null, // Remove user association so they can register again
+        ]);
 
-        // Delete the seller record and associated user to allow re-registration
-        // Delete notifications related to this seller first
+        // Delete notifications related to this seller
         Notification::where('seller_id', $seller->id)->delete();
 
-        // Delete the seller
-        $seller->delete();
-
-        // Delete the user account so they can register again
+        // Delete the user account so they can register again with the same email
         if ($user) {
             $user->delete();
         }
 
         return redirect()->route('admin.sellers.index')
-            ->with('success', "Seller " . $sellerName . " ditolak. Akun sudah dihapus dan email notifikasi telah dikirim, mereka dapat mendaftar ulang.");
+            ->with('success', "Seller " . $sellerName . " ditolak. Akun user sudah dihapus (bisa daftar ulang) dan email notifikasi telah dikirim. Data pengajuan tetap tersimpan untuk laporan.");
     }
 }

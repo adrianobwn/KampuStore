@@ -315,6 +315,17 @@
             <a href="{{ route('products.index') }}">Market</a>
             <a href="{{ route('home') }}#about">About</a>
             <a href="{{ route('home') }}#contact">Contact</a>
+            @auth
+                @php
+                    $navSeller = \App\Models\Seller::where('user_id', auth()->id())->first();
+                @endphp
+                <span style="color:var(--nav-link-color);opacity:0.3;">|</span>
+                @if(auth()->user()->is_admin)
+                    <a href="{{ route('admin.dashboard') }}"><i class="uil uil-dashboard"></i> Dashboard</a>
+                @elseif($navSeller)
+                    <a href="{{ route('seller.dashboard') }}"><i class="uil uil-dashboard"></i> Dashboard</a>
+                @endif
+            @endauth
         </div>
     </div>
 

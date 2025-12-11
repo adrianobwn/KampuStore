@@ -38,10 +38,9 @@
         <thead>
             <tr>
                 <th style="width:5%">NO</th>
-                <th style="width:20%">NAMA USER</th>
-                <th style="width:20%">NAMA PIC</th>
-                <th style="width:20%">NAMA TOKO</th>
-                <th style="width:15%">ALAMAT (KEC, KODEPOS)</th>
+                <th style="width:25%">NAMA USER</th>
+                <th style="width:25%">NAMA PIC</th>
+                <th style="width:25%">NAMA TOKO</th>
                 <th style="width:20%">STATUS</th>
             </tr>
         </thead>
@@ -52,7 +51,6 @@
                     <td>{{ $seller->user->name ?? $seller->nama_pic }}</td>
                     <td>{{ $seller->nama_pic }}</td>
                     <td><strong>{{ $seller->nama_toko }}</strong></td>
-                    <td>{{ $seller->kecamatan }}, {{ $seller->kode_pos }}</td>
                     <td class="text-center">
                         @if($seller->status == 'approved')
                             Aktif
@@ -63,7 +61,7 @@
                 </tr>
             @empty
                 <tr>
-                    <td colspan="6" class="no-data">Tidak ada data penjual tersedia</td>
+                    <td colspan="5" class="no-data">Tidak ada data penjual tersedia</td>
                 </tr>
             @endforelse
         </tbody>

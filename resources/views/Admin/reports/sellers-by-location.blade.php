@@ -98,76 +98,23 @@
     </div>
 
     <!-- Location Distribution -->
-    @if(!$selectedLocation)
-    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden mb-6 sm:mb-8">
-        <div class="px-4 sm:px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-            <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Distribusi Toko per {{ ucfirst($groupBy) }}</h2>
-            <p class="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mt-1">Jumlah toko berdasarkan lokasi</p>
-        </div>
-
-        <div class="overflow-x-auto">
-            <table class="min-w-full">
-                <thead class="bg-gray-50 dark:bg-gray-900">
-                    <tr>
-                        <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">No</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{{ ucfirst($groupBy) }}</th>
-                        <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Jumlah Toko</th>
-                        <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Persentase</th>
-                        <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Status</th>
-                        <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Aksi</th>
-                    </tr>
-                </thead>
-                <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                    @forelse($sellersByLocation as $index => $location)
-                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
-                        <td class="px-6 py-4 text-center text-sm text-gray-900 dark:text-gray-200">{{ $index + 1 }}</td>
-                        <td class="px-6 py-4 text-sm font-medium text-gray-900 dark:text-white">{{ $location->$groupBy }}</td>
-                        <td class="px-6 py-4 text-center text-sm text-gray-900 dark:text-gray-200">{{ $location->total }} Toko</td>
-                        <td class="px-6 py-4 text-center text-sm text-gray-900 dark:text-gray-200">
-                            {{ $totalSellers > 0 ? round(($location->total / $totalSellers) * 100, 1) : 0 }}%
-                        </td>
-                        <td class="px-6 py-4 text-center">
-                            @if($location->total >= 20)
-                                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300">TINGGI</span>
-                            @elseif($location->total >= 10)
-                                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300">SEDANG</span>
-                            @else
-                                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300">RENDAH</span>
-                            @endif
-                        </td>
-                        <td class="px-6 py-4 text-center">
-                            <a href="?location={{ urlencode($location->$groupBy) }}" class="inline-flex items-center gap-1 px-3 py-1.5 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all shadow-sm text-xs font-medium">
-                                <i class="uil uil-eye"></i> Detail
-                            </a>
-                        </td>
-                    </tr>
-                    @empty
-                    <tr>
-                        <td colspan="7" class="px-6 py-12 text-center">
-                            <div class="text-center">
-                                <i class="uil uil-map-marker text-4xl text-gray-400 mb-2"></i>
-                                <p class="text-gray-500">Tidak ada data lokasi</p>
-                            </div>
-                        </td>
-                    </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
-    </div>
-    @endif
-
-    <!-- Detail Location (if selected) - SRS-10 Format: No | Nama Toko | Nama PIC | Propinsi -->
-    @if($selectedLocation && $sellersDetail)
+    <!-- Detail Location Table (Always Visible) -->
     <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
         <div class="px-4 sm:px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
             <div>
-                <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Laporan Daftar Toko Berdasarkan Lokasi Propinsi</h2>
+                <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Laporan Daftar Toko Berdasarkan Lokasi Provinsi</h2>
                 <p class="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mt-1">Tanggal dibuat: {{ now()->format('d-m-Y') }} oleh {{ auth()->user()->name ?? 'Admin' }}</p>
+                @if(request('location'))
+                    <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-800 mt-2">
+                        Filter: {{ request('location') }}
+                    </span>
+                @endif
             </div>
+            @if(request('location'))
             <a href="{{ route('admin.reports.sellers-location') }}" class="px-4 py-2 bg-gray-600 dark:bg-gray-700 text-white rounded-lg hover:bg-gray-700 dark:hover:bg-gray-600 transition-all shadow-md font-medium flex items-center gap-2 text-sm">
-                <i class="uil uil-arrow-left"></i> Kembali
+                <i class="uil uil-times"></i> Hapus Filter
             </a>
+            @endif
         </div>
 
         <div class="overflow-x-auto">
@@ -177,11 +124,11 @@
                         <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">No</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Nama Toko</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Nama PIC</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Propinsi</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Provinsi</th>
                     </tr>
                 </thead>
                 <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                    @forelse($sellersDetail as $index => $seller)
+                    @forelse(($sellersDetail ?? $allSellers) as $index => $seller)
                     <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                         <td class="px-6 py-4 text-center text-sm text-gray-900 dark:text-gray-200">{{ $index + 1 }}</td>
                         <td class="px-6 py-4 text-sm font-medium text-gray-900 dark:text-white">{{ $seller->nama_toko }}</td>
@@ -193,7 +140,7 @@
                         <td colspan="4" class="px-6 py-12 text-center">
                             <div class="text-center">
                                 <i class="uil uil-store text-4xl sm:text-5xl text-gray-400 dark:text-gray-600 mb-3"></i>
-                                <p class="text-sm sm:text-base text-gray-500 dark:text-gray-400">Tidak ada toko di lokasi ini</p>
+                                <p class="text-sm sm:text-base text-gray-500 dark:text-gray-400">Tidak ada data toko</p>
                             </div>
                         </td>
                     </tr>
@@ -202,10 +149,9 @@
             </table>
         </div>
     </div>
-    @endif
 
     <!-- Keterangan -->
     <div class="mt-6 bg-blue-50 dark:bg-blue-900/20 rounded-xl p-4 border border-blue-200 dark:border-blue-700">
-        <p class="text-sm text-blue-700 dark:text-blue-300"><strong>Keterangan:</strong> ***) Diurutkan berdasarkan propinsi alfabetis</p>
+        <p class="text-sm text-blue-700 dark:text-blue-300"><strong>Keterangan:</strong> ***) Diurutkan berdasarkan provinsi alfabetis</p>
     </div>
 @endsection

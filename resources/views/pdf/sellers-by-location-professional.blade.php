@@ -1,11 +1,11 @@
 @extends('pdf.pro-layout')
 
 @section('content')
-{{-- SRS-MartPlace-10: Laporan Daftar Toko Berdasarkan Lokasi Propinsi --}}
-{{-- Format: No | Nama Toko | Nama PIC | Propinsi --}}
-{{-- Urutan: berdasarkan propinsi alfabetis --}}
+{{-- SRS-MartPlace-10: Laporan Daftar Toko Berdasarkan Lokasi Provinsi --}}
+{{-- Format: No | Nama Toko | Nama PIC | Provinsi --}}
+{{-- Urutan: berdasarkan provinsi alfabetis --}}
 
-<h2 class="section-title">LAPORAN DAFTAR TOKO BERDASARKAN LOKASI PROPINSI</h2>
+<h2 class="section-title">LAPORAN DAFTAR TOKO BERDASARKAN LOKASI PROVINSI</h2>
 
 <div class="metadata-section">
     <div class="metadata-grid">
@@ -38,7 +38,7 @@
             <th style="width:8%">NO</th>
             <th style="width:35%">NAMA TOKO</th>
             <th style="width:30%">NAMA PIC</th>
-            <th style="width:27%">PROPINSI</th>
+            <th style="width:27%">PROVINSI</th>
         </tr>
     </thead>
     <tbody>
@@ -61,7 +61,7 @@
             <th style="width:8%">NO</th>
             <th style="width:35%">NAMA TOKO</th>
             <th style="width:30%">NAMA PIC</th>
-            <th style="width:27%">PROPINSI</th>
+            <th style="width:27%">PROVINSI</th>
         </tr>
     </thead>
     <tbody>
@@ -83,6 +83,6 @@
 
 <div class="warning-box" style="background:#f0f9ff;border-color:#3b82f6;">
     <p style="color:#1e40af;"><strong>KETERANGAN:</strong></p>
-    <p style="color:#1e40af;">***) Diurutkan berdasarkan propinsi alfabetis</p>
+    <p style="color:#1e40af;">***) Diurutkan berdasarkan provinsi alfabetis</p>
 </div>
 @endsection

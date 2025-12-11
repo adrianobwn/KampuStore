@@ -21,41 +21,38 @@ class SellersByLocationExport implements FromCollection, WithHeadings, WithMappi
 
     public function collection()
     {
-        // Hardcode group by provinsi
-        $groupBy = 'provinsi';
-        
-        return Seller::select($groupBy, DB::raw('count(*) as total'))
-            ->where('status', 'approved')
-            ->whereNotNull($groupBy)
-            ->groupBy($groupBy)
-            ->orderBy('total', 'desc')
-            ->get();
+        $selectedLocation = $this->request->get('location');
+        $query = Seller::where('status', 'approved')->whereNotNull('provinsi');
+
+        if ($selectedLocation) {
+            $query->where('provinsi', $selectedLocation)->orderBy('nama_toko', 'asc');
+        } else {
+            $query->orderBy('provinsi', 'asc');
+        }
+
+        return $query->get();
     }
 
     public function headings(): array
     {
         return [
             'No',
-            'Provinsi',
-            'Jumlah Penjual',
-            'Persentase'
+            'Nama Toko',
+            'Nama PIC',
+            'Provinsi'
         ];
     }
 
-    public function map($location): array
+    public function map($seller): array
     {
         static $no = 0;
         $no++;
-        
-        $groupBy = 'provinsi';
-        $totalSellers = Seller::where('status', 'approved')->count();
-        $percentage = $totalSellers > 0 ? round(($location->total / $totalSellers) * 100, 2) : 0;
 
         return [
             $no,
-            $location->{$groupBy} ?: 'Tidak Disebutkan',
-            $location->total,
-            $percentage . '%'
+            $seller->nama_toko,
+            $seller->nama_pic,
+            $seller->provinsi
         ];
     }
 

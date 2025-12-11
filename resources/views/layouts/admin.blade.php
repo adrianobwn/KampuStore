@@ -104,40 +104,26 @@
             position:fixed;
             top:0;left:0;right:0;
             z-index:50;
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
             padding:18px 60px;
             background:var(--nav-bg);
             border-bottom:1px solid var(--nav-border-bottom);
             box-shadow:var(--nav-shadow);
         }
-        .nav-container{
-            display:flex;
-            align-items:center;
-            justify-content:space-between;
-            min-height:64px;
-            max-width:1600px;
-            margin:0 auto;
-            gap:32px;
-        }
-        .nav-left{display:flex;align-items:center;gap:32px;flex:1;}
+        .nav-left{display:flex;align-items:center;gap:28px;}
         .nav-logo{
             display:flex;align-items:center;
             font-weight:700;font-size:22px;
             letter-spacing:0.04em;color:#f9fafb;
             cursor:pointer;
-            transition:all .3s;
-            text-decoration:none;
         }
-        .nav-logo:hover { transform:scale(1.05); }
-        .nav-logo img{height:36px;width:36px;display:block;}
+        .nav-logo img{height:40px;display:block;}
         body.theme-light .nav-logo{color:#111827;}
 
-        .nav-menu{display:flex;gap:28px;align-items:center;font-size:14px;}
-        .nav-menu a{
-            color:var(--nav-link-color);
-            position:relative;
-            transition:color .3s ease;
-            text-decoration:none;
-        }
+        .nav-menu{display:flex;align-items:center;gap:28px;font-size:14px;}
+        .nav-menu a{color:var(--nav-link-color);position:relative;}
         .nav-menu a::after{
             content:'';position:absolute;left:0;bottom:-4px;
             height:2px;width:100%;background:#f97316;
@@ -150,7 +136,6 @@
         .nav-menu a.active{color:#f97316;font-weight:600;}
         .nav-menu a.active::after{transform:scaleX(1);opacity:1;}
         .nav-divider{color:var(--nav-link-color);opacity:0.3;}
-        .nav-right{display:flex;align-items:center;justify-content:flex-end;gap:16px;}
         .nav-actions{display:flex;align-items:center;gap:12px;}
 
         .admin-badge{
@@ -579,13 +564,11 @@
 <body class="theme-dark">
 
 <nav class="nav">
-    <div class="nav-container">
-        <!-- Left: Logo & Menu -->
-        <div class="nav-left">
-            <a href="{{ route('admin.dashboard') }}" class="nav-logo">
-                <img src="{{ asset('images/logo.png') }}" alt="kampuStore logo">
-                <span>kampuStore</span>
-            </a>
+    <div class="nav-left">
+        <a href="{{ route('home') }}" class="nav-logo">
+            <img src="{{ asset('images/logo.png') }}" alt="kampuStore logo">
+            <span>kampuStore</span>
+        </a>
 
             <div class="nav-menu">
                 <a href="{{ route('home') }}">Home</a>
@@ -600,9 +583,7 @@
             </div>
         </div>
 
-        <!-- Right: Actions -->
-        <div class="nav-right">
-            <!-- Theme Toggle -->
+    <div class="nav-actions">
             <div class="theme-toggle-wrapper">
                 <label class="toggle-switch">
                     <input type="checkbox" class="js-theme-toggle" />
@@ -661,7 +642,6 @@
                     </form>
                 </div>
             </div>
-        </div>
     </div>
 </nav>
 

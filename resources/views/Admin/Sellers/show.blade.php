@@ -150,95 +150,20 @@
                             <i class="uil uil-check text-lg"></i> Setujui Toko
                         </button>
                     </form>
-                    <button type="button" onclick="openRejectModal()" class="inline-flex items-center justify-center gap-2 w-full px-4 py-3 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-semibold rounded-lg transition-all duration-200 shadow-sm hover:shadow-md">
-                        <i class="uil uil-times text-lg"></i> Tolak Toko
-                    </button>
+                    <form action="{{ route('admin.sellers.reject', $seller) }}" method="POST">
+                        @csrf
+                        <button type="submit" class="inline-flex items-center justify-center gap-2 w-full px-4 py-3 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-semibold rounded-lg transition-all duration-200 shadow-sm hover:shadow-md"
+                                onclick="return confirm('Tolak pengajuan toko ini? Email notifikasi akan dikirim ke seller.')">
+                            <i class="uil uil-times text-lg"></i> Tolak Toko
+                        </button>
+                    </form>
                 </div>
             @else
                 <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 border border-gray-200 dark:border-gray-700">
                     <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 pb-3 border-b border-gray-200 dark:border-gray-700">Status Verifikasi</h3>
-                    <p class="text-gray-600 dark:text-gray-400 mb-3">Pengajuan ini sudah diverifikasi.</p>
-                    @if($seller->rejection_reason)
-                        <div class="bg-red-50 dark:bg-red-900/20 border-l-4 border-red-500 dark:border-red-600 p-4 rounded-r-lg">
-                            <p class="text-sm font-semibold text-red-800 dark:text-red-300 mb-2">Alasan Penolakan:</p>
-                            <p class="text-sm text-gray-700 dark:text-gray-300">{{ $seller->rejection_reason }}</p>
-                        </div>
-                    @endif
+                    <p class="text-gray-600 dark:text-gray-400">Pengajuan ini sudah diverifikasi.</p>
                 </div>
             @endif
         </div>
     </div>
-
-    <!-- Modal Penolakan -->
-    <div id="rejectModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xl max-w-md w-full p-6 transform transition-all">
-            <div class="flex items-center justify-between mb-4">
-                <h3 class="text-xl font-bold text-gray-900 dark:text-white">Tolak Pengajuan Toko</h3>
-                <button onclick="closeRejectModal()" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
-                    <i class="uil uil-times text-2xl"></i>
-                </button>
-            </div>
-            
-            <form action="{{ route('admin.sellers.reject', $seller) }}" method="POST" id="rejectForm">
-                @csrf
-                <div class="mb-4">
-                    <label for="rejection_reason" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                        Alasan Penolakan <span class="text-red-500">*</span>
-                    </label>
-                    <textarea 
-                        name="rejection_reason" 
-                        id="rejection_reason" 
-                        rows="4" 
-                        required
-                        maxlength="1000"
-                        class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent dark:bg-gray-700 dark:text-white resize-none"
-                        placeholder="Jelaskan alasan penolakan pengajuan toko ini..."
-                    ></textarea>
-                    <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Maksimal 1000 karakter</p>
-                </div>
-
-                <div class="flex gap-3">
-                    <button 
-                        type="button" 
-                        onclick="closeRejectModal()"
-                        class="flex-1 px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 font-semibold rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
-                    >
-                        Batal
-                    </button>
-                    <button 
-                        type="submit"
-                        class="flex-1 px-4 py-2 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-semibold rounded-lg transition-all duration-200 shadow-sm hover:shadow-md"
-                    >
-                        Tolak Toko
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <script>
-        function openRejectModal() {
-            document.getElementById('rejectModal').classList.remove('hidden');
-            document.getElementById('rejection_reason').focus();
-        }
-
-        function closeRejectModal() {
-            document.getElementById('rejectModal').classList.add('hidden');
-            document.getElementById('rejection_reason').value = '';
-        }
-
-        // Close modal when clicking outside
-        document.getElementById('rejectModal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeRejectModal();
-            }
-        });
-
-        // Close modal with Escape key
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') {
-                closeRejectModal();
-            }
-        });
-    </script>
 @endsection

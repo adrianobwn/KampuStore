@@ -43,7 +43,7 @@
             <th style="width:5%">No</th>
             <th style="width:35%">Nama Toko</th>
             <th style="width:30%">Nama PIC</th>
-            <th style="width:30%">Propinsi</th>
+            <th style="width:30%">Provinsi</th>
         </tr>
     </thead>
     <tbody>

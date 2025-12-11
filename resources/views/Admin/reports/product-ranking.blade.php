@@ -5,8 +5,8 @@
     <div class="mb-6 sm:mb-8">
         <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
             <div>
-                <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-2">Peringkat Produk</h1>
-                <p class="text-sm sm:text-base text-gray-600 dark:text-gray-400">Produk dengan rating tertinggi</p>
+                <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-2">Laporan Peringkat Produk</h1>
+                <p class="text-sm sm:text-base text-gray-600 dark:text-gray-400">Produk dengan rating tertinggi berdasarkan ulasan pembeli</p>
             </div>
             <div class="text-center sm:text-right bg-gradient-to-br from-orange-500 to-orange-600 px-4 sm:px-6 py-3 sm:py-4 rounded-xl shadow-lg text-white">
                 <div class="text-xs sm:text-sm opacity-90 mb-1">{{ now()->format('d F Y') }}</div>
@@ -38,8 +38,8 @@
                     <select name="category" class="w-full px-4 py-2 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white focus:ring-2 focus:ring-orange-500 focus:border-transparent">
                         <option value="">Semua Kategori</option>
                         @foreach($categories as $cat)
-                            <option value="{{ $cat }}" {{ request('category') == $cat ? 'selected' : '' }}>
-                                {{ ucfirst(str_replace('-', ' ', $cat)) }}
+                            <option value="{{ $cat['slug'] }}" {{ request('category') == $cat['slug'] ? 'selected' : '' }}>
+                                {{ $cat['name'] }}
                             </option>
                         @endforeach
                     </select>
@@ -89,8 +89,8 @@
         <div class="h-1 bg-gradient-to-r from-orange-200 via-orange-500 to-orange-200 dark:from-orange-900 dark:via-orange-600 dark:to-orange-900 rounded-full shadow-md"></div>
     </div>
 
-    <!-- Products Table - SRS-11: Format: No | Produk | Kategori | Harga | Rating | Nama Toko | Propinsi -->
-    <!-- Propinsi diisi propinsi pemberi rating -->
+    <!-- Products Table - SRS-11: Format: No | Produk | Kategori | Harga | Rating | Nama Toko | Provinsi -->
+    <!-- Provinsi diisi provinsi pemberi rating -->
     <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
         <div class="px-4 sm:px-6 py-4 border-b border-gray-200 dark:border-gray-700">
             <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Laporan Daftar Produk Berdasarkan Rating</h2>
@@ -107,18 +107,11 @@
                         <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Harga</th>
                         <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Rating</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Nama Toko</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Propinsi</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Provinsi</th>
                     </tr>
                 </thead>
                 <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                     @forelse($products as $index => $product)
-                    @php
-                        // SRS-11: Propinsi diisi propinsi pemberi rating (reviewer)
-                        $reviewerProvince = \App\Models\Review::where('product_id', $product->id)
-                            ->whereNotNull('guest_province')
-                            ->orderBy('created_at', 'desc')
-                            ->value('guest_province') ?? '-';
-                    @endphp
                     <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                         <td class="px-6 py-4 text-center text-sm text-gray-900 dark:text-gray-200">{{ $index + 1 }}</td>
                         <td class="px-6 py-4 text-sm font-medium text-gray-900 dark:text-white">{{ $product->name }}</td>
@@ -126,16 +119,13 @@
                         <td class="px-6 py-4 text-right text-sm text-gray-900 dark:text-gray-200">Rp {{ number_format($product->price ?? 0, 0, ',', '.') }}</td>
                         <td class="px-6 py-4 text-center">
                             @if($product->avg_rating > 0)
-                                <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300">
-                                    <i class="uil uil-star text-yellow-500"></i>
-                                    {{ number_format($product->avg_rating, 1) }}
-                                </span>
+                                {{ number_format($product->avg_rating, 1) }}
                             @else
-                                <span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400">-</span>
+                                -
                             @endif
                         </td>
                         <td class="px-6 py-4 text-sm text-gray-900 dark:text-gray-200">{{ $product->nama_toko ?? '-' }}</td>
-                        <td class="px-6 py-4 text-sm text-gray-900 dark:text-gray-200">{{ $reviewerProvince }}</td>
+                        <td class="px-6 py-4 text-sm text-gray-900 dark:text-gray-200">{{ $product->provinsi }}</td>
                     </tr>
                     @empty
                     <tr>
@@ -155,7 +145,7 @@
     <!-- Keterangan -->
     <div class="mt-6 bg-blue-50 dark:bg-blue-900/20 rounded-xl p-4 border border-blue-200 dark:border-blue-700">
         <p class="text-sm text-blue-700 dark:text-blue-300"><strong>Keterangan:</strong></p>
-        <p class="text-sm text-blue-700 dark:text-blue-300">***) Propinsi diisikan propinsi pemberi rating</p>
+        <p class="text-sm text-blue-700 dark:text-blue-300">***) Provinsi diisikan provinsi asal toko penjual</p>
         <p class="text-sm text-blue-700 dark:text-blue-300">***) Diurutkan berdasarkan rating secara menurun (descending)</p>
     </div>
 @endsection

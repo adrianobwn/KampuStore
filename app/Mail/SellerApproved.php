@@ -23,7 +23,7 @@ class SellerApproved extends Mailable
     public function __construct(Seller $seller)
     {
         $this->seller = $seller;
-        $this->activationUrl = route('seller.dashboard');
+        $this->activationUrl = route('seller.activation.success');
     }
 
     /**

@@ -13,17 +13,15 @@ class SellerRejected extends Mailable
     use SerializesModels;
 
     public $seller;
-    public $rejectionReason;
     public $tries = 3;
     public $timeout = 30;
 
     /**
      * Create a new message instance.
      */
-    public function __construct(Seller $seller, string $rejectionReason)
+    public function __construct(Seller $seller)
     {
         $this->seller = $seller;
-        $this->rejectionReason = $rejectionReason;
     }
 
     /**
@@ -43,9 +41,6 @@ class SellerRejected extends Mailable
     {
         return new Content(
             view: 'emails.seller-rejected',
-            with: [
-                'rejectionReason' => $this->rejectionReason,
-            ],
         );
     }
 

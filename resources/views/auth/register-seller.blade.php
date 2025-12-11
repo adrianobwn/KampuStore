@@ -538,6 +538,7 @@
             margin-top: 30px;
             margin-bottom: 20px;
             text-transform: uppercase;
+            padding-left: 10px;
         }
 
         body.theme-light .section-label {
@@ -562,7 +563,7 @@
 
         .field-select-row {
             display: flex;
-            gap: 14px;
+            gap: 20px;
             margin-bottom: 14px;
         }
 
@@ -582,6 +583,7 @@
         .select-label {
             font-size: 13px;
             font-weight: 500;
+            padding-left: 15px;
             margin-bottom: 6px;
             color: var(--text-main);
         }
@@ -654,6 +656,7 @@
         /* FILE INPUTS */
         .file-group {
             margin-bottom: 14px;
+            padding-left: 10px;
         }
 
         .file-label-main {
@@ -683,6 +686,7 @@
             font-size: 10px;
             color: #9ca3af;
             margin-top: 4px;
+            padding-left: 10px;
         }
 
         body.theme-light .file-help {
@@ -1161,7 +1165,7 @@
                                 <div class="float-group">
                                     <input id="nama_toko" type="text" name="nama_toko" class="float-input"
                                         value="{{ old('nama_toko') }}" placeholder=" " required>
-                                    <label for="nama_toko" class="float-label">Nama Toko *</label>
+                                    <label for="nama_toko" class="float-label">Nama Toko</label>
                                 </div>
                                 @error('nama_toko')
                                     <div class="auth-error">{{ $message }}</div>
@@ -1171,7 +1175,7 @@
                             {{-- Deskripsi singkat --}}
                             <div class="field-group">
                                 <label for="deskripsi_singkat" class="select-label">
-                                    Deskripsi singkat toko
+                                    Deskripsi Singkat Toko
                                 </label>
                                 <textarea id="deskripsi_singkat" name="deskripsi_singkat" class="auth-textarea-box"
                                     required>{{ old('deskripsi_singkat') }}</textarea>
@@ -1279,7 +1283,7 @@
                                     <input id="alamat_pic" type="text" name="alamat_pic" class="float-input"
                                         value="{{ old('alamat_pic') }}" placeholder=" " required>
                                     <label for="alamat_pic" class="float-label">
-                                        Alamat (Nama Jalan, No. Rumah) *
+                                        Alamat (Nama Jalan) *
                                     </label>
                                 </div>
                                 @error('alamat_pic')
@@ -1329,7 +1333,7 @@
                             </div>
 
                             {{-- RT / RW --}}
-                            <div class="field-select-row">
+                            <div class="field-select-row" style="margin-top: 20px;">
                                 <div class="field-group">
                                     <div class="float-group">
                                         <input id="rt" type="text" name="rt" class="float-input" value="{{ old('rt') }}"
@@ -1359,7 +1363,7 @@
                             <div class="section-label">Tahap 3 · Dokumen Verifikasi</div>
 
                             <div class="file-group">
-                                <div class="file-label-main">Foto Anda (Selfie) *</div>
+                                <div class="file-label-main">Foto PIC *</div>
                                 <input type="file" name="foto_pic" class="file-input" required
                                     accept="image/jpeg,image/jpg,image/png">
                                 <div class="file-help">
@@ -1371,7 +1375,7 @@
                             </div>
 
                             <div class="file-group">
-                                <div class="file-label-main">File Scan KTP *</div>
+                                <div class="file-label-main">File KTP PIC *</div>
                                 <input type="file" name="file_ktp_pic" class="file-input" required
                                     accept="application/pdf,image/jpeg,image/jpg,image/png">
                                 <div class="file-help">

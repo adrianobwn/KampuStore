@@ -51,6 +51,11 @@ Route::get('/market', function () {
     return redirect()->route('products.index');
 })->name('market');
 
+// Seller Activation Success Page (after email approval link clicked)
+Route::get('/seller/activation-success', function () {
+    return view('auth.seller-activation-success');
+})->name('seller.activation.success');
+
 /*
 |--------------------------------------------------------------------------
 | Forgot Password

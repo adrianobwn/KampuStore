@@ -28,13 +28,22 @@ class AdminDashboardController extends Controller
         }
 
         // SRS-MartPlace-07: Sebaran jumlah produk per kategori
+        // Category mapping to match Market
+        $categoryMap = [
+            'fashion' => 'Fashion',
+            'elektronik' => 'Elektronik',
+            'buku' => 'Buku',
+            'alat-tulis' => 'Alat Tulis',
+            'alat-kuliah' => 'Alat Kuliah',
+        ];
+
         $productsByCategory = Product::select('category_slug', DB::raw('count(*) as total'))
             ->groupBy('category_slug')
             ->orderBy('total', 'desc')
             ->get()
-            ->map(function ($item) {
+            ->map(function ($item) use ($categoryMap) {
                 return [
-                    'category' => ucfirst(str_replace('-', ' ', $item->category_slug)),
+                    'category' => $categoryMap[$item->category_slug] ?? ucfirst(str_replace('-', ' ', $item->category_slug)),
                     'slug' => $item->category_slug,
                     'total' => $item->total,
                 ];
@@ -67,74 +76,9 @@ class AdminDashboardController extends Controller
         // Total produk
         $totalProducts = Product::count();
 
-        // SRS-MartPlace-08: Stock Distribution (In Stock vs Out of Stock)
-        $stockDistribution = [
-            'in_stock' => Product::where('stock', '>', 0)->count(),
-            'out_of_stock' => Product::where('stock', '<=', 0)->count(),
-        ];
-
-        // SRS-MartPlace-08: Sebaran pemberi rating berdasarkan lokasi provinsi
-        // Gabungkan guest_province dengan lokasi user (seller)
-        $guestRatings = Review::select('guest_province as province', DB::raw('count(*) as total'), DB::raw('avg(rating) as avg_rating'))
-            ->whereNotNull('guest_province')
-            ->groupBy('guest_province');
-
-        $userRatings = Review::select('sellers.provinsi as province', DB::raw('count(reviews.id) as total'), DB::raw('avg(reviews.rating) as avg_rating'))
-            ->join('users', 'reviews.user_id', '=', 'users.id')
-            ->join('sellers', 'users.id', '=', 'sellers.user_id') // Asumsi user adalah seller untuk mendapat lokasi
-            ->whereNotNull('sellers.provinsi')
-            ->groupBy('sellers.provinsi');
-
-        // Union dan simplifikasi (karena Laravel union builder agak terbatas untuk grouping ulang hasil union, kita ambil collection)
-        // Pendekatan: Ambil raw data lalu map di PHP untuk simplifikasi
-
-        // Alternative: Separate collections and merge
-        $gRes = $guestRatings->get();
-        $uRes = $userRatings->get();
-
-        $mergedRatings = $gRes->concat($uRes)->groupBy('province')->map(function ($group) {
-            $total = $group->sum('total');
-            $avg = $group->sum(function ($item) {
-                return $item->avg_rating * $item->total;
-            }) / ($total ?: 1);
-            return [
-                'province' => $group[0]['province'], // $group->first()['province']
-                'total' => $total,
-                'avg_rating' => round($avg, 1),
-            ];
-        })->sortByDesc('total'); // Sort by total
-
-        $ratingsByProvince = $mergedRatings;
-
-        // SRS-MartPlace-08: Sebaran nilai rating (1-5 bintang)
-        $ratingDistribution = Review::select('rating', DB::raw('count(*) as total'))
-            ->groupBy('rating')
-            ->orderBy('rating', 'asc')
-            ->get()
-            ->map(function ($item) {
-                return [
-                    'rating' => $item->rating,
-                    'total' => $item->total,
-                ];
-            });
-
-        // Top rated products
-        $topRatedProducts = Product::select(
-            'products.id',
-            'products.name',
-            'products.seller_name',
-            'products.price',
-            'products.image_url',
-            DB::raw('AVG(reviews.rating) as avg_rating'),
-            DB::raw('COUNT(reviews.id) as review_count')
-        )
-            ->leftJoin('reviews', 'products.id', '=', 'reviews.product_id')
-            ->groupBy('products.id', 'products.name', 'products.seller_name', 'products.price', 'products.image_url')
-            ->having('review_count', '>', 0)
-            ->orderBy('avg_rating', 'desc')
-            ->orderBy('review_count', 'desc')
-            ->limit(5)
-            ->get();
+        // SRS-MartPlace-07: Sebaran pemberi rating berdasarkan lokasi provinsi -> DIHAPUS
+        // SRS-MartPlace-08: Stock Distribution (In Stock vs Out of Stock) -> DIHAPUS
+        // SRS-MartPlace-08: Sebaran nilai rating (1-5 bintang) -> DIHAPUS
 
         return view('admin.dashboard', compact(
             'pending',
@@ -150,11 +94,7 @@ class AdminDashboardController extends Controller
             'uniqueReviewers',
             'guestReviewers',
             'userReviewers',
-            'totalProducts',
-            'ratingsByProvince',
-            'ratingDistribution',
-            'topRatedProducts',
-            'stockDistribution'
+            'totalProducts'
         ));
     }
 }

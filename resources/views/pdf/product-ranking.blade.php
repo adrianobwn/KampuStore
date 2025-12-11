@@ -37,7 +37,7 @@
     <p><strong>Kriteria:</strong> Setiap produk dilengkapi nama toko, kategori produk, harga, dan lokasi provinsi</p>
 </div>
 
-<h3 style="margin-bottom: 15px; color: #f97316;">🏆 Peringkat Produk Berdasarkan Rating</h3>
+<h3 style="margin-bottom: 15px; color: #f97316;">Peringkat Produk Berdasarkan Rating</h3>
 <table>
     <thead>
         <tr>
@@ -62,9 +62,9 @@
             <td>{{ $product->seller_province ?? '-' }}</td>
             <td class="text-center">
                 @if($product->avg_rating > 0)
-                    <span class="badge badge-success">{{ number_format($product->avg_rating, 1) }} ★</span>
+                    {{ number_format($product->avg_rating, 1) }}
                 @else
-                    <span class="badge badge-info">Belum Ada</span>
+                    -
                 @endif
             </td>
             <td class="text-center">{{ $product->review_count ?? 0 }}</td>
@@ -82,10 +82,10 @@
 
 <div class="info-box">
     <p><strong>Ringkasan Peringkat:</strong></p>
-    <p>• <strong>Produk Rating Tertinggi (5.0 ★):</strong> {{ $products->where('avg_rating', 5.0)->count() }} produk</p>
-    <p>• <strong>Produk Rating Tinggi (4.0-4.9 ★):</strong> {{ $products->whereBetween('avg_rating', [4.0, 4.9])->count() }} produk</p>
-    <p>• <strong>Produk Rating Sedang (3.0-3.9 ★):</strong> {{ $products->whereBetween('avg_rating', [3.0, 3.9])->count() }} produk</p>
-    <p>• <strong>Produk Rating Rendah (1.0-2.9 ★):</strong> {{ $products->whereBetween('avg_rating', [1.0, 2.9])->count() }} produk</p>
+    <p>• <strong>Produk Rating Tertinggi (5.0):</strong> {{ $products->where('avg_rating', 5.0)->count() }} produk</p>
+    <p>• <strong>Produk Rating Tinggi (4.0-4.9):</strong> {{ $products->whereBetween('avg_rating', [4.0, 4.9])->count() }} produk</p>
+    <p>• <strong>Produk Rating Sedang (3.0-3.9):</strong> {{ $products->whereBetween('avg_rating', [3.0, 3.9])->count() }} produk</p>
+    <p>• <strong>Produk Rating Rendah (1.0-2.9):</strong> {{ $products->whereBetween('avg_rating', [1.0, 2.9])->count() }} produk</p>
     <p>• <strong>Produk Belum Ada Rating:</strong> {{ $products->where('avg_rating', 0)->count() }} produk</p>
 </div>
 
@@ -100,31 +100,31 @@
     </thead>
     <tbody>
         <tr class="highlight-row">
-            <td><span class="badge badge-success">Rating 5.0 ★</span></td>
+            <td>Rating 5.0</td>
             <td class="text-center">{{ $products->where('avg_rating', 5.0)->count() }}</td>
             <td class="text-center">{{ $products->count() > 0 ? round(($products->where('avg_rating', 5.0)->count() / $products->count()) * 100, 1) : 0 }}%</td>
             <td>Sangat Memuaskan</td>
         </tr>
         <tr>
-            <td><span class="badge badge-success">Rating 4.0-4.9 ★</span></td>
+            <td>Rating 4.0-4.9</td>
             <td class="text-center">{{ $products->whereBetween('avg_rating', [4.0, 4.9])->count() }}</td>
             <td class="text-center">{{ $products->count() > 0 ? round(($products->whereBetween('avg_rating', [4.0, 4.9])->count() / $products->count()) * 100, 1) : 0 }}%</td>
             <td>Memuaskan</td>
         </tr>
         <tr>
-            <td><span class="badge badge-warning">Rating 3.0-3.9 ★</span></td>
+            <td>Rating 3.0-3.9</td>
             <td class="text-center">{{ $products->whereBetween('avg_rating', [3.0, 3.9])->count() }}</td>
             <td class="text-center">{{ $products->count() > 0 ? round(($products->whereBetween('avg_rating', [3.0, 3.9])->count() / $products->count()) * 100, 1) : 0 }}%</td>
             <td>Cukup Memuaskan</td>
         </tr>
         <tr>
-            <td><span class="badge badge-danger">Rating 1.0-2.9 ★</span></td>
+            <td>Rating 1.0-2.9</td>
             <td class="text-center">{{ $products->whereBetween('avg_rating', [1.0, 2.9])->count() }}</td>
             <td class="text-center">{{ $products->count() > 0 ? round(($products->whereBetween('avg_rating', [1.0, 2.9])->count() / $products->count()) * 100, 1) : 0 }}%</td>
             <td>Kurang Memuaskan</td>
         </tr>
         <tr>
-            <td><span class="badge badge-info">Belum Ada Rating</span></td>
+            <td>Belum Ada Rating</td>
             <td class="text-center">{{ $products->where('avg_rating', 0)->count() }}</td>
             <td class="text-center">{{ $products->count() > 0 ? round(($products->where('avg_rating', 0)->count() / $products->count()) * 100, 1) : 0 }}%</td>
             <td>Menunggu Review</td>
@@ -133,7 +133,7 @@
 </table>
 
 @if($products->where('avg_rating', '>', 0)->count() > 0)
-<h3 style="margin-bottom: 15px; color: #f97316;">🌟 Top 10 Produk Terbaik</h3>
+<h3 style="margin-bottom: 15px; color: #f97316;">Top 10 Produk Terbaik</h3>
 <table>
     <thead>
         <tr>
@@ -153,7 +153,7 @@
             <td class="text-center"><strong>{{ $index + 1 }}</strong></td>
             <td><strong>{{ $product->name }}</strong></td>
             <td>{{ $product->nama_toko ?? $product->seller_name ?? '-' }}</td>
-            <td class="text-center"><span class="badge badge-success">{{ number_format($product->avg_rating, 1) }} ★</span></td>
+            <td class="text-center">{{ number_format($product->avg_rating, 1) }}</td>
             <td class="text-right">Rp {{ number_format($product->price, 0, ',', '.') }}</td>
             <td>{{ $product->seller_province ?? '-' }}</td>
             <td class="text-center">{{ $product->review_count ?? 0 }}</td>

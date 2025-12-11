@@ -99,69 +99,117 @@
             margin-top: 6px;
         }
 
-        .form-file {
-            width: 100%;
-            padding: 12px 16px;
-            background: var(--input-bg);
-            border: 1px solid var(--input-border);
-            border-radius: 10px;
-            color: var(--text-main);
-            font-size: 14px;
-            cursor: pointer;
-        }
-
-        .form-file::file-selector-button {
-            padding: 8px 16px;
-            background: var(--accent);
-            color: #111827;
-            border: none;
-            border-radius: 50px;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            margin-right: 12px;
-            transition: background .2s;
-        }
-
-        .form-file::file-selector-button:hover {
-            background: var(--accent-hover);
-        }
-
-        .info-box {
-            background: rgba(249, 115, 22, 0.1);
-            border: 1px solid rgba(249, 115, 22, 0.3);
+        /* Drop Zone Styles */
+        .drop-zone {
+            border: 2px dashed var(--card-border);
             border-radius: 12px;
-            padding: 16px;
-            margin-bottom: 20px;
+            padding: 32px;
+            text-align: center;
+            cursor: pointer;
+            transition: all .3s;
+            background: var(--input-bg);
         }
 
-        .info-box h3 {
-            font-size: 14px;
-            font-weight: 700;
+        .drop-zone:hover,
+        .drop-zone.dragover {
+            border-color: var(--accent);
+            background: rgba(249, 115, 22, 0.05);
+        }
+
+        .drop-zone-icon {
+            font-size: 48px;
+            color: var(--accent);
+            margin-bottom: 12px;
+        }
+
+        .drop-zone-text {
+            font-size: 15px;
+            font-weight: 600;
             color: var(--text-main);
             margin-bottom: 8px;
         }
 
-        .info-box ul {
-            font-size: 12px;
-            color: var(--text-main);
-            line-height: 1.6;
-            list-style: none;
-            padding: 0;
-            margin: 0;
+        .drop-zone-hint {
+            font-size: 13px;
+            color: var(--text-muted);
         }
 
-        .info-box li {
-            margin-bottom: 4px;
+        .drop-zone-btn {
+            display: inline-block;
+            margin-top: 16px;
+            padding: 10px 24px;
+            background: var(--accent);
+            color: #111827;
+            border: none;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all .2s;
+        }
+
+        .drop-zone-btn:hover {
+            background: #ea580c;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(249, 115, 22, 0.4);
+        }
+
+        .image-counter {
+            display: inline-block;
+            background: var(--accent);
+            color: #111;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            margin-left: 8px;
         }
 
         .preview-container {
-            margin-top: 16px;
+            margin-top: 20px;
             display: none;
         }
 
         .preview-container.active {
             display: block;
+        }
+
+        .preview-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .preview-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-add-more {
+            padding: 8px 16px;
+            background: rgba(249, 115, 22, 0.15);
+            color: var(--accent);
+            border: 1px solid var(--accent);
+            border-radius: 50px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all .2s;
+        }
+
+        .btn-add-more:hover {
+            background: var(--accent);
+            color: #111;
+        }
+
+        .btn-add-more:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
         }
 
         .preview-grid {
@@ -176,7 +224,7 @@
             flex-direction: column;
             border-radius: 12px;
             background: var(--card-bg);
-            border: 1px solid var(--card-border);
+            border: 2px solid var(--card-border);
             padding: 8px;
             cursor: pointer;
             transition: all .2s;
@@ -187,13 +235,15 @@
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
         }
 
+        .preview-item.primary {
+            border-color: var(--accent);
+        }
+
         .preview-item img {
             width: 100%;
             height: 140px;
             object-fit: cover;
             border-radius: 8px;
-            border: 2px solid var(--card-border);
-            transition: border-color .2s;
         }
 
         .preview-item .badge-label {
@@ -237,6 +287,82 @@
             transform: scale(1.1);
         }
 
+        /* Condition Toggle Buttons */
+        .condition-options {
+            display: flex;
+            gap: 16px;
+            margin-top: 8px;
+        }
+
+        .condition-option {
+            flex: 1;
+            position: relative;
+        }
+
+        .condition-option input {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .condition-option label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 14px 20px;
+            background: var(--input-bg);
+            border: 2px solid var(--card-border);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .condition-option label:hover {
+            border-color: var(--accent);
+            background: rgba(249, 115, 22, 0.05);
+        }
+
+        .condition-option input:checked + label {
+            border-color: var(--accent);
+            background: rgba(249, 115, 22, 0.1);
+            color: var(--accent);
+        }
+
+        .condition-option .check-icon {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            border: 2px solid var(--card-border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            font-size: 12px;
+            color: transparent;
+        }
+
+        .condition-option input:checked + label .check-icon {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: #111;
+        }
+
+        .condition-option .condition-icon {
+            font-size: 20px;
+        }
+
+        .condition-option.baru .condition-icon {
+            color: #22c55e;
+        }
+
+        .condition-option.bekas .condition-icon {
+            color: #f59e0b;
+        }
+
         .form-actions {
             display: flex;
             gap: 16px;
@@ -261,9 +387,9 @@
         }
 
         .btn-submit:hover {
-            background: var(--accent-hover);
+            background: #ea580c;
             transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(249, 115, 22, 0.3);
+            box-shadow: 0 8px 20px rgba(249, 115, 22, 0.4);
         }
 
         .btn-cancel {
@@ -287,7 +413,6 @@
         .btn-cancel:hover {
             background: rgba(148, 163, 184, 0.3);
         }
-
 
         .section-divider {
             font-size: 16px;
@@ -317,6 +442,10 @@
             .preview-item img {
                 height: 110px;
             }
+
+            .drop-zone {
+                padding: 24px;
+            }
         }
     </style>
 @endpush
@@ -345,7 +474,7 @@
         @endif
 
         <div class="form-card">
-            <form method="POST" action="{{ route('seller.products.store') }}" enctype="multipart/form-data">
+            <form method="POST" action="{{ route('seller.products.store') }}" enctype="multipart/form-data" id="productForm">
                 @csrf
 
                 {{-- Section: Informasi Dasar --}}
@@ -373,15 +502,23 @@
 
                 <div class="form-group">
                     <label class="form-label">Kondisi Produk <span class="required">*</span></label>
-                    <div style="display:flex;gap:24px;margin-top:8px;">
-                        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
-                            <input type="radio" name="condition" value="baru" {{ old('condition') == 'baru' ? 'checked' : '' }} required>
-                            <span style="font-size:14px;color:var(--text-main);">Baru</span>
-                        </label>
-                        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
-                            <input type="radio" name="condition" value="bekas" {{ old('condition') == 'bekas' ? 'checked' : '' }}>
-                            <span style="font-size:14px;color:var(--text-main);">Bekas</span>
-                        </label>
+                    <div class="condition-options">
+                        <div class="condition-option baru">
+                            <input type="radio" name="condition" id="condition_baru" value="baru" {{ old('condition') == 'baru' ? 'checked' : '' }} required>
+                            <label for="condition_baru">
+                                <span class="check-icon"><i class="uil uil-check"></i></span>
+                                <i class="uil uil-tag-alt condition-icon"></i>
+                                <span>Baru</span>
+                            </label>
+                        </div>
+                        <div class="condition-option bekas">
+                            <input type="radio" name="condition" id="condition_bekas" value="bekas" {{ old('condition') == 'bekas' ? 'checked' : '' }}>
+                            <label for="condition_bekas">
+                                <span class="check-icon"><i class="uil uil-check"></i></span>
+                                <i class="uil uil-history condition-icon"></i>
+                                <span>Bekas</span>
+                            </label>
+                        </div>
                     </div>
                     @error('condition')<p class="form-error">{{ $message }}</p>@enderror
                 </div>
@@ -420,43 +557,41 @@
                 {{-- Section: Foto Produk --}}
                 <div class="section-divider">
                     <i class="uil uil-images"></i> Foto Produk
-                </div>
-
-                {{-- Image Upload Info Box --}}
-                <div class="info-box">
-                    <div style="display:flex;align-items:start;gap:12px;">
-                        <i class="uil uil-info-circle" style="font-size:24px;color:var(--accent);margin-top:2px;"></i>
-                        <div>
-                            <h3>📸 Upload Banyak Foto Produk</h3>
-                            <ul>
-                                <li>✓ Pilih hingga <strong>5 foto sekaligus</strong> dengan tombol di bawah</li>
-                                <li>✓ Klik pada foto untuk <strong>menentukan foto utama</strong> (yang tampil pertama)</li>
-                                <li>✓ Klik tombol <strong>×</strong> di pojok foto untuk menghapus</li>
-                                <li>✓ Format: JPG, JPEG, PNG • Maksimal 2MB per foto</li>
-                            </ul>
-                        </div>
-                    </div>
+                    <span class="image-counter" id="imageCounter">0/5</span>
                 </div>
 
                 <div class="form-group">
                     <label class="form-label">
                         <i class="uil uil-image"></i> Foto Produk <span class="required">*</span>
-                        <span style="font-size:12px;font-weight:400;color:var(--text-muted);margin-left:8px;">(Pilih 1-5
-                            foto)</span>
                     </label>
-                    <input type="file" name="images[]" id="images" class="form-file" accept=".jpg,.jpeg,.png" multiple
-                        required>
-                    <p class="form-hint">Pilih beberapa file sekaligus untuk upload banyak foto. Foto pertama akan jadi foto
-                        utama secara default.</p>
+                    
+                    <!-- Hidden file input -->
+                    <input type="file" name="images[]" id="images" accept=".jpg,.jpeg,.png" multiple style="display:none;">
+                    <input type="hidden" name="primary_image_index" id="primary_image_index" value="0">
+                    
+                    <!-- Drop Zone -->
+                    <div class="drop-zone" id="dropZone">
+                        <i class="uil uil-cloud-upload drop-zone-icon"></i>
+                        <p class="drop-zone-text">Drag & drop foto di sini</p>
+                        <p class="drop-zone-hint">atau klik untuk memilih file (JPG, PNG • Maks 2MB per foto)</p>
+                        <button type="button" class="drop-zone-btn" id="browseBtn">
+                            <i class="uil uil-image-plus"></i> Pilih Foto
+                        </button>
+                    </div>
+                    
                     @error('images')<p class="form-error">{{ $message }}</p>@enderror
                     @error('images.*')<p class="form-error">{{ $message }}</p>@enderror
 
-                    <input type="hidden" name="primary_image_index" id="primary_image_index" value="0">
-
+                    <!-- Preview Container -->
                     <div class="preview-container" id="preview_container">
-                        <p style="font-size:13px;font-weight:600;color:var(--text-main);margin-bottom:12px;">
-                            <i class="uil uil-eye"></i> Preview Foto (klik untuk set foto utama)
-                        </p>
+                        <div class="preview-header">
+                            <span class="preview-title">
+                                <i class="uil uil-eye"></i> Preview Foto (klik untuk set foto utama)
+                            </span>
+                            <button type="button" class="btn-add-more" id="addMoreBtn">
+                                <i class="uil uil-plus"></i> Tambah Lagi
+                            </button>
+                        </div>
                         <div class="preview-grid" id="preview_grid"></div>
                     </div>
                 </div>
@@ -482,19 +617,115 @@
             const previewContainer = document.getElementById('preview_container');
             const previewGrid = document.getElementById('preview_grid');
             const primaryInput = document.getElementById('primary_image_index');
+            const dropZone = document.getElementById('dropZone');
+            const browseBtn = document.getElementById('browseBtn');
+            const addMoreBtn = document.getElementById('addMoreBtn');
+            const imageCounter = document.getElementById('imageCounter');
+            const productForm = document.getElementById('productForm');
 
+            const MAX_IMAGES = 5;
             let selectedFiles = [];
 
-            imageInput.addEventListener('change', function (e) {
+            // Browse button click
+            browseBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                imageInput.click();
+            });
+
+            // Add more button click
+            addMoreBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                if (selectedFiles.length < MAX_IMAGES) {
+                    imageInput.click();
+                }
+            });
+
+            // Drop zone click
+            dropZone.addEventListener('click', function(e) {
+                if (e.target === dropZone || e.target.classList.contains('drop-zone-icon') || 
+                    e.target.classList.contains('drop-zone-text') || e.target.classList.contains('drop-zone-hint')) {
+                    imageInput.click();
+                }
+            });
+
+            // Drag and drop events
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                dropZone.addEventListener(eventName, preventDefaults, false);
+                document.body.addEventListener(eventName, preventDefaults, false);
+            });
+
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+
+            ['dragenter', 'dragover'].forEach(eventName => {
+                dropZone.addEventListener(eventName, () => dropZone.classList.add('dragover'), false);
+            });
+
+            ['dragleave', 'drop'].forEach(eventName => {
+                dropZone.addEventListener(eventName, () => dropZone.classList.remove('dragover'), false);
+            });
+
+            // Handle drop
+            dropZone.addEventListener('drop', function(e) {
+                const files = Array.from(e.dataTransfer.files).filter(file => 
+                    file.type.startsWith('image/') && 
+                    (file.type === 'image/jpeg' || file.type === 'image/png' || file.type === 'image/jpg')
+                );
+                addFiles(files);
+            });
+
+            // Handle file input change
+            imageInput.addEventListener('change', function(e) {
                 const files = Array.from(e.target.files);
-                if (files.length > 5) {
-                    alert('Maksimal 5 foto');
-                    e.target.value = '';
+                // Reset input first so same file can be selected again later
+                e.target.value = '';
+                // Then add files (this will call updateFileInput at the end)
+                addFiles(files);
+            });
+
+            function addFiles(newFiles) {
+                const remainingSlots = MAX_IMAGES - selectedFiles.length;
+                
+                if (remainingSlots <= 0) {
+                    alert('Maksimal 5 foto. Hapus foto yang ada untuk menambah yang baru.');
                     return;
                 }
-                selectedFiles = files;
+
+                const filesToAdd = newFiles.slice(0, remainingSlots);
+                
+                if (newFiles.length > remainingSlots) {
+                    alert(`Hanya ${remainingSlots} foto lagi yang bisa ditambahkan. ${filesToAdd.length} foto telah dipilih.`);
+                }
+
+                // Validate file sizes (max 2MB each)
+                const validFiles = filesToAdd.filter(file => {
+                    if (file.size > 2 * 1024 * 1024) {
+                        alert(`File "${file.name}" terlalu besar. Maksimal 2MB per foto.`);
+                        return false;
+                    }
+                    return true;
+                });
+
+                selectedFiles = [...selectedFiles, ...validFiles];
                 renderPreviews();
-            });
+                updateCounter();
+                updateFileInput();
+            }
+
+            function updateCounter() {
+                imageCounter.textContent = `${selectedFiles.length}/${MAX_IMAGES}`;
+                addMoreBtn.disabled = selectedFiles.length >= MAX_IMAGES;
+                
+                // Show/hide drop zone based on files
+                if (selectedFiles.length >= MAX_IMAGES) {
+                    dropZone.style.display = 'none';
+                } else {
+                    dropZone.style.display = 'block';
+                }
+            }
 
             function renderPreviews() {
                 previewGrid.innerHTML = '';
@@ -502,40 +733,48 @@
                 if (selectedFiles.length > 0) {
                     previewContainer.classList.add('active');
 
-                    selectedFiles.forEach((file, index) => {
-                        const reader = new FileReader();
-
-                        reader.onload = function (e) {
-                            const imgContainer = document.createElement('div');
-                            imgContainer.className = 'preview-item';
-                            imgContainer.innerHTML = `
-                            <span class="badge-label" style="background:${index === 0 ? 'var(--accent)' : 'rgba(0,0,0,0.6)'};color:${index === 0 ? '#111' : '#fff'};">${index === 0 ? 'Utama' : index + 1}</span>
-                            <img src="${e.target.result}" style="border-color:${index === 0 ? 'var(--accent)' : 'var(--card-border)'};">
-                            <button type="button" class="btn-remove">×</button>
+                    // Create all containers first with placeholders
+                    const containers = selectedFiles.map((file, index) => {
+                        const imgContainer = document.createElement('div');
+                        imgContainer.className = 'preview-item' + (index === parseInt(primaryInput.value) ? ' primary' : '');
+                        imgContainer.dataset.index = index;
+                        
+                        const isPrimary = index === parseInt(primaryInput.value);
+                        imgContainer.innerHTML = `
+                            <span class="badge-label" style="background:${isPrimary ? 'var(--accent)' : 'rgba(0,0,0,0.6)'};color:${isPrimary ? '#111' : '#fff'};">${isPrimary ? 'Utama' : index + 1}</span>
+                            <img src="" style="background:#1e293b;">
+                            <button type="button" class="btn-remove" title="Hapus foto">×</button>
                         `;
+                        
+                        // Bind click event with captured index
+                        const capturedIndex = index;
+                        imgContainer.addEventListener('click', function(ev) {
+                            if (ev.target.classList.contains('btn-remove')) return;
+                            primaryInput.value = capturedIndex;
+                            updatePrimarySelection(capturedIndex);
+                        });
 
-                            imgContainer.onclick = function (ev) {
-                                if (ev.target.classList.contains('btn-remove')) return;
-                                primaryInput.value = index;
-                                updatePrimarySelection(index);
-                            };
+                        imgContainer.querySelector('.btn-remove').addEventListener('click', function(ev) {
+                            ev.stopPropagation();
+                            removeImage(capturedIndex);
+                        });
 
-                            imgContainer.querySelector('.btn-remove').onclick = function (ev) {
-                                ev.stopPropagation();
-                                removeImage(index);
-                            };
+                        previewGrid.appendChild(imgContainer);
+                        return { container: imgContainer, file: file, index: index };
+                    });
 
-                            previewGrid.appendChild(imgContainer);
+                    // Load images async but containers are already in correct order
+                    containers.forEach(({ container, file }) => {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            container.querySelector('img').src = e.target.result;
                         };
-
                         reader.readAsDataURL(file);
                     });
                 } else {
                     previewContainer.classList.remove('active');
                     primaryInput.value = 0;
                 }
-
-                updateFileInput();
             }
 
             function removeImage(index) {
@@ -548,6 +787,8 @@
                 }
 
                 renderPreviews();
+                updateCounter();
+                updateFileInput();
             }
 
             function updateFileInput() {
@@ -559,15 +800,14 @@
             function updatePrimarySelection(selectedIndex) {
                 const containers = previewGrid.querySelectorAll('.preview-item');
                 containers.forEach((container, idx) => {
-                    const img = container.querySelector('img');
                     const badge = container.querySelector('.badge-label');
                     if (idx === selectedIndex) {
-                        img.style.borderColor = 'var(--accent)';
+                        container.classList.add('primary');
                         badge.style.background = 'var(--accent)';
                         badge.style.color = '#111';
                         badge.textContent = 'Utama';
                     } else {
-                        img.style.borderColor = 'var(--card-border)';
+                        container.classList.remove('primary');
                         badge.style.background = 'rgba(0,0,0,0.6)';
                         badge.style.color = '#fff';
                         badge.textContent = idx + 1;
@@ -575,11 +815,20 @@
                 });
             }
 
+            // Form validation
+            productForm.addEventListener('submit', function(e) {
+                if (selectedFiles.length === 0) {
+                    e.preventDefault();
+                    alert('Pilih minimal 1 foto produk.');
+                    return false;
+                }
+            });
+
             // Price formatting
             const priceDisplay = document.getElementById('price_display');
             const priceHidden = document.getElementById('price');
             if (priceDisplay && priceHidden) {
-                priceDisplay.addEventListener('input', function (e) {
+                priceDisplay.addEventListener('input', function(e) {
                     let value = e.target.value.replace(/[^\d]/g, '');
                     priceHidden.value = value;
                     if (value) {

@@ -138,12 +138,13 @@ class ReportController extends Controller
                 'products.category_slug',
                 'products.seller_id',
                 'sellers.nama_toko',
+                'sellers.provinsi',
                 DB::raw('COALESCE(AVG(reviews.rating), 0) as avg_rating'),
                 DB::raw('COUNT(reviews.id) as review_count')
             )
             ->join('sellers', 'products.seller_id', '=', 'sellers.id')
             ->leftJoin('reviews', 'products.id', '=', 'reviews.product_id')
-            ->groupBy('products.id', 'products.name', 'products.price', 'products.stock', 'products.image_url', 'products.category_slug', 'products.seller_id', 'sellers.nama_toko');
+            ->groupBy('products.id', 'products.name', 'products.price', 'products.stock', 'products.image_url', 'products.category_slug', 'products.seller_id', 'sellers.nama_toko', 'sellers.provinsi');
 
         // Filter by category
         if ($category) {
@@ -182,7 +183,14 @@ class ReportController extends Controller
 
         $products = $query->limit($limit)->get();
 
-        $categories = Product::select('category_slug')->distinct()->pluck('category_slug');
+        // Standardized categories to match Market
+        $categories = [
+            ['name' => 'Fashion', 'slug' => 'fashion'],
+            ['name' => 'Elektronik', 'slug' => 'elektronik'],
+            ['name' => 'Buku', 'slug' => 'buku'],
+            ['name' => 'Alat Tulis', 'slug' => 'alat-tulis'],
+            ['name' => 'Alat Kuliah', 'slug' => 'alat-kuliah'],
+        ];
 
         return view('Admin.reports.product-ranking', compact('products', 'categories', 'limit', 'category'));
     }
