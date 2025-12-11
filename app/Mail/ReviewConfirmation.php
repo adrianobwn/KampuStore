@@ -2,28 +2,28 @@
 
 namespace App\Mail;
 
-use App\Models\Seller;
+use App\Models\Review;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class SellerApproved extends Mailable
+class ReviewConfirmation extends Mailable
 {
     use SerializesModels;
 
-    public $seller;
-    public $activationUrl;
-    public $tries = 3;
-    public $timeout = 30;
+    public $review;
+    public $productName;
+    public $reviewerName;
 
     /**
      * Create a new message instance.
      */
-    public function __construct(Seller $seller)
+    public function __construct(Review $review, string $productName, string $reviewerName)
     {
-        $this->seller = $seller;
-        $this->activationUrl = route('seller.dashboard');
+        $this->review = $review;
+        $this->productName = $productName;
+        $this->reviewerName = $reviewerName;
     }
 
     /**
@@ -32,7 +32,7 @@ class SellerApproved extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Pendaftaran Toko Anda Telah Disetujui - KampuStore',
+            subject: 'Terima Kasih Atas Ulasan Anda - KampuStore',
         );
     }
 
@@ -42,14 +42,12 @@ class SellerApproved extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'emails.seller-approved',
+            view: 'emails.review-confirmation',
         );
     }
 
     /**
      * Get the attachments for the message.
-     *
-     * @return array<int, \Illuminate\Mail\Mailables\Attachment>
      */
     public function attachments(): array
     {

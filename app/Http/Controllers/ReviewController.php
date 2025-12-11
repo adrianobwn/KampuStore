@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Mail\ReviewThankYou;
+use App\Mail\ReviewConfirmation;
 use App\Models\Product;
 use App\Models\Review;
 use Illuminate\Http\RedirectResponse;
@@ -39,7 +39,7 @@ class ReviewController extends Controller
             );
 
             // Send email to logged-in user
-            Mail::to($user->email)->send(new ReviewThankYou($review, $product, $user->name));
+            Mail::to($user->email)->send(new ReviewConfirmation($review, $product->name, $user->name));
 
             return redirect()->route('products.show', $product)->with('status', 'Ulasan tersimpan dan email konfirmasi terkirim.');
         } else {
@@ -64,11 +64,10 @@ class ReviewController extends Controller
                 'body' => $data['body'],
             ]);
 
-            Mail::to($data['guest_email'])->send(new ReviewThankYou($review, $product, $data['guest_name']));
+            Mail::to($data['guest_email'])->send(new ReviewConfirmation($review, $product->name, $data['guest_name']));
 
             return redirect()->route('products.show', $product)
                 ->with('status', 'Terima kasih atas ulasan Anda! Kami telah mengirimkan email konfirmasi.');
         }
     }
 }
-

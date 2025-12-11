@@ -24,15 +24,15 @@ class SellerVerificationController extends Controller
             ->get();
 
         // Hitung angka-angka buat header (kayak di dashboard)
-        $total    = $sellers->count();
-        $pending  = $sellers->where('status', 'pending')->count();
+        $total = $sellers->count();
+        $pending = $sellers->where('status', 'pending')->count();
         $approved = $sellers->where('status', 'approved')->count();
         $rejected = $sellers->where('status', 'rejected')->count();
 
         return view('admin.sellers.index', [
-            'sellers'  => $sellers,
-            'total'    => $total,
-            'pending'  => $pending,
+            'sellers' => $sellers,
+            'total' => $total,
+            'pending' => $pending,
             'approved' => $approved,
             'rejected' => $rejected,
         ]);
@@ -58,10 +58,10 @@ class SellerVerificationController extends Controller
             : null;
 
         return view('admin.sellers.show', [
-            'seller'      => $seller,
-            'fotoKtpUrl'  => $fotoKtpUrl,
-            'fotoPicUrl'  => $fotoPicUrl,
-            'fileKtpUrl'  => $fileKtpUrl,
+            'seller' => $seller,
+            'fotoKtpUrl' => $fotoKtpUrl,
+            'fotoPicUrl' => $fotoPicUrl,
+            'fileKtpUrl' => $fileKtpUrl,
         ]);
     }
 
@@ -101,28 +101,34 @@ class SellerVerificationController extends Controller
             'rejection_reason' => 'required|string|max:1000',
         ]);
 
-        $seller->update([
-            'status' => 'rejected',
-            'rejection_reason' => $validated['rejection_reason'],
-        ]);
+        // Get user before deleting
+        $user = $seller->user;
+        $sellerEmail = $seller->email_pic;
+        $sellerName = $seller->nama_toko;
 
-        // Kirim email (akan masuk queue)
-        Mail::to($seller->email_pic)->send(new SellerRejected($seller, $validated['rejection_reason']));
+        // Store data for email before deletion
+        $emailData = [
+            'nama_pic' => $seller->nama_pic,
+            'nama_toko' => $seller->nama_toko,
+            'rejectionReason' => $validated['rejection_reason'],
+        ];
 
-        // Simpan notifikasi ke database (internal inbox)
-        $htmlContent = view('emails.seller-rejected', [
-            'seller' => $seller,
-            'rejectionReason' => $validated['rejection_reason']
-        ])->render();
+        // Send rejection email first (before deleting records)
+        Mail::to($sellerEmail)->send(new SellerRejected($seller, $validated['rejection_reason']));
 
-        Notification::create([
-            'seller_id' => $seller->id,
-            'type' => 'rejection',
-            'subject' => 'Pendaftaran Toko Anda Ditolak - KampuStore',
-            'message' => "Mohon maaf, pendaftaran toko {$seller->nama_toko} Anda belum dapat disetujui. Alasan: {$validated['rejection_reason']}",
-            'html_content' => $htmlContent,
-        ]);
+        // Delete the seller record and associated user to allow re-registration
+        // Delete notifications related to this seller first
+        Notification::where('seller_id', $seller->id)->delete();
 
-        return back()->with('success', 'Seller ditolak dan notifikasi telah dikirim.');
+        // Delete the seller
+        $seller->delete();
+
+        // Delete the user account so they can register again
+        if ($user) {
+            $user->delete();
+        }
+
+        return redirect()->route('admin.sellers.index')
+            ->with('success', "Seller " . $sellerName . " ditolak. Akun sudah dihapus dan email notifikasi telah dikirim, mereka dapat mendaftar ulang.");
     }
 }

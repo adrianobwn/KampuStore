@@ -3,16 +3,14 @@
 namespace App\Mail;
 
 use App\Models\Seller;
-use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class SellerRejected extends Mailable implements ShouldQueue
+class SellerRejected extends Mailable
 {
-    use Queueable, SerializesModels;
+    use SerializesModels;
 
     public $seller;
     public $rejectionReason;
